@@ -1,10 +1,14 @@
 from oci import config
 from oci import identity
+from oci import loggingingestion
 from oci.auth.signers import InstancePrincipalsSecurityTokenSigner
+from oci.loggingingestion.models import PutLogsDetails,LogEntry,LogEntryBatch
 
 import argparse
 import json
 import os
+import datetime
+import uuid
 
 # Lists
 dynamic_group_statements = []
@@ -13,6 +17,21 @@ regular_statements = []
 special_statements = []
 
 # Helper
+
+def log_message(loggingingestion_client, log_ocid, message):
+    put_logs_response = loggingingestion_client.put_logs(
+        log_id=log_ocid,
+        put_logs_details=PutLogsDetails(
+            specversion="1.0",
+            log_entry_batches=LogEntryBatch(
+                defaultlogentrytime=datetime.datetime.now(),
+                source="oci-policy-analysis",
+                type="output",
+                entries=[LogEntry(id=uuid.uuid1(),data=message)]
+            )
+        )
+    )
+
 def print_statement(statement_tuple):
     a,b,c,d,e = statement_tuple
     print(f"Subject: {a}, Verb: {b}, Resource: {c}, Location: {d}, Condition: {e}")
@@ -153,6 +172,7 @@ parser.add_argument("-m", "--maxlevel", help="Max recursion level (0 is root onl
 parser.add_argument("-c", "--usecache", help="Load from local cache (if it exists)", action="store_true")
 parser.add_argument("-w", "--writejson", help="Write filtered output to JSON", action="store_true")
 parser.add_argument("-ip", "--instanceprincipal", help="Use Instance Principal Auth - negates --profile", action="store_true")
+parser.add_argument("-lo", "--logocid", help="Use an OCI Log - provide OCID")
 args = parser.parse_args()
 verbose = args.verbose
 use_cache = args.usecache
@@ -165,11 +185,13 @@ location_filter = args.locationfilter
 max_level = args.maxlevel
 write_json_output = args.writejson
 use_instance_principals = args.instanceprincipal
+log_ocid = None if not args.logocid else args.logocid
 
 if use_instance_principals:
     print(f"Using Instance Principal Authentication")
     signer = InstancePrincipalsSecurityTokenSigner()
     identity_client = identity.IdentityClient(config={}, signer=signer)
+    logging_client = loggingingestion.LoggingClient(config={}, signer=signer)
     if ocid == "TENANCY":
         ocid = signer.tenancy_id
 else:
@@ -182,6 +204,10 @@ else:
 
     # Create the OCI Client to use
     identity_client = identity.IdentityClient(config)
+    logging_client = loggingingestion.LoggingClient(config)
+
+# Test Log
+log_message(logging_client,"test message")
 
 # Load from cache (if exists)
 if use_cache:
