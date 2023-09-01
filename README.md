@@ -45,6 +45,8 @@ optional arguments:
   -w, --writejson       Write filtered output to JSON
   -ip, --instanceprincipal
                         Use Instance Principal Auth - negates --profile
+  -lo LOGOCID, --logocid LOGOCID
+                        Use an OCI Log - provide OCID
 ```
 Run this with instance principals `-ip` flag:
 ```bash
@@ -63,6 +65,10 @@ Filters can be combined.  Meaning that adding 2 or even 3 or 4 filters will get 
 ```bash
 python3 ./oci-policy-analysis.py -ip -c -vf manage -lf tenancy
 ```
+### OCI Logging
+To write policy statements to OCI Log, provide `-lo <log_ocid>`.  By doing this it will write all policy statements to an OCI Log.  Then use OCI Logging Search to see the output.
+
+![OCI Log Search](images/OCI-Logging-Policy.png)
 
 
 ## Find Unused Dynamic Groups

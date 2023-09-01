@@ -18,20 +18,6 @@ special_statements = []
 
 # Helper
 
-def log_message(loggingingestion_client, log_ocid, message):
-    put_logs_response = loggingingestion_client.put_logs(
-        log_id=log_ocid,
-        put_logs_details=PutLogsDetails(
-            specversion="1.0",
-            log_entry_batches=LogEntryBatch(
-                defaultlogentrytime=datetime.datetime.now(),
-                source="oci-policy-analysis",
-                type="output",
-                entries=[LogEntry(id=uuid.uuid1(),data=message)]
-            )
-        )
-    )
-
 def print_statement(statement_tuple):
     a,b,c,d,e = statement_tuple
     print(f"Subject: {a}, Verb: {b}, Resource: {c}, Location: {d}, Condition: {e}")
@@ -191,7 +177,7 @@ if use_instance_principals:
     print(f"Using Instance Principal Authentication")
     signer = InstancePrincipalsSecurityTokenSigner()
     identity_client = identity.IdentityClient(config={}, signer=signer)
-    logging_client = loggingingestion.LoggingClient(config={}, signer=signer)
+    loggingingestion_client = loggingingestion.LoggingClient(config={}, signer=signer)
     if ocid == "TENANCY":
         ocid = signer.tenancy_id
 else:
@@ -204,10 +190,7 @@ else:
 
     # Create the OCI Client to use
     identity_client = identity.IdentityClient(config)
-    logging_client = loggingingestion.LoggingClient(config)
-
-# Test Log
-log_message(logging_client,"test message")
+    loggingingestion_client = loggingingestion.LoggingClient(config)
 
 # Load from cache (if exists)
 if use_cache:
@@ -271,30 +254,59 @@ if location_filter:
     regular_statements = list(filter(lambda statement: location_filter.casefold() in statement[3].casefold(),regular_statements))
     print(f"After: {len(dynamic_group_statements)}/{len(service_statements)}/{len(regular_statements)} DG/SVC/Reg statements")
 
-
 # Print Special 
+entries = []
 print("========Summary Special==============")
 for index, statement in enumerate(special_statements, start=1):
     print(f"Statement #{index}: {statement}")
+    entries.append(LogEntry(id=str(uuid.uuid1()),data=f"Statement #{index}: {statement}"))
 print(f"Total Special statement in tenancy: {len(special_statements)}")
 
+# Create Log Batch
+special_batch = LogEntryBatch(defaultlogentrytime=datetime.datetime.utcnow(),source="oci-policy-analysis",type="special-statement",entries=entries)
+
 # Print Dynamic Groups
+entries = []
 print("========Summary DG==============")
 for index, statement in enumerate(dynamic_group_statements, start=1):
     print(f"Statement #{index}: {statement[9]} | Policy: {statement[5]}/{statement[6]}")
+    entries.append(LogEntry(id=str(uuid.uuid1()),data=f"Statement #{index}: {statement[9]} | Policy: {statement[5]}/{statement[6]}"))
 print(f"Total Service statement in tenancy: {len(dynamic_group_statements)}")
 
+# Create Log Batch
+dg_batch = LogEntryBatch(defaultlogentrytime=datetime.datetime.utcnow(),source="oci-policy-analysis",type="dynamic-group-statement",entries=entries)
+
 # Print Service
+entries = []
 print("========Summary SVC==============")
 for index, statement in enumerate(service_statements, start=1):
     print(f"Statement #{index}: {statement[9]} | Policy: {statement[5]}/{statement[6]}")
+    entries.append(LogEntry(id=str(uuid.uuid1()),data=f"Statement #{index}: {statement[9]} | Policy: {statement[5]}/{statement[6]}"))
 print(f"Total Service statement in tenancy: {len(service_statements)}")
 
+# Create Log Batch
+service_batch = LogEntryBatch(defaultlogentrytime=datetime.datetime.utcnow(),source="oci-policy-analysis",type="service-statement",entries=entries)
+
 # Print Regular
+entries = []
 print("========Summary Reg==============")
 for index, statement in enumerate(regular_statements, start=1):
     print(f"Statement #{index}: {statement[9]} | Policy: {statement[5]}/{statement[6]}")
+    entries.append(LogEntry(id=str(uuid.uuid1()),data=f"Statement #{index}: {statement[9]} | Policy: {statement[5]}/{statement[6]}"))
 print(f"Total Regular statement in tenancy: {len(regular_statements)}")
+
+# Create Log Batch
+regular_batch = LogEntryBatch(defaultlogentrytime=datetime.datetime.utcnow(),source="oci-policy-analysis",type="regular-statement",entries=entries)
+
+# Write batches to OCI Logging
+if log_ocid:
+    put_logs_response = loggingingestion_client.put_logs(
+        log_id=log_ocid,
+        put_logs_details=PutLogsDetails(
+            specversion="1.0",
+            log_entry_batches=[special_batch,dg_batch,service_batch,regular_batch]
+        )
+    )
 
 # To output file if required
 if write_json_output:
