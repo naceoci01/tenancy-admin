@@ -57,19 +57,19 @@ page = None
 while True:
     dynamic_groups_resp = identity_client.list_dynamic_groups(compartment_id=tenancy_ocid, limit=500, page=page)
     dynamic_groups.extend(dynamic_groups_resp.data)
-    print(f"Got {len(dynamic_groups_resp.data)} - Next page: {dynamic_groups_resp.next_page}")
+    if verbose:
+        print(f"Got {len(dynamic_groups_resp.data)} - Next page: {dynamic_groups_resp.next_page}")
     page = dynamic_groups_resp.next_page if dynamic_groups_resp.has_next_page else None
     if not page:
         break
 
-# for i,dg in enumerate(dynamic_groups):
-#     print(f'Dyanmic Group {i}: {dg.name}')
+if verbose:
+    for i,dg in enumerate(dynamic_groups):
+        print(f'Found Dynamic Group {i}: {dg.name}')
 
 
 # Loop DG
 for i,dg in enumerate(dynamic_groups):
     result = list(filter(lambda statement: str(dg.name).casefold() in statement[0].casefold(),dynamic_group_statements))
     if len(result) == 0:
-        print(f"Dynamic Group has no statements: {dg.name}: {dg.id}")
-
-
+        print(f"{i}: Dynamic Group has no statements: {dg.name}: {dg.id}")
