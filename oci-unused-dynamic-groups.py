@@ -69,7 +69,10 @@ if verbose:
 
 
 # Loop DG
+total = 0
 for i,dg in enumerate(dynamic_groups):
     result = list(filter(lambda statement: str(dg.name).casefold() in statement[0].casefold(),dynamic_group_statements))
     if len(result) == 0:
-        print(f"{i}: Dynamic Group has no statements: {dg.name}: {dg.id}")
+        print(f"Dynamic Group has no statements: {dg.name}: {dg.id}")
+        total = total + 1
+print(f"Total Dynamic Groups with no statements: {total}")
