@@ -73,10 +73,10 @@ data_safe_resp = datasafe_client.list_security_assessments(
     type="SAVED",
     #time_created_less_than="2023-01-01T00:00:00Z"
     limit=500
-)
-logging.info(f"Summary: {len(data_safe_resp.data)} Next Page {data_safe_resp.next_page} ")
+).data
 
-for i in data_safe_resp.data: 
+# Process results
+for i in data_safe_resp: 
     logging.debug(f"UA: {i}")
     logging.debug(f"SA Found {i.display_name} / {i.time_created} / {i.lifecycle_state} / {i.type} / {i.id}")
 
@@ -93,7 +93,7 @@ for i in data_safe_resp.data:
             logging.warning(f"Failed to delete {i}: {e}")
     logging.debug("--------------------------")
 
-
+# BUG UA Listing won't allow lifecycle to be selected if type = SAVED
 # User Assessments
 data_safe_resp = datasafe_client.list_user_assessments(
     compartment_id=compartment_ocid,
