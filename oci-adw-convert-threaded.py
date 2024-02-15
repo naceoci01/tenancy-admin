@@ -284,7 +284,7 @@ if __name__ == "__main__":
         signer = InstancePrincipalsSecurityTokenSigner()
         config_ip = {}
         if region:
-            config={"region": region}
+            config_ip={"region": region}
             logger.info(f"Changing region to {region}")
         database_client = database.DatabaseClient(config=config_ip, signer=signer, retry_strategy=oci.retry.DEFAULT_RETRY_STRATEGY)
         search_client = ResourceSearchClient(config=config_ip, signer=signer)
