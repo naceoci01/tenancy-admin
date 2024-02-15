@@ -10,7 +10,6 @@
 import argparse
 import logging    # Python Logging
 from concurrent.futures import ThreadPoolExecutor
-from concurrent.futures import wait
 import time
 import datetime
 import json
@@ -22,7 +21,7 @@ from oci import identity
 from oci.auth.signers import InstancePrincipalsSecurityTokenSigner
 from oci.database.models import UpdateAutonomousDatabaseDetails
 from oci.resource_search import ResourceSearchClient
-from oci.resource_search.models import StructuredSearchDetails, ResourceSummary
+from oci.resource_search.models import StructuredSearchDetails
 from oci.exceptions import ServiceError
 
 import oci
@@ -279,7 +278,7 @@ if __name__ == "__main__":
 
     # Client creation
     if use_instance_principals:
-        print(f"Using Instance Principal Authentication")
+        logger.info(f"Using Instance Principal Authentication")
 
         signer = InstancePrincipalsSecurityTokenSigner()
         config_ip = {}
@@ -291,7 +290,7 @@ if __name__ == "__main__":
 
     else:
         # Use a profile (must be defined)
-        print(f"Using Profile Authentication: {profile}")
+        logger.info(f"Using Profile Authentication: {profile}")
         config = config.from_file(profile_name=profile)
 
         # Create the OCI Client to use
@@ -322,6 +321,7 @@ if __name__ == "__main__":
     for i,db_it in enumerate(atp_db.items, start=1):
         db_ocids.append(db_it.identifier)
 
+    # Thread Pool with execution based on incoming list of OCIDs
     with ThreadPoolExecutor(max_workers = threads, thread_name_prefix="thread") as executor:
         results = executor.map(database_work, db_ocids)
         logger.info(f"Kicked off {threads} threads for parallel execution - adjust as necessary")
