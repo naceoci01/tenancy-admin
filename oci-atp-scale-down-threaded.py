@@ -1,17 +1,19 @@
 # ATP Scale down script
 # Runs in region with instance Principal
 # Runs additional region with profile
+# Added Multi-threading
 
 # Written by Andrew Gregory
-# 2/13/2024 v1
+# 2/14/2024 v1
 
 # Generic Imports
 import argparse
 import logging    # Python Logging
-import multiprocessing
 from concurrent.futures import ThreadPoolExecutor
 from concurrent.futures import wait
 import time
+import datetime
+import json
 
 # OCI Imports
 from oci import config
@@ -69,7 +71,7 @@ def database_work(db_id: str):
     
     # Return Val
     did_work = {}
-    did_work["Detail"] = {"OCID": f"{db.id}", "Original CPU": f"{db.compute_model}"}
+    did_work["Detail"] = {"Name": f"{db.display_name}", "OCID": f"{db.id}", "Original CPU": f"{db.compute_model}", "License": f"{db.license_model}"}
 
     # Now try it
     try:
@@ -82,12 +84,23 @@ def database_work(db_id: str):
 
         if db.is_dedicated:
             logger.debug("Don't operate on dedicated")
+            did_work["No-op"] = {"Dedicated": True}
             return did_work
-
-        logger.debug(db)
 
         if db.role == "STANDBY":
             logger.debug("Don't operate on anything but primary")
+            did_work["No-op"] = {"Role": f"{db.role}"}
+            return did_work
+
+        if db.is_free_tier:
+            logger.debug("Don't operate on free ATP")
+            did_work["No-op"] = {"Free": f"{db.is_free_tier}"}
+            return did_work
+
+        if db.lifecycle_state == "UNAVAILABLE":
+            logger.debug("Don't operate on UNAVAILABLE DBs")
+            did_work["No-op"] = {"Lifecycle": f"{db.lifecycle_state}"}
+
             return did_work
 
         # Compute Model - to ECPU
@@ -221,8 +234,8 @@ def database_work(db_id: str):
 
         logger.info(f"----{db_id}----Complete ({db.display_name})----------")
     except ServiceError as exc:
-        logger.error(f"Failed to complete action for DB: {db_it} \nReason: {exc}")
-        return False
+        logger.error(f"Failed to complete action for DB: {db.display_name} \nReason: {exc}")
+        did_work["Error"] = {"Exception": exc.message}
     
     return did_work    
     # End main function
@@ -235,12 +248,14 @@ if __name__ == "__main__":
     parser.add_argument("-pr", "--profile", help="Config Profile, named", default="DEFAULT")
     parser.add_argument("-ip", "--instanceprincipal", help="Use Instance Principal Auth - negates --profile", action="store_true")
     parser.add_argument("--dryrun", help="Dry Run - no action", action="store_true")
+    parser.add_argument("-t", "--threads", help="Concurrent Threads (def=5)", type=int, default=5)
 
     args = parser.parse_args()
     verbose = args.verbose
     profile = args.profile
     use_instance_principals = args.instanceprincipal
     dryrun = args.dryrun
+    threads = args.threads
 
     # Logging Setup
     logging.basicConfig(level=logging.INFO, format='%(asctime)s [%(threadName)s] %(levelname)s %(message)s')
@@ -289,22 +304,17 @@ if __name__ == "__main__":
     for i,db_it in enumerate(atp_db.items, start=1):
         db_ocids.append(db_it.identifier)
 
-
-    with ThreadPoolExecutor(max_workers = 10) as executor:
+    with ThreadPoolExecutor(max_workers = threads) as executor:
         results = executor.map(database_work, db_ocids)
-        logger.info(f"Kicked off threads for list")
+        logger.info(f"Kicked off {threads} threads for parallel execution - adjust as necessary")
     
-        # Wait for results
-        #wait(results)
-        #time.sleep(30)
+    # Write to file
+    datestring = datetime.datetime.now().strftime("%Y-%m-%d-%H-%M")
+    filename = f'oci-atp-scale-down-{datestring}.json'
+    with open(filename,"w") as outfile:
 
-    #logger.info(f"orig/results: {len(db_ocids)} / {len(list(results))}")
-    for result in results:
-        logger.info(f"Result: {result}")
+        for result in results:
+            logger.info(f"Result: {result}")
+            outfile.write(json.dumps(result, indent=2))
 
-    # # Iterate all ATP
-    # for i,db_it in enumerate(atp_db.items, start=1):
-    #     # logger.debug(f"**{i}**DB: {db_it}")
-    #     db = database_client.get_autonomous_database(
-    #         autonomous_database_id=db_it.identifier
-    #     ).data
+    logging.info(f"Script complete - wrote JSON to {filename}.")
