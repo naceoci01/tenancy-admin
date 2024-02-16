@@ -173,7 +173,7 @@ def database_work(db_id: str):
             logger.info(f'>>>{"DRYRUN: " if dryrun else ""}Scale Storage DB: {db.display_name} from {db.data_storage_size_in_tbs} TB to {new_storage_gb} GB (auto-scale)')
 
             # Waiting for AVAILABLE
-            wait_for_available(dryrun=dryrun, database_client=database_client, db_id=db.id, start=True)
+            wait_for_available(db_id=db.id, start=True)
 
             # Actual scaling (2 ECPU, auto-scale, Storage auto-scale)
             if not dryrun:
