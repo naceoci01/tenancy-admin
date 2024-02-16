@@ -75,16 +75,13 @@ def return_to_initial(db_id: str, initial:str):
 # Threaded function
 def database_work(db_id: str):
 
-    # Sleep a sec
-    time.sleep(0.5)
-
-    # Get Initial Lifecycle to return to afterwards
-    db_initial_lifecycle_state = db.lifecycle_state
-    
     # Get reference
     db = database_client.get_autonomous_database(
         autonomous_database_id=db_id
         ).data
+    
+    # Get Initial Lifecycle to return to afterwards
+    db_initial_lifecycle_state = db.lifecycle_state
     
     # Return Val
     did_work = {}
