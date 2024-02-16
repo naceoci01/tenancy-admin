@@ -124,7 +124,7 @@ def database_work(db_id: str):
             # Actual Conversion
             logger.info(f'>>>{"DRYRUN: " if dryrun else ""}Converting ECPU  with {backup_retention} days retention for Autonomous DB: {db.display_name}')
 
-            wait_for_available(dryrun=dryrun, database_client=database_client, db_id=db.id, start=True)
+            wait_for_available(db_id=db.id, start=True)
 
             if not dryrun:
                 database_client.update_autonomous_database(
@@ -135,7 +135,7 @@ def database_work(db_id: str):
                         )
                 )
             # Waiting for AVAILABLE
-            wait_for_available(dryrun=dryrun, database_client=database_client, db_id=db.id, start=False)
+            wait_for_available(db_id=db.id, start=False)
 
             did_work["ECPU"] = {"Convert": True, "Retention": backup_retention}
 
@@ -190,7 +190,7 @@ def database_work(db_id: str):
             did_work["Scale"] = {"convert": True, "GB": new_storage_gb}
 
             # Waiting for AVAILABLE
-            wait_for_available(dryrun=dryrun, database_client=database_client, db_id=db.id, start=False)
+            wait_for_available(db_id=db.id, start=False)
 
             logger.info(f'{"DRYRUN: " if dryrun else ""}Scale Storage DB: {db.display_name} completed')
 
@@ -198,7 +198,7 @@ def database_work(db_id: str):
         if db.license_model == "LICENSE_INCLUDED":
             logger.info(f'>>>{"DRYRUN: " if dryrun else ""}Update License DB: {db.display_name} to BYOL / SE')
 
-            wait_for_available(dryrun=dryrun, database_client=database_client, db_id=db.id, start=True)
+            wait_for_available(db_id=db.id, start=True)
 
             if not dryrun:
                 database_client.update_autonomous_database(
@@ -212,7 +212,7 @@ def database_work(db_id: str):
             did_work["License"] = {"BYOL": True, "SE": True}
 
             # Waiting for AVAILABLE
-            wait_for_available(dryrun=dryrun, database_client=database_client, db_id=db.id, start=False)
+            wait_for_available(db_id=db.id, start=False)
 
             logger.info(f'{"DRYRUN: " if dryrun else ""}Updated License DB: {db.display_name} to BYOL / SE')
 
@@ -232,7 +232,7 @@ def database_work(db_id: str):
                     current_tags["Schedule"] = {"AnyDay" : DEFAULT_SCHEDULE}
 
                     # Start and wait if needed
-                    wait_for_available(dryrun=dryrun, database_client=database_client, db_id=db.id, start=True)
+                    wait_for_available(db_id=db.id, start=True)
 
                     if not dryrun:
                         database_client.update_autonomous_database(
@@ -241,7 +241,7 @@ def database_work(db_id: str):
                                 defined_tags=current_tags
                             )
                         )
-                    wait_for_available(dryrun=dryrun, database_client=database_client, db_id=db.id, start=False)
+                    wait_for_available(db_id=db.id, start=False)
                     did_work["Tag"] = {"default": True}
 
         else:
@@ -251,7 +251,7 @@ def database_work(db_id: str):
             logger.info(f'>>>{"DRYRUN: " if dryrun else ""}Updating Tags DB: {db.display_name} to Schedule / AnyDay Default')
 
             # Start and wait if needed
-            wait_for_available(dryrun=dryrun, database_client=database_client, db_id=db.id, start=True)
+            wait_for_available(ddb_id=db.id, start=True)
 
             if not dryrun:
                 database_client.update_autonomous_database(
@@ -261,7 +261,7 @@ def database_work(db_id: str):
                     )
                 )
             did_work["Tag"] = {"default": True}
-            wait_for_available(dryrun=dryrun, database_client=database_client, db_id=db.id, start=False)
+            wait_for_available(db_id=db.id, start=False)
             logger.info(f'{"DRYRUN: " if dryrun else ""}Updated Tags DB: {db.display_name} to Schedule / AnyDay Default')
 
         # Return to initial state
