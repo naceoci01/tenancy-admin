@@ -309,19 +309,18 @@ if __name__ == "__main__":
 
     # Client creation
     if use_instance_principals:
-        print(f"Using Instance Principal Authentication")
-
-        # Change Region
-        if region:
-            logger.info(f"Changing region to {region}")
-            config["region"] = region
+        logger.info(f"Using Instance Principal Authentication")
 
         signer = InstancePrincipalsSecurityTokenSigner()
-        database_client = database.DatabaseClient(config={}, signer=signer, retry_strategy=oci.retry.DEFAULT_RETRY_STRATEGY)
-        search_client = ResourceSearchClient(config={}, signer=signer)
+        config_ip = {}
+        if region:
+            config_ip={"region": region}
+            logger.info(f"Changing region to {region}")
+        database_client = database.DatabaseClient(config=config_ip, signer=signer, retry_strategy=oci.retry.DEFAULT_RETRY_STRATEGY)
+        search_client = ResourceSearchClient(config=config_ip, signer=signer)
     else:
         # Use a profile (must be defined)
-        print(f"Using Profile Authentication: {profile}")
+        logger.info(f"Using Profile Authentication: {profile}")
         config = config.from_file(profile_name=profile)
 
         # Create the OCI Client to use
