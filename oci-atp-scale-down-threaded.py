@@ -90,10 +90,10 @@ def database_work(db_id: str):
     # Now try it
     try:
         # Show before
-        logger.info(f"----{db_id}----Examine ({db.display_name})----------")
-        logger.info(f'CPU Model: {db.compute_model} Dedicated: {db.is_dedicated} DG Role: {db.role}')
-        logger.info(f"Storage Name: {db.display_name} DB TB: {db.data_storage_size_in_tbs}")
-        logger.info(f"License Model: {db.license_model} Edition: {db.database_edition} ")
+        logger.debug(f"----{db_id}----Examine ({db.display_name})----------")
+        logger.debug(f'CPU Model: {db.compute_model} Dedicated: {db.is_dedicated} DG Role: {db.role}')
+        logger.debug(f"Storage Name: {db.display_name} DB TB: {db.data_storage_size_in_tbs}")
+        logger.debug(f"License Model: {db.license_model} Edition: {db.database_edition} ")
         logger.info(f"----{db_id}----Start ({db.display_name})----------")
 
         if db.is_dedicated:
@@ -139,7 +139,7 @@ def database_work(db_id: str):
 
             did_work["ECPU"] = {"Convert": True, "Retention": backup_retention}
 
-            logger.info(f'{"DRYRUN: " if dryrun else ""}Converted ECPU Autonomous DB: {db.display_name}')
+            logger.debug(f'{"DRYRUN: " if dryrun else ""}Converted ECPU Autonomous DB: {db.display_name}')
 
         elif db.backup_retention_period_in_days > backup_retention:
             logger.info(f'>>>{"DRYRUN: " if dryrun else ""}Update Backup retention DB: {db.display_name} to configured {backup_retention} days')
@@ -158,7 +158,7 @@ def database_work(db_id: str):
             # Waiting for AVAILABLE
             wait_for_available(db_id=db.id, start=False)
 
-            logger.info(f'{"DRYRUN: " if dryrun else ""}Updated License DB: {db.display_name} to BYOL / SE')
+            logger.debug(f'{"DRYRUN: " if dryrun else ""}Updated License DB: {db.display_name} to BYOL / SE')
 
             
         # Storage - scale to GB
@@ -192,7 +192,7 @@ def database_work(db_id: str):
             # Waiting for AVAILABLE
             wait_for_available(db_id=db.id, start=False)
 
-            logger.info(f'{"DRYRUN: " if dryrun else ""}Scale Storage DB: {db.display_name} completed')
+            logger.debug(f'{"DRYRUN: " if dryrun else ""}Scale Storage DB: {db.display_name} completed')
 
         # License Model - BYOL and SE
         if db.license_model == "LICENSE_INCLUDED":
@@ -214,7 +214,7 @@ def database_work(db_id: str):
             # Waiting for AVAILABLE
             wait_for_available(db_id=db.id, start=False)
 
-            logger.info(f'{"DRYRUN: " if dryrun else ""}Updated License DB: {db.display_name} to BYOL / SE')
+            logger.debug(f'{"DRYRUN: " if dryrun else ""}Updated License DB: {db.display_name} to BYOL / SE')
 
         # Tagging - require Schedule Tag
 
@@ -262,12 +262,12 @@ def database_work(db_id: str):
                 )
             did_work["Tag"] = {"default": True}
             wait_for_available(db_id=db.id, start=False)
-            logger.info(f'{"DRYRUN: " if dryrun else ""}Updated Tags DB: {db.display_name} to Schedule / AnyDay Default')
+            logger.debug(f'{"DRYRUN: " if dryrun else ""}Updated Tags DB: {db.display_name} to Schedule / AnyDay Default')
 
         # Return to initial state
         return_to_initial(db_id=db.id,initial=db_initial_lifecycle_state)
 
-        logger.info(f"----{db_id}----Complete ({db.display_name})----------")
+        logger.debug(f"----{db_id}----Complete ({db.display_name})----------")
     except ServiceError as exc:
         logger.error(f"Failed to complete action for DB: {db.display_name} \nReason: {exc}")
         did_work["Error"] = {"Exception": exc.message}
@@ -286,6 +286,7 @@ if __name__ == "__main__":
     parser.add_argument("--dryrun", help="Dry Run - no action", action="store_true")
     parser.add_argument("-t", "--threads", help="Concurrent Threads (def=5)", type=int, default=5)
     parser.add_argument("-r", "--retention", help="Days of backup retention (def=14)", type=int, default=14)
+    parser.add_argument("-w", "--writejson", help="output json", action="store_true")
 
     args = parser.parse_args()
     verbose = args.verbose
@@ -295,6 +296,7 @@ if __name__ == "__main__":
     dryrun = args.dryrun
     threads = args.threads
     backup_retention = args.retention
+    output_json = args.writejson
 
     # Logging Setup
     logging.basicConfig(level=logging.INFO, format='%(asctime)s [%(threadName)s] %(levelname)s %(message)s')
@@ -352,13 +354,18 @@ if __name__ == "__main__":
         results = executor.map(database_work, db_ocids)
         logger.info(f"Kicked off {threads} threads for parallel execution - adjust as necessary")
     
-    # Write to file
+    # Write to file if desired
     datestring = datetime.datetime.now().strftime("%Y-%m-%d-%H-%M")
-    filename = f'oci-atp-scale-down-{datestring}.json'
-    with open(filename,"w") as outfile:
 
+    if output_json:
+        filename = f'oci-atp-scale-down-{datestring}.json'
+        with open(filename,"w") as outfile:
+
+            for result in results:
+                outfile.write(json.dumps(result, indent=2))
+
+        logging.info(f"Script complete - wrote JSON to {filename}.")
+    else:
         for result in results:
             logger.info(f"Result: {result}")
-            outfile.write(json.dumps(result, indent=2))
 
-    logging.info(f"Script complete - wrote JSON to {filename}.")
