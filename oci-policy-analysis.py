@@ -262,7 +262,7 @@ if __name__ == "__main__":
                 limit=1000)
             comp_list.extend(paginated_response.data)
 
-        logger.info(f"Loaded {len(comp_list)} Compartments.  {"Using recursion" if recursion else "No Recursion, only root-level policies"}")
+        logger.info(f'Loaded {len(comp_list)} Compartments.  {"Using recursion" if recursion else "No Recursion, only root-level policies"}')
         with ThreadPoolExecutor(max_workers = threads, thread_name_prefix="thread") as executor:
             results = executor.map(load_policies, comp_list)
             logger.info(f"Kicked off {threads} threads for parallel execution - adjust as necessary")
