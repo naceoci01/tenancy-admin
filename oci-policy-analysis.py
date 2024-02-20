@@ -22,6 +22,7 @@ from oci.identity.models import Compartment
 from oci import loggingingestion
 from oci import pagination
 from oci.retry import DEFAULT_RETRY_STRATEGY
+from oci.exceptions import ConfigFileNotFound
 
 from oci.auth.signers import InstancePrincipalsSecurityTokenSigner
 from oci.loggingingestion.models import PutLogsDetails, LogEntry, LogEntryBatch
@@ -200,6 +201,7 @@ if __name__ == "__main__":
 
     logger.info(f'Using profile {profile} with Logging level {"DEBUG" if verbose else "INFO"}')
 
+# TODO - catch oci.exceptions.ConfigFileNotFound
     if use_instance_principals:
         logger.info("Using Instance Principal Authentication")
         signer = InstancePrincipalsSecurityTokenSigner()
@@ -210,14 +212,18 @@ if __name__ == "__main__":
     else:
         # Use a profile (must be defined)
         logger.info(f"Using Profile Authentication: {profile}")
-        config = config.from_file(profile_name=profile)
-        if ocid == "TENANCY":
-            logger.info(f'Using tenancy OCID from profile: {config["tenancy"]}')
-            ocid = config["tenancy"]
+        try:
+            config = config.from_file(profile_name=profile)
+            if ocid == "TENANCY":
+                logger.info(f'Using tenancy OCID from profile: {config["tenancy"]}')
+                ocid = config["tenancy"]
 
-        # Create the OCI Client to use
-        identity_client = identity.IdentityClient(config, retry_strategy=DEFAULT_RETRY_STRATEGY)
-        loggingingestion_client = loggingingestion.LoggingClient(config)
+            # Create the OCI Client to use
+            identity_client = identity.IdentityClient(config, retry_strategy=DEFAULT_RETRY_STRATEGY)
+            loggingingestion_client = loggingingestion.LoggingClient(config)
+        except ConfigFileNotFound as exc:
+            logger.fatal(f"Unable to use Profile Authentication: {exc}")
+            exit(1)
 
     # Load from cache (if exists)
     if use_cache:
@@ -256,7 +262,7 @@ if __name__ == "__main__":
                 limit=1000)
             comp_list.extend(paginated_response.data)
 
-        logger.info(f"Loaded {len(comp_list)}")
+        logger.info(f"Loaded {len(comp_list)} Compartments.  {"Using recursion" if recursion else "No Recursion, only root-level policies"}")
         with ThreadPoolExecutor(max_workers = threads, thread_name_prefix="thread") as executor:
             results = executor.map(load_policies, comp_list)
             logger.info(f"Kicked off {threads} threads for parallel execution - adjust as necessary")
