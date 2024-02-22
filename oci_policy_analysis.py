@@ -17,7 +17,7 @@
 # Please look at the argument parsing section or run with --help to see what is possible
 
 from oci import config
-from oci import identity
+from oci.identity import IdentityClient
 from oci.identity.models import Compartment
 from oci import loggingingestion
 from oci import pagination
@@ -35,6 +35,12 @@ import uuid
 import logging
 from concurrent.futures import ThreadPoolExecutor
 
+# Define Logger for module
+logging.basicConfig(level=logging.INFO, format='%(asctime)s %(name)s [%(threadName)s] %(levelname)s %(message)s')
+logger = logging.getLogger('oci-policy-analysis')
+
+# Global
+global identity_client
 
 # Lists
 dynamic_group_statements = []
@@ -103,7 +109,7 @@ def get_compartment_path(compartment: Compartment, level, comp_string) -> str:
     logger.debug(f"Recurse. Path is {comp_string}")
     return get_compartment_path(parent_compartment, level+1, compartment.name + "/" + comp_string)
 
-
+# Threadable policy loader - per compartment
 def load_policies(compartment: Compartment):
     logger.debug(f"Compartment: {compartment.id}")
 
@@ -158,16 +164,58 @@ def load_policies(compartment: Compartment):
                 regular_statements.append(statement_tuple)
     logger.debug(f"confused")
 
+# Load the policies (main function)
+def load_policy_analysis(id_client:IdentityClient, tenancy_ocid: str, recursion: bool, threads:int):
+    # Requirements
+    # Logger (should be set somewhere)
+    # IdentityClient
+         # If set from main() it is ok, otherwise take from function call
+    global identity_client
+    identity_client = id_client
+    logger.info(f"---Starting Policy Load---")
+
+    # Load the policies
+    # Start with list of compartments
+    comp_list = []
+
+    # Get root compartment into list
+    root_comp = identity_client.get_compartment(compartment_id=tenancy_ocid).data 
+    comp_list.append(root_comp)
+
+    if recursion:
+        # Get all compartments (we don't know the depth of any), tenancy level
+        # Using the paging API
+        paginated_response = pagination.list_call_get_all_results(
+            identity_client.list_compartments,
+            tenancy_ocid,
+            access_level="ACCESSIBLE",
+            sort_order="ASC",
+            compartment_id_in_subtree=True,
+            lifecycle_state="ACTIVE",
+            limit=1000)
+        comp_list.extend(paginated_response.data)
+
+    logger.info(f'Loaded {len(comp_list)} Compartments.  {"Using recursion" if recursion else "No Recursion, only root-level policies"}')
+    with ThreadPoolExecutor(max_workers = threads, thread_name_prefix="thread") as executor:
+        results = executor.map(load_policies, comp_list)
+        logger.info(f"Kicked off {threads} threads for parallel execution - adjust as necessary")
+    for res in results:
+        logger.debug(f"Result: {res}")
+    logger.info(f"---Finished Policy Load---")
+
+
 
 ########################################
 # Main Code
+# Pre-and Post-processing
+########################################
 
 if __name__ == "__main__":
     # Parse Arguments
     parser = argparse.ArgumentParser()
     parser.add_argument("-v", "--verbose", help="increase output verbosity", action="store_true")
     parser.add_argument("-pr", "--profile", help="Config Profile, named", default="DEFAULT")
-    parser.add_argument("-o", "--ocid", help="OCID of compartment (if not passed, will use tenancy OCID from profile)", default="TENANCY")
+    #parser.add_argument("-o", "--ocid", help="OCID of compartment (if not passed, will use tenancy OCID from profile)", default="TENANCY")
     parser.add_argument("-sf", "--subjectfilter", help="Filter all statement subjects by this text")
     parser.add_argument("-vf", "--verbfilter", help="Filter all verbs (inspect,read,use,manage) by this text")
     parser.add_argument("-rf", "--resourcefilter", help="Filter all resource (eg database or stream-family etc) subjects by this text")
@@ -181,7 +229,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
     verbose = args.verbose
     use_cache = args.usecache
-    ocid = args.ocid
+    #ocid = args.ocid
     profile = args.profile
     threads = args.threads
     sub_filter = args.subjectfilter
@@ -193,33 +241,29 @@ if __name__ == "__main__":
     use_instance_principals = args.instanceprincipal
     log_ocid = None if not args.logocid else args.logocid
 
-    logging.basicConfig(level=logging.INFO, format='%(asctime)s [%(threadName)s] %(levelname)s %(message)s')
-    logger = logging.getLogger('oci-policy-analysis')
+    # Update Logging Level
     if verbose:
         logger.setLevel(logging.DEBUG)
         logging.getLogger('oci._vendor.urllib3.connectionpool').setLevel(logging.INFO)
 
     logger.info(f'Using profile {profile} with Logging level {"DEBUG" if verbose else "INFO"}')
 
-# TODO - catch oci.exceptions.ConfigFileNotFound
     if use_instance_principals:
         logger.info("Using Instance Principal Authentication")
         signer = InstancePrincipalsSecurityTokenSigner()
-        identity_client = identity.IdentityClient(config={}, signer=signer, retry_strategy=DEFAULT_RETRY_STRATEGY)
+        identity_client = IdentityClient(config={}, signer=signer, retry_strategy=DEFAULT_RETRY_STRATEGY)
         loggingingestion_client = loggingingestion.LoggingClient(config={}, signer=signer)
-        if ocid == "TENANCY":
-            ocid = signer.tenancy_id
+        tenancy_ocid = signer.tenancy_id
     else:
         # Use a profile (must be defined)
         logger.info(f"Using Profile Authentication: {profile}")
         try:
             config = config.from_file(profile_name=profile)
-            if ocid == "TENANCY":
-                logger.info(f'Using tenancy OCID from profile: {config["tenancy"]}')
-                ocid = config["tenancy"]
+            logger.info(f'Using tenancy OCID from profile: {config["tenancy"]}')
+            tenancy_ocid = config["tenancy"]
 
             # Create the OCI Client to use
-            identity_client = identity.IdentityClient(config, retry_strategy=DEFAULT_RETRY_STRATEGY)
+            identity_client = IdentityClient(config, retry_strategy=DEFAULT_RETRY_STRATEGY)
             loggingingestion_client = loggingingestion.LoggingClient(config)
         except ConfigFileNotFound as exc:
             logger.fatal(f"Unable to use Profile Authentication: {exc}")
@@ -229,54 +273,34 @@ if __name__ == "__main__":
     if use_cache:
         logger.info("Loading Policy statements from cache")
 
-        if os.path.isfile(f'./.policy-special-cache-{ocid}.dat'):
-            with open(f'./.policy-special-cache-{ocid}.dat', 'r') as filehandle:
+        if os.path.isfile(f'./.policy-special-cache-{tenancy_ocid}.dat'):
+            with open(f'./.policy-special-cache-{tenancy_ocid}.dat', 'r') as filehandle:
                 special_statements = json.load(filehandle)
-        if os.path.isfile(f'./.policy-dg-cache-{ocid}.dat'):
-            with open(f'./.policy-dg-cache-{ocid}.dat', 'r') as filehandle:
+        if os.path.isfile(f'./.policy-dg-cache-{tenancy_ocid}.dat'):
+            with open(f'./.policy-dg-cache-{tenancy_ocid}.dat', 'r') as filehandle:
                 dynamic_group_statements = json.load(filehandle)
-        if os.path.isfile(f'.policy-svc-cache-{ocid}.dat'):
-            with open(f'./.policy-svc-cache-{ocid}.dat', 'r') as filehandle:
+        if os.path.isfile(f'.policy-svc-cache-{tenancy_ocid}.dat'):
+            with open(f'./.policy-svc-cache-{tenancy_ocid}.dat', 'r') as filehandle:
                 service_statements = json.load(filehandle)
-        if os.path.isfile(f'.policy-statement-cache-{ocid}.dat'):
-            with open(f'./.policy-statement-cache-{ocid}.dat', 'r') as filehandle:
+        if os.path.isfile(f'.policy-statement-cache-{tenancy_ocid}.dat'):
+            with open(f'./.policy-statement-cache-{tenancy_ocid}.dat', 'r') as filehandle:
                 regular_statements = json.load(filehandle)
     else:
+        # Call using function that is designed as a module function to be called from outside of this code
+        load_policy_analysis(id_client=identity_client,
+                             tenancy_ocid=tenancy_ocid,
+                             recursion=recursion,
+                             threads=threads)
 
-        comp_list = []
-
-        # Get root compartment into list
-        root_comp = identity_client.get_compartment(compartment_id=ocid).data 
-        comp_list.append(root_comp)
-
-        if recursion:
-            # Get all compartments (we don't know the depth of any), tenancy level
-            # Using the paging API
-            paginated_response = pagination.list_call_get_all_results(
-                identity_client.list_compartments,
-                ocid,
-                access_level="ACCESSIBLE",
-                sort_order="ASC",
-                compartment_id_in_subtree=True,
-                lifecycle_state="ACTIVE",
-                limit=1000)
-            comp_list.extend(paginated_response.data)
-
-        logger.info(f'Loaded {len(comp_list)} Compartments.  {"Using recursion" if recursion else "No Recursion, only root-level policies"}')
-        with ThreadPoolExecutor(max_workers = threads, thread_name_prefix="thread") as executor:
-            results = executor.map(load_policies, comp_list)
-            logger.info(f"Kicked off {threads} threads for parallel execution - adjust as necessary")
-        for res in results:
-            logger.debug(f"Result: {res}")
 
     # Write to local cache (per type)
-    with open(f'.policy-special-cache-{ocid}.dat', 'w') as filehandle:
+    with open(f'.policy-special-cache-{tenancy_ocid}.dat', 'w') as filehandle:
         json.dump(special_statements, filehandle)
-    with open(f'.policy-dg-cache-{ocid}.dat', 'w') as filehandle:
+    with open(f'.policy-dg-cache-{tenancy_ocid}.dat', 'w') as filehandle:
         json.dump(dynamic_group_statements, filehandle)
-    with open(f'.policy-svc-cache-{ocid}.dat', 'w') as filehandle:
+    with open(f'.policy-svc-cache-{tenancy_ocid}.dat', 'w') as filehandle:
         json.dump(service_statements, filehandle)
-    with open(f'.policy-statement-cache-{ocid}.dat', 'w') as filehandle:
+    with open(f'.policy-statement-cache-{tenancy_ocid}.dat', 'w') as filehandle:
         json.dump(regular_statements, filehandle)
 
     # Perform Filtering
@@ -409,5 +433,6 @@ if __name__ == "__main__":
         json_object = json.dumps(statements_list, indent=2)
 
         # Writing to sample.json
-        with open(f"policyoutput-{ocid}.json", "w") as outfile:
+        with open(f"policyoutput-{tenancy_ocid}.json", "w") as outfile:
             outfile.write(json_object)
+    logger.debug(f"-----Complete--------")
