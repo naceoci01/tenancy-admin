@@ -75,7 +75,7 @@ if __name__ == "__main__":
     parser.add_argument("-pr", "--profile", help="Named Config Profile, from OCI Config", default="DEFAULT")
     parser.add_argument("-ip", "--instanceprincipal", help="Use Instance Principal Auth - negates --profile", action="store_true")
     parser.add_argument("-ipr", "--region", help="Use Instance Principal with alt region")
-    parser.add_argument("-d", "--drgocid", help="DRG OCID, required.  Multiple ok", nargs='+', required=True)
+    parser.add_argument("-d", "--drgocid", help="DRG OCID, required.  Multiple DRGs space separated", nargs='+', required=True)
     parser.add_argument("-m", "--markdown", help="Output Markdown (directory)")
     parser.add_argument("-t", "--threads", help="Concurrent Threads (def=5)", type=int, default=5)
 
