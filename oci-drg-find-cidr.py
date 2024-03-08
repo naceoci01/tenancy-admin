@@ -198,7 +198,7 @@ if __name__ == "__main__":
 
         # Deal with Markdown
         if markdown:
-            with open(f'{markdown}/drg_attachments_{date.today()}.md', 'w') as f:
+            with open(f'{markdown}/drg_attachments_latest.md', 'w') as f:
                 f.write(f"Report generated: {date.today()}\n")
                 f.write(f"|Region|Attachment Name|CIDR Range|Compartment|\n")
                 f.write(f"|:---|:---|:---|:---:|\n")
