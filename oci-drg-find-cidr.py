@@ -58,7 +58,7 @@ def get_attachment_cidr(attachment: DrgAttachment) -> tuple:
         ).data
 
         # Return a tuple (DrgAttachment, VCN, Compartment)
-        return (attachment, vcn, comp)
+        return (ocid_region, attachment, vcn, comp)
 
     except ServiceError as ex:
         logger.error(f"Failed to call OCI.  Target Service/Operation: {ex.target_service}/{ex.operation_name} Code: {ex.code}")
@@ -75,7 +75,7 @@ if __name__ == "__main__":
     parser.add_argument("-pr", "--profile", help="Named Config Profile, from OCI Config", default="DEFAULT")
     parser.add_argument("-ip", "--instanceprincipal", help="Use Instance Principal Auth - negates --profile", action="store_true")
     parser.add_argument("-ipr", "--region", help="Use Instance Principal with alt region")
-    parser.add_argument("-d", "--drgocid", help="DRG OCID, required", required=True)
+    parser.add_argument("-d", "--drgocid", help="DRG OCID, required.  Multiple ok", nargs='+', required=True)
     parser.add_argument("-m", "--markdown", help="Output Markdown (directory)")
     parser.add_argument("-t", "--threads", help="Concurrent Threads (def=5)", type=int, default=5)
 
@@ -84,7 +84,7 @@ if __name__ == "__main__":
     profile = args.profile  # String
     use_instance_principals = args.instanceprincipal # Attempt to use instance principals (OCI VM)
     region = args.region # Region to use with Instance Principal, if not default
-    drg_ocid = args.drgocid # String
+    drg_ocids = args.drgocid # [String]
     threads = args.threads
     markdown = args.markdown
 
@@ -95,93 +95,119 @@ if __name__ == "__main__":
         logger.setLevel(logging.DEBUG)
 
     logger.info(f'Using profile {profile} with Logging level {"DEBUG" if verbose else "INFO"}')
-    logger.info(f"DRG OCID: {drg_ocid}")
+    logger.info(f"DRG OCID: {drg_ocids}")
 
-    # PHASE 2 - Creation of OCI Client(s) 
+    # PHASE 2 - Main Script Execution
 
-    # Connect to OCI with DEFAULT or defined profile
-    try:
+    compartments_list: list = []
+    results_list: list = []
 
-    # Client creation
-        if use_instance_principals:
-            logger.info(f"Using Instance Principal Authentication")
+    # Iterate DRG listing
+    for drg_ocid in drg_ocids:
 
-            signer = InstancePrincipalsSecurityTokenSigner()
-            config_ip = {}
-            if region:
-                config_ip={"region": region}
-                logger.info(f"Changing region to {region}")
+        logger.info(f"Processing DRG {drg_ocid}...")
 
-            # Example of client
-            vn_client = VirtualNetworkClient(config=config_ip, signer=signer, retry_strategy=retry.DEFAULT_RETRY_STRATEGY)
-            id_client = IdentityClient(config=config_ip, signer=signer, retry_strategy=retry.DEFAULT_RETRY_STRATEGY)
+        # We need to parse the region out and create a client for that region
+        garb1, ocid_type, garb2, ocid_region, garb3 = drg_ocid.split('.')
+        if not ocid_type == "drg":
+            logger.warning(f"OCID of {drg_ocid} not a DRG.  Continuing")
+            continue
 
-            # Tenancy OCID
-            tenancy_ocid = signer.tenancy_id
+        logger.info(f"Continue with valid DRG {drg_ocid}...")
+        # Connect to OCI with DEFAULT or defined profile
+        try:
+
+        # Client creation
+            if use_instance_principals:
+                logger.info(f"Using Instance Principal Authentication")
+
+                signer = InstancePrincipalsSecurityTokenSigner()
+                config_ip = {}
+                if ocid_region:
+                    config_ip={"region": ocid_region}
+                    logger.info(f"Changing region to {ocid_region}")
+
+                # Example of client
+                vn_client = VirtualNetworkClient(config=config_ip, signer=signer, retry_strategy=retry.DEFAULT_RETRY_STRATEGY)
+                id_client = IdentityClient(config=config_ip, signer=signer, retry_strategy=retry.DEFAULT_RETRY_STRATEGY)
+
+                # Tenancy OCID
+                tenancy_ocid = signer.tenancy_id
+            else:
+                # Use a profile (must be defined)
+                logger.info(f"Using Profile Authentication: {profile}")
+                configu = config.from_file(profile_name=profile)
+
+                # Tenancy OCID
+                tenancy_ocid = configu["tenancy"]
+                if ocid_region:
+                    configu["region"] = ocid_region
+                    logger.info(f"Changing region to {ocid_region}")
+
+                # Create the OCI Client to use
+                vn_client = VirtualNetworkClient(configu, retry_strategy=retry.DEFAULT_RETRY_STRATEGY)
+                id_client = IdentityClient(configu, retry_strategy=retry.DEFAULT_RETRY_STRATEGY)
+
+        except ClientError as ex:
+            logger.critical(f"Failed to connect to OCI: {ex}")
+
+        if len(compartments_list) == 0:
+            # Get compartments
+            logger.debug(f"Getting compartments list")
+            compartments_list = pagination.list_call_get_all_results(
+                id_client.list_compartments,
+                compartment_id_in_subtree=True,
+                compartment_id=tenancy_ocid,
+                limit=1000
+            ).data
         else:
-            # Use a profile (must be defined)
-            logger.info(f"Using Profile Authentication: {profile}")
-            config = config.from_file(profile_name=profile)
+            logger.debug(f"Using existing compartments list")
 
-            # Tenancy OCID
-            tenancy_ocid = config["tenancy"]
+        # Process DRG
+        try:
+            drg = vn_client.get_drg(
+                drg_id=drg_ocid
+            ).data # DRG
 
-            # Create the OCI Client to use
-            vn_client = VirtualNetworkClient(config, retry_strategy=retry.DEFAULT_RETRY_STRATEGY)
-            id_client = IdentityClient(config, retry_strategy=retry.DEFAULT_RETRY_STRATEGY)
+            logger.info(f"Looking at DRG: {drg.display_name} with OCID: {drg.id}")
+            comp_ocid = drg.compartment_id
 
-    except ClientError as ex:
-        logger.critical(f"Failed to connect to OCI: {ex}")
+            # Thread Pool with execution based on incoming list of OCIDs
+            with ThreadPoolExecutor(max_workers = threads, thread_name_prefix="thread") as executor:
+                results = executor.map(get_attachments_compartment, compartments_list)
+                logger.info(f"Kicked off {threads} threads for parallel execution - adjust as necessary")
 
-    # PHASE 3 - Main Script Execution
+            # Build a list of attachments from the threaded results
+            attachments = []
+            for res in results:
+                # Print to resulting list
+                for att in res:
+                    attachments.append(att)
 
-    # Get PDBs Example
-    try:
-        drg = vn_client.get_drg(
-            drg_id=drg_ocid
-        ).data # DRG
+            # Thread Pool with execution based on incoming list of attachments - gets the VCN Details
+            with ThreadPoolExecutor(max_workers = threads, thread_name_prefix="thread") as executor:
+                temp_results = executor.map(get_attachment_cidr, attachments)
+                logger.info(f"Kicked off {threads} threads for parallel execution (attachments) - adjust as necessary")
 
-        logger.info(f"Looking at DRG: {drg.display_name} with OCID: {drg.id}")
-        comp_ocid = drg.compartment_id
+            # Add to overall list
+            results_list.extend(temp_results)
 
-        # Grab all compartments using pagination
-
-        compartments_response = pagination.list_call_get_all_results(
-            id_client.list_compartments,
-            compartment_id_in_subtree=True,
-            compartment_id=tenancy_ocid,
-            limit=1000
-        ).data
-
-        # Thread Pool with execution based on incoming list of OCIDs
-        with ThreadPoolExecutor(max_workers = threads, thread_name_prefix="thread") as executor:
-            results = executor.map(get_attachments_compartment, compartments_response)
-            logger.info(f"Kicked off {threads} threads for parallel execution - adjust as necessary")
-
-        # Build a list of attachments from the threaded results
-        attachments = []
-        for res in results:
-            # Print to resulting list
-            for att in res:
-                attachments.append(att)
-
-        # Thread Pool with execution based on incoming list of attachments - gets the VCN Details
-        with ThreadPoolExecutor(max_workers = threads, thread_name_prefix="thread") as executor:
-            results = executor.map(get_attachment_cidr, attachments)
-            logger.info(f"Kicked off {threads} threads for parallel execution (attachments) - adjust as necessary")
+        except ServiceError as ex:
+            logger.error(f"Failed to call OCI.  Target Service/Operation: {ex.target_service}/{ex.operation_name} Code: {ex.code}")
+            logger.debug(f"Full Exception Detail: {ex}")
 
         # Deal with Markdown
         if markdown:
-            with open(f'{markdown}/drg_attachments_{drg_ocid}.md', 'w') as f:
+            with open(f'{markdown}/drg_attachments_{date.today()}.md', 'w') as f:
                 f.write(f"Report generated: {date.today()}\n")
-                f.write(f"|Attachment Name|CIDR Range|Compartment|\n")
-                f.write(f"|:---|:---|---:|\n")
-                for res in results:
+                f.write(f"|Region|Attachment Name|CIDR Range|Compartment|\n")
+                f.write(f"|:---|:---|:---|:---:|\n")
+                for res in results_list:
                     # Print out
                     att: DrgAttachment
-                    att, vcn, comp = res
+                    reg, att, vcn, comp = res
                     
-                    f.write(f"| {att.display_name} | {vcn.cidr_block} | {comp.name} |\n")
+                    f.write(f"{reg} | {att.display_name} | {vcn.cidr_block} | {comp.name} |\n")
         else:
             for res in results:
                 # Print out
@@ -189,9 +215,3 @@ if __name__ == "__main__":
                 att, vcn, comp = res
                 
                 logger.info(f"Attachment: {att.display_name} CIDR: {vcn.cidr_block} Compartment: {comp.name}")
-
-
-    except ServiceError as ex:
-        logger.error(f"Failed to call OCI.  Target Service/Operation: {ex.target_service}/{ex.operation_name} Code: {ex.code}")
-        logger.debug(f"Full Exception Detail: {ex}")
-
