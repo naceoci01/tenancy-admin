@@ -7,15 +7,16 @@ LOGDIR=/home/opc/log/drg_attachement_execution
 MD_DIR=/home/opc/cloud-engineers/resources
 #TOPIC_OCID="ocid1.onstopic.oc1.iad.aaaaaaaa6yr3liaddnj7fktygwovej5ldj7tjpseav2rf7zaa4kicpophnaq"
 
+source $HOME/.bash_profile
+
 echo "Started DRG script ${RG} on `date +"%m-%d-%Y %H:%M"` "
 
 python /home/opc/tenancy-admin/oci-drg-find-cidr.py -m ${MD_DIR} -ip -ipr $@ >$LOGDIR/$LOGFILE 2>&1
 
 echo "Git"
-cd ${MD_DIR}
-git add drg_attachments_ocid1*
-git commit -m "daily"
-git push
+git -C ${MD_DIR} add drg_attachments_latest.md
+git -C ${MD_DIR} commit -m "daily commit ${TIMESTAMP}"
+git -C ${MD_DIR} push
 
 echo "Finished DRG script in ${RG} on `date +"%m-%d-%Y %H:%M"` "
 
