@@ -21,6 +21,7 @@ from oci.resource_search.models import StructuredSearchDetails
 import argparse   # Argument Parsing
 import logging    # Python Logging
 import datetime
+from datetime import timezone
 from concurrent.futures import ThreadPoolExecutor
 
 # Threaded function
@@ -55,7 +56,7 @@ def work_function(ocid: str):
                 return
 
         #logger.info(f"{vcn.display_name}:{vcn.time_created}{vcn.id}")                 
-        if vcn.time_created < datetime.datetime(year=2023, month=12, day=31,tzinfo=datetime.UTC):
+        if vcn.time_created < datetime.datetime(year=2023, month=12, day=31,tzinfo=timezone.utc):
             logger.info(f"{vcn.display_name}:{vcn.id}:{vcn.time_created} -- Empty subnets and older than 2023")
         else:
             logger.info(f"{vcn.display_name}:{vcn.id} -- Empty subnets and newer than 2023")
