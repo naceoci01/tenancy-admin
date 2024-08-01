@@ -6,7 +6,7 @@ from oci import config, pagination
 from oci.retry import DEFAULT_RETRY_STRATEGY
 from oci.exceptions import ConfigFileNotFound, ServiceError
 from oci.identity import IdentityClient
-from oci.identity.models import Compartment
+from oci.identity.models import Compartment, Policy
 from oci.auth.signers import InstancePrincipalsSecurityTokenSigner
 
 # Local
@@ -17,7 +17,7 @@ from progress import Progress
 ###############################################################################################################
 
 THREADS = 8
-POLICY_REGEX = r'^\s*?allow\s+(?P<subjecttype>service|any-user|any-group|dynamic-group|dynamicgroup|group|resource)\s*(?P<subject>([\w\/\', +-]|,)+?)?\s+(to\s+)?((?P<verb>read|inspect|use|manage)\s+(?P<resource>[\w-]+)|(?P<perm>{[\s*\w\s*|\s*\w\s*,\s*]+}))\s+in\s+(?P<locationtype>tenancy|compartment\s+id|compartment)\s*(?P<location>[\w\':.-]+)?(?:\s+where\s+(?P<condition>.+))?(?:(?P<optional>\s*\/\/.+))?$'
+POLICY_REGEX = r'^\s*?(allow|endorse)\s+(?P<subjecttype>service|any-user|any-group|dynamic-group|dynamicgroup|group|resource)\s*(?P<subject>([\w\/\'\.\\, +-]|,)+?)?\s+(to\s+)?((?P<verb>read|inspect|use|manage)\s+(?P<resource>[\w-]+)|(?P<perm>{[\s*\w\s*|\s*\w\s*,\s*]+}))\s+in\s+(?P<locationtype>any-tenancy|tenancy|compartment\s+id|compartment)\s*(?P<location>[\w\':.-]+)?(?:\s+where\s+(?P<condition>.+))?(?:(?P<optional>\s*\/\/.+))?$'
 
 ###############################################################################################################
 # PolicyAnalysis class
@@ -26,7 +26,6 @@ POLICY_REGEX = r'^\s*?allow\s+(?P<subjecttype>service|any-user|any-group|dynamic
 class PolicyAnalysis:
 
     regular_statements = []
-    special_statements = []
 
     # Use like a global to indicate if it is running a threaded load.  When finished, this goes to True, and then 
     # the main class does an update and sets this back to false.  Probably a better way
@@ -34,6 +33,7 @@ class PolicyAnalysis:
 
     # tenancy_ocid, identity_client recursion
     def __init__(self, progress: Progress, verbose: bool):
+        """Initialize the class"""
         # Create a logger
         logging.basicConfig(level=logging.INFO, format='%(asctime)s %(name)s [%(threadName)s] %(levelname)s %(message)s')
         self.logger = logging.getLogger('oci-policy-analysis-policies')
@@ -45,7 +45,7 @@ class PolicyAnalysis:
         self.progress = progress
 
     def initialize_client(self, profile: str, use_instance_principal: bool, use_recursion: bool, use_cache: bool) -> bool:
-
+        """Set up the OCI client (Identity)"""
         # Grab variables required
         self.use_recursion = use_recursion
         self.use_cache = use_cache
@@ -83,7 +83,7 @@ class PolicyAnalysis:
         a, b, c, d, e = statement_tuple
         self.logger.debug(f"Subject: {a}, Verb: {b}, Resource: {c}, Location: {d}, Condition: {e}")
 
-    def parse_statement(self, statement, comp_string, policy) -> tuple:
+    def parse_statement(self, statement: str, comp_string: str, policy: Policy) -> tuple:
         '''Parses policy statement into tuple
            0 - policy name
            1 - id
@@ -124,15 +124,20 @@ class PolicyAnalysis:
                                 )
                 if result.group('perm'):
                     self.logger.debug(f"Statement Res: {result.group('resource')} Tuple res: {statement_tuple[9]}")
+                
+                # Statement tuple return
                 return statement_tuple
             except Exception as e:
                 self.logger.warning(f"Failed to parse result: {e}")
-                statement_tuple = (policy.name, policy.id, policy.compartment_id, f"{comp_string}", statement, False, "", "", "", "", False, "", "", "", "")
+                statement_tuple = (policy.name, policy.id, policy.compartment_id, f"{comp_string}", statement, False, "other", "", "", "", False, "", "", "", "")
                 return statement_tuple
         else:
             # Return less populated tuple
             self.logger.info(f"No regex result: {statement}")
-            statement_tuple = (policy.name, policy.id, policy.compartment_id, f"{comp_string}", statement, False, "", "", "", "", False, "", "", "", "")
+            if statement.startswith("define"):
+                statement_tuple = (policy.name, policy.id, policy.compartment_id, f"{comp_string}", statement, True, "define", "", "", "", False, "", "", "", "")
+            else:
+                statement_tuple = (policy.name, policy.id, policy.compartment_id, f"{comp_string}", statement, True, "other", "", "", "", False, "", "", "", "")
             return statement_tuple      
 
     # Recursive Compartments / Policies
@@ -148,6 +153,22 @@ class PolicyAnalysis:
         # Recurse until we get to top
         self.logger.debug(f"Recurse. Path is {comp_string}")
         return self.get_compartment_path(parent_compartment, level+1, compartment.name + "/" + comp_string)
+
+    # Post-process - determine if DGs are invalid
+    def check_for_invalid_dynamic_groups(self, dynamic_groups: list):
+        # Loop through DG policies and ensure DGs exist
+        statements_analyzed = 0
+        for st in self.regular_statements:
+            if st[6] == "dynamic-group":
+                self.logger.debug(f"Validatiing statement for group {st[7]}")
+                valid = False
+                for dg in dynamic_groups:
+                    if st[7].casefold() == dg[0].casefold():
+                        self.logger.info(f"We have a match: {dg[0]}")
+                        valid = True
+                st[5] = valid
+                statements_analyzed += 1
+        self.logger.info(f"Completed validation for {statements_analyzed} Dynamic Group statments")
 
     # Threadable policy loader - per compartment
     def load_policies(self, compartment: Compartment):
@@ -177,15 +198,6 @@ class PolicyAnalysis:
 
                 # Make lower case
                 statement = str.casefold(statement)
-
-                # Root out "special" statements (endorse / define / as)
-                if str.startswith(statement, "endorse") or str.startswith(statement, "admit") or str.startswith(statement, "define"):
-                    # Special statement tuple 0=statement, 1=path, 2=name, 3=ocid, 4=compocid
-                    statement_tuple = (statement,
-                                    f"{path}", policy.name, policy.id, policy.compartment_id)
-
-                    self.special_statements.append(statement_tuple)
-                    continue
 
                 # Helper returns tuple with policy statement and lineage
                 statement_tuple = self.parse_statement(
@@ -251,6 +263,7 @@ class PolicyAnalysis:
                 # We know the compartment count now - set up progress, if warranted
                 if self.progress:
                     self.progress.set_to_load(len(comp_list))
+                    self.logger.info(f"Progress Bar set total: {len(comp_list)}")
 
                 # Use multiple threads at once
                 with ThreadPoolExecutor(max_workers = THREADS, thread_name_prefix="thread") as executor:
@@ -272,6 +285,9 @@ class PolicyAnalysis:
                     except Exception as exc:
                         self.logger.error(f"Executor Exception: {exc}")
                 
+                # Set progress back to 0
+                self.progress.progressbar_val = 0.0
+
                 # Stop timer
                 toc = time.perf_counter()
                 self.logger.info(f"Loaded {len(self.special_statements)}/{len(self.regular_statements)} special/regular policy statements on {THREADS} threads in {toc-tic:.2f}s")
@@ -298,7 +314,8 @@ class PolicyAnalysis:
         return True
 
     # Filter Output
-    def filter_policy_statements(self, subj_filter: str, verb_filter: str, resource_filter: str, location_filter: str, hierarchy_filter: str, condition_filter: str) -> list:
+    def filter_policy_statements(self, subj_filter: str, verb_filter: str, resource_filter: str, location_filter: str, 
+                                 hierarchy_filter: str, condition_filter: str, text_filter: str, policy_filter: str) -> list:
         '''Returns a list of filtered regular statements'''
         regular_statements = self.regular_statements  
         regular_statements_filtered = []
@@ -316,6 +333,10 @@ class PolicyAnalysis:
         self.logger.debug(f"Hierarchy filter length: {len(split_loc_filter)}")
         split_condition_filter = condition_filter.split(sep='|')
         self.logger.debug(f"Condition filter length: {len(split_condition_filter)}")
+        split_text_filter = text_filter.split(sep='|')
+        self.logger.debug(f"Text filter length: {len(split_condition_filter)}")
+        split_policy_filter = policy_filter.split(sep='|')
+        self.logger.debug(f"Policy Name filter length: {len(split_policy_filter)}")
 
         self.logger.debug(f"Filtering subject(B): {split_subj_filter}. Before: {len(regular_statements)} Reg statements")
         for filt in split_subj_filter:
@@ -367,6 +388,26 @@ class PolicyAnalysis:
         self.logger.debug(f"Filtering Conditions(B): {split_condition_filter}. Before: {len(regular_statements_filtered_prev)} Reg statements")
         for filt in split_condition_filter:
             regular_statements_filtered.extend(list(filter(lambda statement: filt.casefold() in statement[13].casefold(), regular_statements_filtered_prev)))
+        self.logger.debug(f"Filtering Conditions(A): {len(regular_statements_filtered)} Reg statements")
+
+        # Reset filter
+        regular_statements_filtered_prev = regular_statements_filtered
+        regular_statements_filtered = []
+
+        # Policy Text
+        self.logger.debug(f"Filtering Conditions(B): {split_text_filter}. Before: {len(regular_statements_filtered_prev)} Reg statements")
+        for filt in split_text_filter:
+            regular_statements_filtered.extend(list(filter(lambda statement: filt.casefold() in statement[4].casefold(), regular_statements_filtered_prev)))
+        self.logger.debug(f"Filtering Conditions(A): {len(regular_statements_filtered)} Reg statements")
+
+        # Reset filter
+        regular_statements_filtered_prev = regular_statements_filtered
+        regular_statements_filtered = []
+
+        # Policy Name
+        self.logger.debug(f"Filtering Conditions(B): {split_policy_filter}. Before: {len(regular_statements_filtered_prev)} Reg statements")
+        for filt in split_policy_filter:
+            regular_statements_filtered.extend(list(filter(lambda statement: filt.casefold() in statement[0].casefold(), regular_statements_filtered_prev)))
         self.logger.debug(f"Filtering Conditions(A): {len(regular_statements_filtered)} Reg statements")
 
         # Return

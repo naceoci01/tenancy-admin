@@ -181,7 +181,7 @@ class DynamicGroupAnalysis:
             valid_dg = self.dg_in_use(dg=dg)
             self.logger.info(f"Valid: {dg[0]}: {valid_dg}")
 
-            new_tuple = (dg[0], dg[1], dg[2], dg[3], valid_dg, dg[5])
+            new_tuple = [dg[0], dg[1], dg[2], dg[3], valid_dg, dg[5]]
 
             # Now add to new list of DGs
             new_dynamic_groups.append(new_tuple)
@@ -222,7 +222,7 @@ class DynamicGroupAnalysis:
                     self.logger.debug(f"Rule: {dg[0]} Rule{i}:{j} ({is_ocid_valid}): {ocid.group(0)}")
                     if not is_ocid_valid:
                         broken_ocids.append(ocid.group(0))
-            new_tuple = (dg[0], dg[1], dg[2], dg[3], dg[4], broken_ocids)
+            new_tuple = [dg[0], dg[1], dg[2], dg[3], dg[4], broken_ocids]
 
             # Now add to new list of DGs
             new_dynamic_groups.append(new_tuple)
@@ -248,11 +248,13 @@ class DynamicGroupAnalysis:
         # Parse matching rule into a list
 
         # No validity data yet
-        return (dynamic_group.name, dynamic_group.id, statements, rules, True, [])
+        return [dynamic_group.name, dynamic_group.id, statements, rules, True, []]
     
     # Incoming call from outside (Entry Point)
     def load_all_dynamic_groups(self, use_cache: bool) -> bool:
 
+        self.dynamic_groups = []
+        
         if use_cache:
             self.logger.info(f"---Starting DG Load for tenant: {self.tenancy_ocid} from cached files---")
             if os.path.isfile(f'./.dynamic-group-cache-{self.tenancy_ocid}.dat'):
@@ -289,77 +291,39 @@ class DynamicGroupAnalysis:
         # Set the policies in place
         self.policies = statements
 
+    def filter_dynamic_groups(self, name_filter: str, type_filter: str, ocid_filter: str) -> list:
+        '''Filter the list of DGs and return what is required'''
+        self.logger.info(f"Filtering DG")
+        filtered_dynamic_groups = []
 
-############################
-# Main
-############################
+        # Split Name filter
+        split_name_filter = name_filter.split('|')
+        split_ocid_filter = ocid_filter.split('|')
+        split_type_filter = type_filter.split('|')
+        self.logger.info(f"Filtering: {split_name_filter}. Before: {len(self.dynamic_groups)} Dynamic Groups")
+        
+        # Name Filter
+        for filt in split_name_filter:
+            filtered_dynamic_groups.extend(list(filter(lambda dg: filt.casefold() in dg[0].casefold(), self.dynamic_groups)))        
+        # filtered_dynamic_groups = self.dynamic_groups
+        self.logger.info(f"Filtering Name: {split_name_filter}. After: {len(filtered_dynamic_groups)} Dynamic Groups")
 
-# def recparse(rule:str, level:int):
-#     need_recurse_pattern = r"^\s*(?P<oper>ANY|ALL)\s*{(?P<rest>.*)}\s*$"
-#     inner_pattern = r"^\s*(?P<oper>ANY|ALL)?\s*{?(?P<condition>[\w'\s.]+=[\s\w'.]+)|(\s*,?\s*)}?\s*$"
+        filtered_dynamic_groups_prev = filtered_dynamic_groups
+        filtered_dynamic_groups = []
 
-#     result = re.search(need_recurse_pattern, rule, re.IGNORECASE | re.MULTILINE)
-#     if result and result.group('oper') is not None:
-#         # Recurse
-#         logger.info(f"L{level}: {result.group('oper')} Rest: {result.group('rest')} Recurse")
-#         recparse(result.group('rest'), level=level+1)
-#     else:
-#         iter = re.finditer(inner_pattern, rule, re.IGNORECASE | re.MULTILINE)
-#         #regex = r"^\s*(?P<oper>ANY|ALL)?\s*{?(?P<inner>[\w'\s.]+=[\s\w'.]+)}?\s*$"
-#         #regex = r"^\s*(?P<oper>ANY|ALL)\s*{(?P<condition>[\w'\s.]+=[\s\w'.]+)|(\s*,?\s*)}\s*$"
-#     #result = re.search(regex, rule, re.IGNORECASE | re.MULTILINE)
-#         #iter = re.finditer(regex, rule, re.IGNORECASE | re.MULTILINE)
-#         for result in iter:
-#             logger.info(f"L{level} Operator: {result.group('oper')} Exp: {result.group('condition')} Fall back")
-#         # if result and result.group('oper') is not None:
-#         #     logger.info(f"L{level} Operator: {result.group('oper')} Exp: {result.group('inner')}")
-#         #     recparse(result.group('inner'), level=level+1)
-#         # elif result and result.group('oper') is None:
-#         #     #recparse(result.group('inner'), level=level+1)
-#         #     logger.info(f"L{level} Exp: {result.group('inner')} (Fall Back)")
-#         # else:
-#         #     logger.info(f"Falling back")
+        # OCID Filter
+        for filt in split_ocid_filter:
+            filtered_dynamic_groups.extend(list(filter(lambda dg: filt.casefold() in dg[2].casefold(), filtered_dynamic_groups_prev)))        
+        # filtered_dynamic_groups = self.dynamic_groups
+        self.logger.info(f"Filtering OCID: {split_ocid_filter}. After: {len(filtered_dynamic_groups)} Dynamic Groups")
 
-# if __name__ == "__main__":
+        filtered_dynamic_groups_prev = filtered_dynamic_groups
+        filtered_dynamic_groups = []
 
-#     # Main Logger
-#     logging.basicConfig(level=logging.INFO, format='%(asctime)s %(name)s [%(threadName)s] %(levelname)s %(message)s')
-#     logger = logging.getLogger('oci-dynamic-group-analysis-main')
+        # Type Filter
+        for filt in split_type_filter:
+            filtered_dynamic_groups.extend(list(filter(lambda dg: filt.casefold() in dg[2].casefold(), filtered_dynamic_groups_prev)))        
+        # filtered_dynamic_groups = self.dynamic_groups
+        self.logger.info(f"Filtering Type: {split_ocid_filter}. After: {len(filtered_dynamic_groups)} Dynamic Groups")
 
-#     local_policies = policy.PolicyAnalysis(progress=None, verbose=False)
-#     local_policies.initialize_client("DEFAULT", False)
-#     local_policies.load_policies_from_client(use_cache=True, use_recursion=False)
-    
-#     logger.info(f"Policy Statement Count: {len(local_policies.regular_statements)}")
-
-#     local_dg = DynamicGroupAnalysis(verbose=False)
-#     local_dg.initialize_client(profile="DEFAULT",
-#                                use_instance_principal=False)
-#     local_dg.set_statements(statements=local_policies.regular_statements)
-    
-#     logger.info(f"Initialized client")
-
-#     successful_load = local_dg.load_all_dynamic_groups(use_cache=True)
-
-#     logger.info(f"Loaded DG success: {successful_load}.  Total: {len(local_dg.dynamic_groups)}")
-
-#     tic = time.perf_counter()
-#     local_dg.run_dg_in_use_analysis()
-#     toc = time.perf_counter()
-#     logger.info(f"Ran In Use Analysis in {toc-tic:.2f}s")
-
-#     tic = time.perf_counter()
-#     # local_dg.run_deep_analysis()
-#     toc = time.perf_counter()
-
-#     logger.info(f"Ran Deep Analysis in {toc-tic:.2f}s")
-
-#     for dg in local_dg.dynamic_groups:
-#         if not dg[4] or len(dg[5]) > 0: 
-#             # Only print invalid ones
-#             logger.info(f"Rule: {dg[0]} In use: {dg[4]} Invalid OCIDs: {len(dg[5])}")
-
-
-#         # logger.info(f"----Started recursion: {rule}")
-#         # recparse(rule=rule, level=0)
-#         # logger.info(f"----Finished recursion")
+        return filtered_dynamic_groups
