@@ -160,12 +160,12 @@ def database_work(db_id: str):
         update_autonomous_database_details=UpdateAutonomousDatabaseDetails()
         updates_to_perform = False
 
-        # 2 - Backup
-        if db.backup_retention_period_in_days > backup_retention:
-            update_autonomous_database_details.backup_retention_period_in_days = backup_retention
-            logger.info(f'{"DRYRUN: " if dryrun else ""}Update Backup retention DB: {db.display_name} to configured {backup_retention} days')
-            did_work["Backup"] = {"Retention": f"{backup_retention}"}
-            updates_to_perform = True
+        # # 2 - Backup
+        # if db.backup_retention_period_in_days > backup_retention:
+        #     update_autonomous_database_details.backup_retention_period_in_days = backup_retention
+        #     logger.info(f'{"DRYRUN: " if dryrun else ""}Update Backup retention DB: {db.display_name} to configured {backup_retention} days')
+        #     did_work["Backup"] = {"Retention": f"{backup_retention}"}
+        #     updates_to_perform = True
 
         # 3 - Compute Reduce
         if db.compute_count > 2.0:
