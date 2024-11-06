@@ -154,7 +154,7 @@ def database_work(db_id: str):
 
             # wait_for_available(db_id=db.id, start=True)
 
-            time_taken = perform_work(db.id, update_autonomous_database_details=UpdateAutonomousDatabaseDetails(compute_model="ECPU"))
+            time_taken = perform_work(db.id, UpdateAutonomousDatabaseDetails(compute_model="ECPU"))
             # if not dryrun:
             #     database_client.update_autonomous_database(
             #         autonomous_database_id=db.id,
@@ -173,7 +173,7 @@ def database_work(db_id: str):
         # 2 - Backup
         if db.backup_retention_period_in_days > backup_retention:
             logger.info(f'{"DRYRUN: " if dryrun else ""}Update Backup retention DB: {db.display_name} to configured {backup_retention} days')
-            time_taken = perform_work(db.id, update_autonomous_database_details=UpdateAutonomousDatabaseDetails(backup_retention_period_in_days = backup_retention))
+            time_taken = perform_work(db.id, UpdateAutonomousDatabaseDetails(backup_retention_period_in_days = backup_retention))
 
             did_work["Backup"] = {"Retention": f"{backup_retention}", "Time": time_taken}
             updates_to_perform = True
@@ -181,7 +181,7 @@ def database_work(db_id: str):
         # 3 - Compute Reduce
         if db.compute_count > 2.0:
             logger.info(f'{"DRYRUN: " if dryrun else ""}Update ECPU count: {db.display_name} from {db.compute_count} to 2.0')
-            time_taken = perform_work(db.id, update_autonomous_database_details=UpdateAutonomousDatabaseDetails(compute_count=2.0))
+            time_taken = perform_work(db.id, UpdateAutonomousDatabaseDetails(compute_count=2.0))
             did_work["Compute"] = {"New ECPU": f"2.0", "Time": time_taken}
             updates_to_perform = True
 
@@ -193,7 +193,7 @@ def database_work(db_id: str):
             # Convert to GB or and scale down
                 new_storage_gb = int(db.allocated_storage_size_in_tbs * 1024 * 2)
                 new_storage_gb = 20 if new_storage_gb < 20 else new_storage_gb
-                time_taken = perform_work(db.id, update_autonomous_database_details=UpdateAutonomousDatabaseDetails(
+                time_taken = perform_work(db.id, UpdateAutonomousDatabaseDetails(
                     data_storage_size_in_gbs = new_storage_gb,
                     is_auto_scaling_for_storage_enabled=True)
                     )
@@ -204,7 +204,7 @@ def database_work(db_id: str):
 
         # 5 - License Model - BYOL and SE
         if db.license_model == "LICENSE_INCLUDED":
-            time_taken = perform_work(db.id, update_autonomous_database_details=UpdateAutonomousDatabaseDetails(license_model="BRING_YOUR_OWN_LICENSE",
+            time_taken = perform_work(db.id, UpdateAutonomousDatabaseDetails(license_model="BRING_YOUR_OWN_LICENSE",
                                                                                                                 database_edition="STANDARD_EDITION"
                                                                                                                 )
                                                                                                                 )
@@ -226,14 +226,14 @@ def database_work(db_id: str):
                 else:
                     logger.info(f'{"DRYRUN: " if dryrun else ""}Not compliant({schedule_tag["AnyDay"]}) - will not stop - fixing')
                     current_tags["Schedule"] = {"AnyDay" : DEFAULT_SCHEDULE}
-                    time_taken = perform_work(db.id, update_autonomous_database_details=UpdateAutonomousDatabaseDetails(defined_tags = current_tags))
+                    time_taken = perform_work(db.id, UpdateAutonomousDatabaseDetails(defined_tags = current_tags))
                     did_work["Tag"] = {"update-default": True, "Time": time_taken}
                     updates_to_perform = True
 
         else:
             # Add default tag to defined tags
             current_tags["Schedule"] = {"AnyDay" : DEFAULT_SCHEDULE}
-            time_taken = perform_work(db.id, update_autonomous_database_details=UpdateAutonomousDatabaseDetails(defined_tags = current_tags))
+            time_taken = perform_work(db.id, UpdateAutonomousDatabaseDetails(defined_tags = current_tags))
             logger.info(f'{"DRYRUN: " if dryrun else ""}Adding Schedule Tags DB: {db.display_name} to Schedule / AnyDay Default')
             did_work["Tag"] = {"add-default": True}
             updates_to_perform = True
