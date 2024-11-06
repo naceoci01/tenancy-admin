@@ -205,15 +205,17 @@ def database_work(db_id: str):
                 logger.info(f'{"DRYRUN: " if dryrun else ""}Scale Storage DB: {db.display_name} from {db.data_storage_size_in_tbs} TB to {new_storage_gb} GB (auto-scale)')
 
         # 5 - License Model - BYOL and SE
-        if db.license_model == "LICENSE_INCLUDED":
-            time_taken = perform_work(db.id, UpdateAutonomousDatabaseDetails(license_model="BRING_YOUR_OWN_LICENSE",
-                                                                                                                database_edition="STANDARD_EDITION"
-                                                                                                                )
-                                                                                                                )
+        # This only applies to ATP and ADW
+        if db.db_workload == "OLTP" or db.db_workload == "DW":
+            if db.license_model == "LICENSE_INCLUDED":
+                time_taken = perform_work(db.id, UpdateAutonomousDatabaseDetails(license_model="BRING_YOUR_OWN_LICENSE",
+                                                                                                                    database_edition="STANDARD_EDITION"
+                                                                                                                    )
+                                                                                                                    )
 
-            logger.info(f'{"DRYRUN: " if dryrun else ""}Update License DB: {db.display_name} to BYOL / SE')
-            did_work["License"] = {"BYOL": True, "SE": True, "Time": time_taken}
-            updates_to_perform = True
+                logger.info(f'{"DRYRUN: " if dryrun else ""}Update License DB: {db.display_name} to BYOL / SE')
+                did_work["License"] = {"BYOL": True, "SE": True, "Time": time_taken}
+                updates_to_perform = True
 
         # 6 - Tagging - require Schedule Tag
         current_tags = db.defined_tags
