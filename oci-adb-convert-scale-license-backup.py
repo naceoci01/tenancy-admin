@@ -156,8 +156,8 @@ def database_work(db_id: str):
         
         # Check backup retention and adjust
 
-        # Start with blank update
-        update_autonomous_database_details=UpdateAutonomousDatabaseDetails()
+        # Start with blank update (with ID only)
+        update_autonomous_database_details=UpdateAutonomousDatabaseDetails(autonomous_database_id=db.id)
         updates_to_perform = False
 
         # 2 - Backup
