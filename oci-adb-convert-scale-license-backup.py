@@ -74,6 +74,22 @@ def return_to_initial(db_id: str, initial:str):
 
     logger.debug(f"Kicked off STOP Autonomous for DB: {db.display_name} (Not Waiting)")
 
+# Helper function
+def perform_work(db_id: str, updates: UpdateAutonomousDatabaseDetails):
+    wait_for_available(db_id=db_id, start=True)
+    # Say what we are doing
+    logger.info(f'---Perform Work on {db_id}---')
+    logger.debug(f'{updates}')
+    start_time = time.time()
+    if not dryrun:
+        database_client.update_autonomous_database(
+            autonomous_database_id=db_id,
+            update_autonomous_database_details=updates
+        )
+    fin_time = time.time()
+    logger.info(f'---End Work on {db_id} in {fin_time-start_time}s---')
+    return (fin_time-start_time)
+
 # Threaded function
 def database_work(db_id: str):
 
@@ -136,42 +152,37 @@ def database_work(db_id: str):
             # Actual Conversion
             logger.info(f'{">>>DRYRUN: " if dryrun else ""}Converting ECPU with {backup_retention} days retention for Autonomous DB: {db.display_name}')
 
-            wait_for_available(db_id=db.id, start=True)
+            # wait_for_available(db_id=db.id, start=True)
 
-            if not dryrun:
-                database_client.update_autonomous_database(
-                    autonomous_database_id=db.id,
-                    update_autonomous_database_details=UpdateAutonomousDatabaseDetails(
-                        compute_model="ECPU"
-                    )
-                )
+            time_taken = perform_work(db.id, update_autonomous_database_details=UpdateAutonomousDatabaseDetails(compute_model="ECPU"))
+            # if not dryrun:
+            #     database_client.update_autonomous_database(
+            #         autonomous_database_id=db.id,
+            #         update_autonomous_database_details=UpdateAutonomousDatabaseDetails(
+            #             compute_model="ECPU"
+            #         )
+            #     )
             # Waiting for AVAILABLE
-            wait_for_available(db_id=db.id, start=False)
+            # wait_for_available(db_id=db.id, start=False)
 
-            did_work["ECPU"] = {"Convert": True}
+            did_work["ECPU"] = {"Convert": True, "Time": time_taken}
 
             logger.info(f'{"DRYRUN: " if dryrun else ""}Converted ECPU Autonomous DB: {db.display_name}')
-
-        # Rest of changes into one
         
         # Check backup retention and adjust
+        # 2 - Backup
+        if db.backup_retention_period_in_days > backup_retention:
+            logger.info(f'{"DRYRUN: " if dryrun else ""}Update Backup retention DB: {db.display_name} to configured {backup_retention} days')
+            time_taken = perform_work(db.id, update_autonomous_database_details=UpdateAutonomousDatabaseDetails(backup_retention_period_in_days = backup_retention))
 
-        # Start with blank update (with ID only)
-        update_autonomous_database_details=UpdateAutonomousDatabaseDetails()
-        updates_to_perform = False
-
-        # # 2 - Backup
-        # if db.backup_retention_period_in_days > backup_retention:
-        #     update_autonomous_database_details.backup_retention_period_in_days = backup_retention
-        #     logger.info(f'{"DRYRUN: " if dryrun else ""}Update Backup retention DB: {db.display_name} to configured {backup_retention} days')
-        #     did_work["Backup"] = {"Retention": f"{backup_retention}"}
-        #     updates_to_perform = True
+            did_work["Backup"] = {"Retention": f"{backup_retention}", "Time": time_taken}
+            updates_to_perform = True
 
         # 3 - Compute Reduce
         if db.compute_count > 2.0:
-            update_autonomous_database_details.compute_count=2.0
             logger.info(f'{"DRYRUN: " if dryrun else ""}Update ECPU count: {db.display_name} from {db.compute_count} to 2.0')
-            did_work["Compute"] = {"New ECPU": f"2.0"}
+            time_taken = perform_work(db.id, update_autonomous_database_details=UpdateAutonomousDatabaseDetails(compute_count=2.0))
+            did_work["Compute"] = {"New ECPU": f"2.0", "Time": time_taken}
             updates_to_perform = True
 
         # 4 - Storage Scale
@@ -182,18 +193,24 @@ def database_work(db_id: str):
             # Convert to GB or and scale down
                 new_storage_gb = int(db.allocated_storage_size_in_tbs * 1024 * 2)
                 new_storage_gb = 20 if new_storage_gb < 20 else new_storage_gb
-                update_autonomous_database_details.data_storage_size_in_gbs = new_storage_gb
-                update_autonomous_database_details.is_auto_scaling_for_storage_enabled=True
-                did_work["Storage"] = {"Configured Storage": f"{new_storage_gb}"}
+                time_taken = perform_work(db.id, update_autonomous_database_details=UpdateAutonomousDatabaseDetails(
+                    data_storage_size_in_gbs = new_storage_gb,
+                    is_auto_scaling_for_storage_enabled=True)
+                    )
+
+                did_work["Storage"] = {"Configured Storage": f"{new_storage_gb}", "Time": time_taken}
                 updates_to_perform = True
                 logger.info(f'{"DRYRUN: " if dryrun else ""}Scale Storage DB: {db.display_name} from {db.data_storage_size_in_tbs} TB to {new_storage_gb} GB (auto-scale)')
 
         # 5 - License Model - BYOL and SE
         if db.license_model == "LICENSE_INCLUDED":
-            update_autonomous_database_details.license_model="BRING_YOUR_OWN_LICENSE"
-            update_autonomous_database_details.database_edition="STANDARD_EDITION"
+            time_taken = perform_work(db.id, update_autonomous_database_details=UpdateAutonomousDatabaseDetails(license_model="BRING_YOUR_OWN_LICENSE",
+                                                                                                                database_edition="STANDARD_EDITION"
+                                                                                                                )
+                                                                                                                )
+
             logger.info(f'{"DRYRUN: " if dryrun else ""}Update License DB: {db.display_name} to BYOL / SE')
-            did_work["License"] = {"BYOL": True, "SE": True}
+            did_work["License"] = {"BYOL": True, "SE": True, "Time": time_taken}
             updates_to_perform = True
 
         # 6 - Tagging - require Schedule Tag
@@ -209,32 +226,32 @@ def database_work(db_id: str):
                 else:
                     logger.info(f'{"DRYRUN: " if dryrun else ""}Not compliant({schedule_tag["AnyDay"]}) - will not stop - fixing')
                     current_tags["Schedule"] = {"AnyDay" : DEFAULT_SCHEDULE}
-                    update_autonomous_database_details.defined_tags = current_tags
-                    did_work["Tag"] = {"update-default": True}
+                    time_taken = perform_work(db.id, update_autonomous_database_details=UpdateAutonomousDatabaseDetails(defined_tags = current_tags))
+                    did_work["Tag"] = {"update-default": True, "Time": time_taken}
                     updates_to_perform = True
 
         else:
             # Add default tag to defined tags
             current_tags["Schedule"] = {"AnyDay" : DEFAULT_SCHEDULE}
-            update_autonomous_database_details.defined_tags = current_tags
+            time_taken = perform_work(db.id, update_autonomous_database_details=UpdateAutonomousDatabaseDetails(defined_tags = current_tags))
             logger.info(f'{"DRYRUN: " if dryrun else ""}Adding Schedule Tags DB: {db.display_name} to Schedule / AnyDay Default')
             did_work["Tag"] = {"add-default": True}
             updates_to_perform = True
 
-        # Perform work
-        # Only do this is something is new
-        if updates_to_perform:
-            wait_for_available(db_id=db.id, start=True)
-            # Say what we are doing
-            logger.info(f'---Perform Work---')
-            logger.debug(f'{">>>DRYRUN: " if dryrun else ""}Work to perform: {db.display_name} \n{update_autonomous_database_details}')
-            if not dryrun:
-                database_client.update_autonomous_database(
-                    autonomous_database_id=db.id,
-                    update_autonomous_database_details=update_autonomous_database_details
-                )
-            logger.info(f'{">>>DRYRUN: " if dryrun else ""}Completed Work to: {db.display_name}')
-        else:
+        # # Perform work
+        # # Only do this is something is new
+        if not updates_to_perform:
+        #     wait_for_available(db_id=db.id, start=True)
+        #     # Say what we are doing
+        #     logger.info(f'---Perform Work---')
+        #     logger.debug(f'{">>>DRYRUN: " if dryrun else ""}Work to perform: {db.display_name} \n{update_autonomous_database_details}')
+        #     if not dryrun:
+        #         database_client.update_autonomous_database(
+        #             autonomous_database_id=db.id,
+        #             update_autonomous_database_details=update_autonomous_database_details
+        #         )
+        #     logger.info(f'{">>>DRYRUN: " if dryrun else ""}Completed Work to: {db.display_name}')
+        # else:
             did_work["No-op"] = {"Actions": 0}
 
 
