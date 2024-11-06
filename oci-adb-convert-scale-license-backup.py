@@ -157,7 +157,7 @@ def database_work(db_id: str):
         # Check backup retention and adjust
 
         # Start with blank update (with ID only)
-        update_autonomous_database_details=UpdateAutonomousDatabaseDetails(autonomous_database_id=db.id)
+        update_autonomous_database_details=UpdateAutonomousDatabaseDetails()
         updates_to_perform = False
 
         # 2 - Backup
@@ -230,6 +230,7 @@ def database_work(db_id: str):
             logger.debug(f'{">>>DRYRUN: " if dryrun else ""}Work to perform: {db.display_name} \n{update_autonomous_database_details}')
             if not dryrun:
                 database_client.update_autonomous_database(
+                    autonomous_database_id=db.id,
                     update_autonomous_database_details=update_autonomous_database_details
                 )
             logger.info(f'{">>>DRYRUN: " if dryrun else ""}Completed Work to: {db.display_name}')
