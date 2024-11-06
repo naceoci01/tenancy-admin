@@ -87,7 +87,10 @@ def database_work(db_id: str):
     
     # Return Val
     did_work = {}
-    did_work["Detail"] = {"Name": f"{db.display_name}", "OCID": f"{db.id}", "Original CPU": f"{db.compute_model}", "License": f"{db.license_model}"}
+    did_work["Detail"] = {"Name": f"{db.display_name}", "OCID": f"{db.id}", "Workload Type": f"{db.db_workload}", \
+                          "Original CPU Model": f"{db.compute_model}", "Original License Model": f"{db.license_model}", \
+                          "Original Backup Retention": f"{db.backup_retention_period_in_days}"
+                        }
 
     # Now try it
     try:
@@ -224,7 +227,7 @@ def database_work(db_id: str):
             wait_for_available(db_id=db.id, start=True)
             # Say what we are doing
             logger.info(f'---Perform Work---')
-            logger.info(f'{">>>DRYRUN: " if dryrun else ""}Work to perform: {db.display_name} \n{update_autonomous_database_details}')
+            logger.debug(f'{">>>DRYRUN: " if dryrun else ""}Work to perform: {db.display_name} \n{update_autonomous_database_details}')
             if not dryrun:
                 database_client.update_autonomous_database(
                     update_autonomous_database_details=update_autonomous_database_details
@@ -237,12 +240,6 @@ def database_work(db_id: str):
         # Return to initial state
         return_to_initial(db_id=db.id,initial=db_initial_lifecycle_state)
         logger.info(f'{">>>DRYRUN: " if dryrun else ""}Returned: {db.display_name} to initial state')
-
-        # Complete
-        logger.info(f'------')
-
-
-
         logger.info(f"----Complete ({db.display_name})----------")
     except ServiceError as exc:
         logger.error(f"Failed to complete action for DB: {db.display_name} \nReason: {exc}")
@@ -340,8 +337,6 @@ if __name__ == "__main__":
         with open(filename,"w") as outfile:
             #result_dict = list(results)
             outfile.write(json.dumps(list(results), indent=2))
-            # for result in results:
-            #     outfile.write(json.dumps(result, indent=2))
 
         logging.info(f"Script complete - wrote JSON to {filename}.")
     else:
