@@ -100,7 +100,8 @@ def database_work(db_id: str):
     
     # Get Initial Lifecycle to return to afterwards
     db_initial_lifecycle_state = db.lifecycle_state
-    
+    updates_to_perform = False
+
     # Return Val
     did_work = {}
     did_work["Detail"] = {"Name": f"{db.display_name}", "OCID": f"{db.id}", "Workload Type": f"{db.db_workload}", \
@@ -166,7 +167,7 @@ def database_work(db_id: str):
             # wait_for_available(db_id=db.id, start=False)
 
             did_work["ECPU"] = {"Convert": True, "Time": time_taken}
-
+            updates_to_perform = True
             logger.info(f'{"DRYRUN: " if dryrun else ""}Converted ECPU Autonomous DB: {db.display_name}')
         
         # Check backup retention and adjust
