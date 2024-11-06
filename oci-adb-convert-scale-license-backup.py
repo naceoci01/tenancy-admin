@@ -86,6 +86,7 @@ def perform_work(db_id: str, updates: UpdateAutonomousDatabaseDetails):
             autonomous_database_id=db_id,
             update_autonomous_database_details=updates
         )
+    wait_for_available(db_id=db_id, start=False)
     fin_time = time.time()
     logger.info(f'---End Work on {db_id} in {fin_time-start_time}s---')
     return (fin_time-start_time)
