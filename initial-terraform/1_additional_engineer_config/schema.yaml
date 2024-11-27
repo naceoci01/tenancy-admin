@@ -1,0 +1,62 @@
+# Title shown in Application Information tab.
+title: Cloud Engineering Main
+# Sub Title shown in Application Information tab.
+description: Create all of the compartments, basic dynamic groups, and policies needed to have a cloud-engineering structure inside the tenancy.
+informationalText: Groups and Dynamic Groups will be located inside of the non-default Identity Domain.
+schemaVersion: 1.1.0
+version: "20190304"
+
+locale: "en"
+variableGroups:
+  - title: "Identity Domain Configuration"
+    variables:
+      - domain_id
+  - title: "Compartment Configuration"
+    variables:
+      - compartment_grouping
+      - compartment_names
+      - cloud_engineering_root_compartment_ocid
+  - title: "Hidden Variables" 
+    visible: false
+    variables:
+      - tenancy_ocid
+      - user_ocid
+      - fingerprint
+      - private_key_path
+      - region
+      - private_key_password
+
+variables:
+  compartment_grouping:
+    type: string
+    description: Name for the grouping of compartments.  Appears in Quota policy name.  Must be unique
+    required: true
+    pattern: "^[a-z][a-zA-Z0-9]+$"
+  compartment_names:
+    type: array
+    items:
+      type: string
+      minLength: 1
+      maxLength: 30
+      pattern: "^[a-z][a-zA-Z0-9]+$"
+    # title is used as the label if present
+    title: Compartment Name
+    # description used as the tooltip if present
+    description: List of engineers to have a compartment for
+    uniqueItems: true
+    minItems: 1
+    required: true
+
+  domain_id:
+    title: Identity Domain OCID
+    type: string
+    description: Do not update this unless you know it is different from the default.
+    visible: true
+    default: ocid1.domain.oc1..aaaaaaaaupgm4bcvtm4mli362abwasdtrxngvmv557b2xsmygca5vrciabfa
+
+  cloud_engineering_root_compartment_ocid:
+    title: Engineer Compartment Root
+    description: Select the compartment where the engineer compartments should be created.
+    type: oci:identity:compartment:id
+    visible: true
+    default: ocid1.compartment.oc1..aaaaaaaarq6m3fqvw6bfg5sychftsq5ovkhzfijrpfmch6hvgdlbmaqgceba
