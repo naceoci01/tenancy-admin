@@ -11,6 +11,7 @@ variableGroups:
   - title: "Identity Domain Configuration"
     variables:
       - domain_id
+      - engineer_group_name
   - title: "Compartment Configuration"
     variables:
       - cloud_engineering_compartment_name
@@ -38,10 +39,16 @@ variables:
     default: cloud-engineering
     required: true
 
-  # string field
   domain_id:
     title: Identity Domain OCID
     type: string
     description: Do not update this unless you know it is different from the default.
     visible: true
     default: ocid1.domain.oc1..aaaaaaaaupgm4bcvtm4mli362abwasdtrxngvmv557b2xsmygca5vrciabfa
+
+  engineer_group_name:
+    title: Name of IAM group for engineers
+    type: string
+    description: Change as necessary
+    default: cloud-engineering-users
+

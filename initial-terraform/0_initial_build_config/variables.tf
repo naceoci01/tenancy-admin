@@ -14,10 +14,7 @@ variable "domain_id" {
     description = "OCID of Identity domain (nondefault)"
 }
 
-# variable "cislz_top_policy_compartment_ocid" {
-#     description = "OCID of compartment where common cloud-engineering policies can be created"
-# }
-
-# variable "cislz_top_policy_compartment_name" {
-#     description = "Name of compartment where common cloud-engineering exists"
-# }
+variable "engineer_group_name" {
+    description = "Name of shared engineer group"
+    default = "cloud-engineering-users"
+}

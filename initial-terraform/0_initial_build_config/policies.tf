@@ -1,6 +1,6 @@
 locals {
     # Policies
-    core_policy_group_name = "'${local.cloud_engineering_domain_name}'/'${local.cloud_engineering_group_name}'"
+    core_policy_group_name = "'${local.cloud_engineering_domain_name}'/'${var.engineer_group_name}'"
     core_policy_engineer_compartment = module.cislz_compartments.compartments.CLOUD-ENG.name
 
     policies = {
@@ -9,8 +9,8 @@ locals {
             description : "Cloud Engineers IAM permissions"
             compartment_id : "TENANCY-ROOT" # Instead of an OCID, you can replace it with the string "TENANCY-ROOT" for attaching the policy to the Root compartment.
             statements : [
-                "allow group '${local.cloud_engineering_domain_name}'/'${local.cloud_engineering_group_name}' to manage dynamic-groups in tenancy where target.resource.domain.name='cloud-engineer-domain' //Allows Cloud Engineers only to modify DG within their domain",
-                "allow group '${local.cloud_engineering_domain_name}'/'${local.cloud_engineering_group_name}' to inspect compartments in tenancy //Allows Cloud Engineers only to list compartments"
+                "allow group '${local.cloud_engineering_domain_name}'/'${var.engineer_group_name}' to manage dynamic-groups in tenancy where target.resource.domain.name='cloud-engineer-domain' //Allows Cloud Engineers only to modify DG within their domain",
+                "allow group '${local.cloud_engineering_domain_name}'/'${var.engineer_group_name}' to inspect compartments in tenancy //Allows Cloud Engineers only to list compartments"
             ]
         },
         "CE-SERVICES-POLICY" : {
@@ -39,20 +39,12 @@ locals {
                 "allow group ${local.core_policy_group_name} to manage object-family in compartment ${local.core_policy_engineer_compartment} //Allows Cloud Engineers to work with all object storage within main CE compartment",
             ]            
         },
-        # "CE-DYN-GROUP-POLICY" : {
-        #     name : "cloud-engineering-DYNAMIC-GROUP-policy"
-        #     description : "Cloud Engineers Dynamic Group permissions"
-        #     compartment_id : module.cislz_compartments.compartments.CLOUD-ENG.id
-        #     statements : [ 
-        #         for dg in local.engineer_compartments: "allow dynamic-group ${dg.name}-DG to inspect all-resources in compartment ${local.core_policy_engineer_compartment}"
-        #     ]           
-        # },
         "CE-OSMH-POLICY" : {
             name : "cloud-engineering-OSMH-root-policy"
             description : "Cloud Engineers OS Management Hub permissions"
             compartment_id : "TENANCY-ROOT"
             statements : [
-                "allow group '${local.cloud_engineering_domain_name}'/'${local.cloud_engineering_group_name}' to read osmh-family in tenancy //Allow CE to load OSMH data",
+                "allow group '${local.cloud_engineering_domain_name}'/'${var.engineer_group_name}' to read osmh-family in tenancy //Allow CE to load OSMH data",
             ]            
         },
         "CE-OSMH-INST-POLICY" : {

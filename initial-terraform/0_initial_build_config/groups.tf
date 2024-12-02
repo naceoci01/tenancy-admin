@@ -6,14 +6,14 @@ locals {
 
     # Keys
     cloud_engineering_group_key = "CLOUD-ENGINEERS-GROUP"
-    cloud_engineering_group_name = "cloud-engineering-users"
-    cloud_engineering_group_description = "Group for all users that are Cloud Engineers (CE)"
+    # cloud_engineering_group_name = "cloud-engineering-users"
+    cloud_engineering_group_description = "Group for all users that are Cloud Engineers (CE) in group ${var.engineer_group_name}"
 
     # Groups
     cloud_engineers_group = {
         (local.cloud_engineering_group_key) = {
             identity_domain_id        = var.domain_id
-            name                      = local.cloud_engineering_group_name
+            name                      = var.engineer_group_name
             description               = local.cloud_engineering_group_description
             members                   = ["andrew.gregory@oracle.com","roman.kab@oracle.com"]
         }
