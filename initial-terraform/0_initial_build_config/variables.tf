@@ -18,3 +18,16 @@ variable "engineer_group_name" {
     description = "Name of shared engineer group"
     default = "cloud-engineering-users"
 }
+
+variable "use_drg" {
+    type = bool
+    description = "Whether to create a DRG"
+}
+variable "rpc_peer_ocid" {
+    description = "OCID of RPC Peering Connection (optional)"
+    default = null
+}
+variable "rpc_peer_region" {
+    description = "OCID of RPC Peering Connection (optional)"
+    default = null
+}

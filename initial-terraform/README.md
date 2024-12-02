@@ -19,7 +19,7 @@ This stack also creates a basic quota policy to zero out the regions and service
 
 Finally, it creates a DRG at the root of the tenancy, for potential use with other tenancies or FastConnect/IPSec.
 
-# Details (Part 2)
+## Details (Part 2)
 
 This stack defines a grouping (*not IAM*) of compartments to be created, and then creates the following:
 

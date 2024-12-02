@@ -15,6 +15,11 @@ variableGroups:
   - title: "Compartment Configuration"
     variables:
       - cloud_engineering_compartment_name
+  - title: "DRG Configuration"
+    variables:
+      - use_drg
+      - rpc_peer_region
+      - rpc_peer_ocid
   - title: "Hidden Variables" 
     visible: false
     variables:
@@ -52,3 +57,23 @@ variables:
     description: Change as necessary
     default: cloud-engineering-users
 
+  use_drg:
+    type: boolean
+    title: "Create DRG?"
+    description: "Create a DRG at root of tenancy for use with RPC or FastConnect?"
+    required: true
+    default: false
+
+  rpc_peer_region:
+    title: Peer Region for DRG
+    type: string
+    description: Only define if it is actually peered
+    required: false
+    visible: use_drg
+
+  rpc_peer_ocid:
+    title: Peer OCID for DRG
+    type: string
+    description: Only define if it is actually peered
+    required: false
+    visible: use_drg
