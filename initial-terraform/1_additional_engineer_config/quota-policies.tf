@@ -43,12 +43,20 @@ locals {
             for comp in local.comp_names: "set filesystem quota file-system-count to 1 in compartment ${data.oci_identity_compartment.cloud-eng-comp.name}:${comp}"
         ]        
     )
+    network_quota_statements = concat(
+        [
+            "zero vcn quota in compartment ${data.oci_identity_compartment.cloud-eng-comp.name}"
+        ],
+        [
+            for comp in local.comp_names: "set vcn quota vcn-count to 1 in compartment ${data.oci_identity_compartment.cloud-eng-comp.name}:${comp}"
+        ]      
+    )
 }
 
 resource "oci_limits_quota" "engineer-database" {
     #Required
     compartment_id = var.tenancy_ocid
-    description = "Engineer quota"
+    description = "Engineer quota (Database)"
     name = "cloud-engineering-DATABASE-quota"
     statements = local.db_quota_statements
     depends_on = [ module.cislz_compartments ]
@@ -57,7 +65,7 @@ resource "oci_limits_quota" "engineer-database" {
 resource "oci_limits_quota" "engineer-compute" {
     #Required
     compartment_id = var.tenancy_ocid
-    description = "Engineer quota"
+    description = "Engineer quota (Compute)"
     name = "cloud-engineering-COMPUTE-quota"
     statements = local.compute_quota_statements 
     depends_on = [ module.cislz_compartments ]
@@ -66,7 +74,15 @@ resource "oci_limits_quota" "engineer-compute" {
 resource "oci_limits_quota" "engineer-storage" {
     #Required
     compartment_id = var.tenancy_ocid
-    description = "Engineer quota"
+    description = "Engineer quota (Storage)"
     name = "cloud-engineering-STORAGE-quota"
     statements = local.storage_quota_statements
+}
+
+resource "oci_limits_quota" "engineer-network" {
+    #Required
+    compartment_id = var.tenancy_ocid
+    description = "Engineer quota (VCN)"
+    name = "cloud-engineering-NETWORK-quota"
+    statements = local.network_quota_statements
 }

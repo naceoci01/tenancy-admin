@@ -38,8 +38,7 @@ locals {
                 "allow group ${local.core_policy_group_name} to read all-resources in compartment ${local.core_policy_engineer_compartment} //Allow CE to read everything main CE compartment",
                 "allow group ${local.core_policy_group_name} to manage instance-family in compartment ${local.core_policy_engineer_compartment} //Allow CE to work with all compute within main CE compartment",
                 "allow group ${local.core_policy_group_name} to manage volume-family in compartment ${local.core_policy_engineer_compartment} //Allow CE to work with all block storage within main CE compartment",
-                "allow group ${local.core_policy_group_name} to use virtual-network-family in compartment ${local.core_policy_engineer_compartment} //Allow CE to use networking within main CE compartment",
-                "allow group ${local.core_policy_group_name} to manage network-security-groups in compartment ${local.core_policy_engineer_compartment} //Allow CE to work manage NSG within main CE compartment",
+                "allow group ${local.core_policy_group_name} to manage virtual-network-family in compartment ${local.core_policy_engineer_compartment} //Allow CE to manage networking within main CE compartment",
                 "allow group ${local.core_policy_group_name} to manage object-family in compartment ${local.core_policy_engineer_compartment} //Allows Cloud Engineers to work with all object storage within main CE compartment",
                 "allow group ${local.core_policy_group_name} to manage file-systems in compartment ${local.core_policy_engineer_compartment} //Allows Cloud Engineers to manage file-systems main CE compartment",
             ]            
