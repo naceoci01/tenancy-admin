@@ -8,6 +8,8 @@ variable "user_ocid" { default = "" }
 variable "fingerprint" { default = "" }
 variable "private_key_path" { default = "" }
 variable "private_key_password" { default = "" }
+variable "home_region" {description = "Your tenancy home region"}
+
 
 # Required Inputs
 variable "domain_id" {
@@ -18,14 +20,4 @@ variable "domain_id" {
 variable "cloud_engineering_root_compartment_ocid" {
     type = string
     description = "OCID of compartment where engineer compartments are created"
-}
-
-variable "compartment_names" {
-    type = list(string)
-    description = "Name of compartment"
-}
-
-variable "compartment_grouping" {
-    type = string
-    description = "Arbitrary grouping of these engineers or compartments, appears in quota policy name"
 }
