@@ -2,7 +2,7 @@
 
 locals {
     # Policies
-    core_policy_group_name = "'${local.cloud_engineering_domain_name}'/'${var.engineer_group_name}'"
+    core_policy_group_name = "'${data.oci_identity_domain.ce_domain.display_name}'/'${var.engineer_group_name}'"
     core_policy_engineer_compartment = module.cislz_compartments.compartments.CLOUD-ENG.name
     core_policy_shared_compartment = module.cislz_compartments.compartments.SHARED-CMP.name
 

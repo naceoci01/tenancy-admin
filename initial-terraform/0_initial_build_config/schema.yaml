@@ -48,9 +48,7 @@ variables:
   domain_id:
     title: Identity Domain OCID
     type: string
-    description: Do not update this unless you know it is different from the default.
-    visible: true
-    default: ocid1.domain.oc1..aaaaaaaaupgm4bcvtm4mli362abwasdtrxngvmv557b2xsmygca5vrciabfa
+    description: Already created Identity Domain.
 
   engineer_group_name:
     title: Name of IAM group for engineers

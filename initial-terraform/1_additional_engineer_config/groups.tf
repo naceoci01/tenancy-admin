@@ -11,9 +11,8 @@
 
 # Existing Identity domain Group
 data "oci_identity_domains_group" "ce-group" {
-  group_id = "fabb9c77b8634c90be6ff006fc3f8ec8"
+  group_id = var.cloud_engineering_groupid
   idcs_endpoint = data.oci_identity_domain.ce-domain.url
-#   "https://idcs-9c88fbba4c644a1ca2cec3c615a1bc6a.identity.oraclecloud.com"
   attribute_sets = ["all"]
 }
 

@@ -19,3 +19,9 @@ variable "cloud_engineering_root_compartment_ocid" {
     type = string
     description = "OCID of compartment where engineer compartments are created"
 }
+
+variable "cloud_engineering_groupid" {
+    type = string
+    description = "This group ID is NOT an OCID.  It is found via API and it is the IDCS ID"
+    default = "cf91a190f2584c65bcf29360fd17c277"
+}

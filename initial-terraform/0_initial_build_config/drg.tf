@@ -1,6 +1,6 @@
 locals {
     network_configuration = {
-        default_compartment_id = "ocid1.tenancy.oc1..aaaaaaaaonqlfuxbai2t677fopst4vowm5axun74bmowkxtcqvbx6liagciq",
+        default_compartment_id = var.tenancy_ocid,
         network_configuration_categories = var.use_drg ? {
             production = {
                 non_vcn_specific_gateways = {
