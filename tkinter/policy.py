@@ -4,6 +4,7 @@ import re
 import json
 import os
 import time
+import datetime
 from concurrent.futures import ThreadPoolExecutor
 
 from oci import config, pagination
@@ -23,6 +24,7 @@ from progress import Progress
 
 THREADS = 8
 POLICY_REGEX = r'^\s*?(allow|endorse)\s+(?P<subjecttype>service|any-user|any-group|dynamic-group|dynamicgroup|group|resource)\s*(?P<subject>([\w\/\'\.\\, +-]|,)+?)?\s+(to\s+)?((?P<verb>read|inspect|use|manage)\s+(?P<resource>[\w-]+)|(?P<perm>{[\s*\w\s*|\s*\w\s*,\s*]+}))\s+in\s+(?P<locationtype>any-tenancy|tenancy|compartment\s+id|compartment)\s*(?P<location>[\w\':.-]+)?(?:\s+where\s+(?P<condition>.+))?(?:(?P<optional>\s*\/\/.+))?$'
+SUBJECT_REGEX = r'^(\'|\")?((?P<domain>[\w\-\_]+)(\/|\\))?(?P<name>[\w\-\_]+)(\'|\")?'
 
 ###############################################################################################################
 # PolicyAnalysis class
@@ -50,6 +52,9 @@ class PolicyAnalysis:
 
         # Reference to progress object in main
         self.progress = progress
+
+        # Set load date to nothing yet
+        self.data_as_of = ""
 
     # Class Initializer
     def initialize_client(self, profile: str, use_instance_principal: bool, use_recursion: bool, use_cache: bool) -> bool:
@@ -138,7 +143,17 @@ class PolicyAnalysis:
                 ]
                 # Post-process any-user / any-group
                 if statement_list[6] == "any-user" or statement_list[6] == "any-group":
-                    statement_list[7] = statement_list[6]
+                    statement_list[7] = [None,statement_list[6]]
+                else:
+                    # Post-process subject(domain/group)
+                    subject_result = re.search(pattern=SUBJECT_REGEX,
+                                            string=statement_list[7],
+                                            flags=re.IGNORECASE
+                                            )
+                    subject_domain = "Default" if not subject_result.group('domain') else subject_result.group('domain')
+                    subject_name = subject_result.group('name')
+                    statement_list[7] = [subject_domain,subject_name]
+                
                 # Hierarchy ROOT so searchable
                 if not statement_list[3] or statement_list[3] == "":
                     statement_list[3] = "ROOT"
@@ -148,17 +163,17 @@ class PolicyAnalysis:
             except Exception as e:
                 self.logger.warning(f"Failed to parse result: {e}")
                 statement_list = [policy.name, policy.id, policy.compartment_id, f"{comp_string}", statement,
-                                   False, "other", "", "", "", False, "", "", "", "", time_created]
+                                   False, "other", ["",""], "", "", False, "", "", "", "", time_created]
                 return statement_list
         else:
             # Return less populated tuple
             self.logger.info(f"No regex result: {statement}")
             if statement.startswith("define"):
                 statement_list = [policy.name, policy.id, policy.compartment_id, f"{comp_string}", statement, 
-                                  True, "define", "", "", "", False, "", "", "", "", time_created]
+                                  True, "define", ["",""], "", "", False, "", "", "", "", time_created]
             else:
                 statement_tuple = [policy.name, policy.id, policy.compartment_id, f"{comp_string}", statement,
-                                   True, "other", "", "", "", False, "", "", "", "", time_created]
+                                   True, "other", ["",""], "", "", False, "", "", "", "", time_created]
             return statement_list      
 
     # Recursive Compartments / Policies
@@ -177,22 +192,32 @@ class PolicyAnalysis:
         return self.get_compartment_path(parent_compartment, level+1, compartment.name + "/" + comp_string)
 
     # Post-process - determine if DGs are invalid
-    def check_for_invalid_dynamic_groups(self, dynamic_groups: list):
-        """Loop through DG policies and ensure DGs exist"""
+    def check_for_invalid_dynamic_groups(self, dynamic_groups: list) -> list:
+        """Loop through DG policies and ensure DGs exist. Return a list of (policy_ocid, statement) for deletion.  
+        Deletion is *hard* because the underlying policy needs to have a statement removed"""
+
+        invalid_list = []
 
         statements_analyzed = 0
         for st in self.regular_statements:
             if st[6] == "dynamic-group":
-                self.logger.debug(f"Validatiing statement for group {st[7]}")
+                self.logger.debug(f"Validating statement for group {st[7]}")
                 valid = False
                 for dg in dynamic_groups:
-                    if st[7].casefold() == dg[0].casefold():
-                        self.logger.debug(f"We have a match: {dg[0]}")
+                    # Both the domain and the Name must match
+                    if st[7][0].casefold() == dg[0].casefold() and st[7][1].casefold() == dg[1].casefold():
+                        self.logger.debug(f"We have a match: {dg[1]}")
                         valid = True
                 st[5] = valid
                 statements_analyzed += 1
+                # Prepare return
+                if not st[5]:
+                    self.logger.info(f"Invalid DG: {st[7]}. Statement to remove: {st[4]}")
+                    inv_tuple = (st[1], st[4])
+                    invalid_list.append(inv_tuple)
         self.logger.info(f"Completed validation for {statements_analyzed} Dynamic Group statments")
-
+        return invalid_list
+    
     # Threadable policy loader - per compartment
     def load_policies(self, compartment: Compartment):
         '''Runs as a thread - load all policies in a compartment and parse them into internal list representation'''
@@ -250,6 +275,7 @@ class PolicyAnalysis:
             if os.path.isfile(f'.policy-statement-cache-{self.tenancy_ocid}.dat'):
                 with open(f'./.policy-statement-cache-{self.tenancy_ocid}.dat', 'r') as filehandle:
                     self.regular_statements = json.load(filehandle)
+                self.data_as_of = time.ctime(os.path.getmtime(f'.policy-statement-cache-{self.tenancy_ocid}.dat'))
         else:
             # If set from main() it is ok, otherwise take from function call
             self.logger.info(f"---Starting Policy Load for tenant: {self.tenancy_ocid} with recursion {self.use_recursion} and {THREADS} threads---")
@@ -283,7 +309,7 @@ class PolicyAnalysis:
                 # We know the compartment count now - set up progress, if warranted
                 if self.progress:
                     self.progress.set_to_load(len(comp_list))
-                    self.logger.info(f"Progress Bar set total: {len(comp_list)}")
+                    self.logger.debug(f"Progress Bar set total: {len(comp_list)}")
 
                 # Use multiple threads at once
                 with ThreadPoolExecutor(max_workers = THREADS, thread_name_prefix="thread") as executor:
@@ -321,7 +347,7 @@ class PolicyAnalysis:
                 self.logger.info(f"Loaded /{len(self.regular_statements)} regular policy statements on main thread in {toc-tic:.2f}s")
 
             self.logger.info(f"---Finished Policy Load from client---")
-
+            self.data_as_of = str(datetime.datetime.now())
             # Dump in local cache for later
             with open(f'.policy-statement-cache-{self.tenancy_ocid}.dat', 'w') as filehandle:
                 json.dump(self.regular_statements, filehandle)
@@ -358,7 +384,7 @@ class PolicyAnalysis:
 
         self.logger.debug(f"Filtering subject(B): {split_subj_filter}. Before: {len(regular_statements)} Reg statements")
         for filt in split_subj_filter:
-            regular_statements_filtered.extend(list(filter(lambda statement: filt.casefold() in statement[7].casefold(), regular_statements)))
+            regular_statements_filtered.extend(list(filter(lambda statement: filt.casefold() in statement[7][1].casefold(), regular_statements)))
         self.logger.debug(f"Filtering subject(A): {len(regular_statements_filtered)} Reg statements")
 
         # Reset filter
@@ -435,65 +461,3 @@ class PolicyAnalysis:
         # Return
         self.logger.info(f"After filters applied: {len(regular_statements_filtered)} Reg statements")
         return regular_statements_filtered
-
-    # Get a policy for the purpose of updating one of the statements
-    def get_policies_for_edit(self, policy_ocids: list[str]) -> list[tuple]:
-        """Given a policy we want to edit, return the policy""" 
-
-        # Get a list for returned policies
-        policies_returned = []
-
-        for ocid in policy_ocids:
-            pol_resp = self.identity_client.get_policy(policy_id=ocid)
-            self.logger.info(f'Policy: {pol_resp.data.name} Etag: {pol_resp.headers["ETag"]}')
-            # self.logger.info(f"Full Policy: {pol_resp.data}")
-            policies_returned.append((pol_resp.headers["ETag"], pol_resp.data))
-        
-        # Return a list of policies that are tuple(etag, policy)
-        self.logger.info(f"Policies returned: {len(policies_returned)}")
-        return (policies_returned)
-
-    def update_policies(self, policies_to_update: list[tuple]) -> bool:
-        """Update the policy with optimistic concurrency, to ensure it wasn't mucked with"""
-
-        updated_policies = []
-        for item in policies_to_update:
-
-            etag, policy_to_update = item
-            self.logger.info(f"Updating Policy: {policy_to_update}")
-            try:
-                self.identity_client.update_policy(policy_id=policy_to_update.id, 
-                                                update_policy_details=UpdatePolicyDetails(description=policy_to_update.description,
-                                                                                            statements=policy_to_update.statements,
-                                                                                            defined_tags=policy_to_update.defined_tags,
-                                                                                            freeform_tags=policy_to_update.freeform_tags),
-                                                if_match=etag)
-                self.logger.info(f"Updated Policy: {policy_to_update}")
-                ret = (policy_to_update, True)
-            except ServiceError as se:
-                if se.code == "NoEtagMatch":
-                    self.logger.warning(f"Could not update due to etag mismatch")
-                ret = (policy_to_update, False)
-            except Exception as e:
-                self.logger.warning(f"Could not update due to error: {e}")
-                ret = (policy_to_update, False)
-        updated_policies.append(ret)
-            
-
-# if __name__ == "__main__":
-#     logging.basicConfig(level=logging.INFO, format='%(asctime)s %(name)s [%(threadName)s] %(levelname)s %(message)s')
-#     logger = logging.getLogger('oci-policy')
-#     logger.info(f"Policy Main")
-
-#     a = PolicyAnalysis(None, False)
-#     a.initialize_client("DEFAULT", False, False, True)
-#     a.load_policies_from_client()
-
-#     pol = a.get_policies_for_edit(["ocid1.policy.oc1..aaaaaaaahyfaqwlgcfa3umh7qvii5or2axu5zwbzrp6wozrfjahd57nxowwq","ocid1.policy.oc1..aaaaaaaalg77zmpk7sabowkklzd6dmpy5dfwumvkhckeodia3j2eob2nllza"])
-#     for i, ed in enumerate(pol):
-#         etag, policy = ed
-#         policy.statements.append(f"allow group foo{i} to read object-family in compartment agregory")
-
-#     time.sleep(8)
-#     a.update_policies(pol)
-#     logger.info(f"Policy: {pol}")

@@ -8,6 +8,7 @@ variable "user_ocid" { default = "" }
 variable "fingerprint" { default = "" }
 variable "private_key_path" { default = "" }
 variable "private_key_password" { default = "" }
+variable "home_region" {description = "Your tenancy home region"}
 
 # Required Inputs
 variable "domain_id" {
@@ -17,6 +18,11 @@ variable "domain_id" {
 variable "engineer_group_name" {
     description = "Name of shared engineer group"
     default = "cloud-engineering-users"
+}
+
+variable "engineer_compartment_base_name" { 
+    description = "Name of shared engineer compartment"
+    default = "cloud-engineering"
 }
 
 variable "use_drg" {

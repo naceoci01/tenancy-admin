@@ -1,0 +1,30 @@
+# Title shown in Application Information tab.
+title: Cloud Engineering Main
+# Sub Title shown in Application Information tab.
+description: Create all of the compartments, basic dynamic groups, and policies needed to have a cloud-engineering structure inside the tenancy.
+informationalText: Groups and Dynamic Groups will be located inside of the non-default Identity Domain.
+schemaVersion: 1.1.0
+version: "20190304"
+
+locale: "en"
+variableGroups:
+  - title: "Identity Domain Configuration"
+    variables:
+      - domain_name
+  - title: "Hidden Variables" 
+    visible: false
+    variables:
+      - tenancy_ocid
+      - user_ocid
+      - fingerprint
+      - private_key_path
+      - region
+      - private_key_password
+
+variables:
+  # string field
+  domain_name:
+    title: Identity Domain Name
+    type: string
+    description: Do not update this unless you know it is different from the default.
+

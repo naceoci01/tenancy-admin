@@ -1,7 +1,10 @@
+# Build variables for CISLZ Policies
+
 locals {
     # Policies
     core_policy_group_name = "'${local.cloud_engineering_domain_name}'/'${var.engineer_group_name}'"
     core_policy_engineer_compartment = module.cislz_compartments.compartments.CLOUD-ENG.name
+    core_policy_shared_compartment = module.cislz_compartments.compartments.SHARED-CMP.name
 
     policies = {
         "CE-IAM-ROOT-POLICY" : {
@@ -10,7 +13,8 @@ locals {
             compartment_id : "TENANCY-ROOT" # Instead of an OCID, you can replace it with the string "TENANCY-ROOT" for attaching the policy to the Root compartment.
             statements : [
                 "allow group '${local.cloud_engineering_domain_name}'/'${var.engineer_group_name}' to manage dynamic-groups in tenancy where target.resource.domain.name='cloud-engineer-domain' //Allows Cloud Engineers only to modify DG within their domain",
-                "allow group '${local.cloud_engineering_domain_name}'/'${var.engineer_group_name}' to inspect compartments in tenancy //Allows Cloud Engineers only to list compartments"
+                "allow group '${local.cloud_engineering_domain_name}'/'${var.engineer_group_name}' to inspect compartments in tenancy //Allows Cloud Engineers only to list compartments",
+                "allow group '${local.cloud_engineering_domain_name}'/'${var.engineer_group_name}' to read quotas in tenancy //Allows Cloud Engineers see quotas"
             ]
         },
         "CE-SERVICES-POLICY" : {
@@ -37,6 +41,26 @@ locals {
                 "allow group ${local.core_policy_group_name} to use virtual-network-family in compartment ${local.core_policy_engineer_compartment} //Allow CE to use networking within main CE compartment",
                 "allow group ${local.core_policy_group_name} to manage network-security-groups in compartment ${local.core_policy_engineer_compartment} //Allow CE to work manage NSG within main CE compartment",
                 "allow group ${local.core_policy_group_name} to manage object-family in compartment ${local.core_policy_engineer_compartment} //Allows Cloud Engineers to work with all object storage within main CE compartment",
+                "allow group ${local.core_policy_group_name} to manage file-systems in compartment ${local.core_policy_engineer_compartment} //Allows Cloud Engineers to manage file-systems main CE compartment",
+            ]            
+        },
+        "CE-DB-POLICY" : {
+            name : "cloud-engineering-DATABASE-policy"
+            description : "Cloud Engineers Database Service permissions"
+            compartment_id : module.cislz_compartments.compartments.CLOUD-ENG.id
+            statements : [
+                "allow group ${local.core_policy_group_name} to manage autonomous-database-family in compartment ${local.core_policy_engineer_compartment} //Allow CE to work with all Autonomous main CE compartment",
+            ]            
+        },
+        "CE-SEC-POLICY" : {
+            name : "cloud-engineering-SECURITY-policy"
+            description : "Cloud Engineers Security permissions"
+            compartment_id : "TENANCY-ROOT"
+            statements : [
+                "allow group ${local.core_policy_group_name} to use vaults in compartment ${local.core_policy_shared_compartment} //Allow CE to use vaults in shared CE compartment",
+                "allow group ${local.core_policy_group_name} to manage keys in compartment ${local.core_policy_shared_compartment} //Allow CE to manage keys in shared CE compartment",
+                "allow group ${local.core_policy_group_name} to manage secret-family in compartment ${local.core_policy_shared_compartment} //Allow CE to manage secrets in shared CE compartment",
+                "allow group ${local.core_policy_group_name} to use key-delegate in compartment ${local.core_policy_shared_compartment} //Allow CE to use key-delegate in shared CE compartment",
             ]            
         },
         "CE-OSMH-POLICY" : {
@@ -44,11 +68,11 @@ locals {
             description : "Cloud Engineers OS Management Hub permissions"
             compartment_id : "TENANCY-ROOT"
             statements : [
-                "allow group '${local.cloud_engineering_domain_name}'/'${var.engineer_group_name}' to read osmh-family in tenancy //Allow CE to load OSMH data",
+                "allow group '${local.cloud_engineering_domain_name}'/'${var.engineer_group_name}' to manage osmh-family in tenancy //Allow CE to load OSMH data",
             ]            
         },
         "CE-OSMH-INST-POLICY" : {
-            name : "cloud-engineering-OSMH-instance-policy"
+            name : "cloud-engineering-OSMH-DG-policy"
             description : "Cloud Engineers OS Management Hub permissions"
             compartment_id : module.cislz_compartments.compartments.CLOUD-ENG.id
             statements : [
@@ -60,6 +84,15 @@ locals {
                 "allow dynamic-group '${local.cloud_engineering_domain_name}'/'${local.osmh_dynamic_group_name}' to {APPMGMT_WORK_REQUEST_READ, INSTANCE_AGENT_PLUGIN_INSPECT} in compartment ${module.cislz_compartments.compartments.CLOUD-ENG.name}",
             ]            
         },
+        "CE-ADB-POLICY" : {
+            name : "cloud-engineering-ADB-DG-policy"
+            description : "Cloud Engineers ADB Dynamic Group permissions"
+            compartment_id : "TENANCY-ROOT"
+            statements : [
+                "allow dynamic-group '${local.cloud_engineering_domain_name}'/'${local.adb_dynamic_group_name}' to use vaults in compartment ${local.core_policy_shared_compartment} //Allow ADB access to vaults",
+                "allow dynamic-group '${local.cloud_engineering_domain_name}'/'${local.adb_dynamic_group_name}' to use keys in compartment ${local.core_policy_shared_compartment} //Allow ADB access to keys",
+            ]            
+        }
     }
 
     # Merge all policies

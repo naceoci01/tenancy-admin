@@ -1,16 +1,18 @@
+# Create top-level compartments in ROOT compartment
+
 locals {
 
     all_comp = {
         CLOUD-ENG = {
-            name = "cloud-engineering",
+            name = "${var.engineer_compartment_base_name}",
             description = "Top level compartment for all cloud engineers",
         },
         SPECIAL-CMP = {
-            name = "cloud-engineering-projects", 
+            name = "${var.engineer_compartment_base_name}-projects", 
             description = "Special project compartments", 
         },
         SHARED-CMP = {
-            name = "cloud-engineering-shared",
+            name = "${var.engineer_compartment_base_name}-shared",
             description = "Shared compartment for all cloud engineers - limited access",
             children = {
                 OAC-CMP = {

@@ -7,6 +7,7 @@ from ttkbootstrap.constants import *
 from tkinter.filedialog import askopenfilename, asksaveasfilename
 from tkinter import font
 from tksheet import Sheet
+from tkinterweb import HtmlFrame
 
 # Python
 import json
@@ -66,6 +67,7 @@ def enable_buttons():
     # input_my_compartment.config(state=tk.ACTIVE)
 
     # Dynamic Groups
+    dg_entry_domain.config(state=tk.NORMAL)
     dg_entry_name.config(state=tk.NORMAL)
     dg_entry_ocid.config(state=tk.NORMAL)
     dg_entry_type.config(state=tk.NORMAL)
@@ -94,7 +96,6 @@ def load_policy_analysis_from_client():
     update_output()
     update_output_dg()
     enable_buttons()
-
 
 # Gray or un-gray location tenancy box
 def select_location_tenancy():
@@ -192,12 +193,15 @@ def clear_filters_dg():
     dg_entry_type.delete(0, tk.END)
     dg_entry_ocid.delete(0, tk.END)
     dg_entry_name.delete(0, tk.END)
+    dg_entry_domain.delete(0, tk.END)
 
     # Update the output
     update_output_dg()
 
 def update_output():
     """Get the filtered policy statements and display them in the grid"""
+    # Status Time
+    label_status2.config(text=f"Loaded {policy_analysis.data_as_of}")
     # Apply Filters
     regular_statements_filtered = policy_analysis.filter_policy_statements(subj_filter=entry_subj.get(),
                                                                            verb_filter=entry_verb.get(),
@@ -251,7 +255,8 @@ def update_output():
 def update_output_dg(default_open: bool = False):
     """Get filtered dynamic groups and display them in the grid"""
     # Get the data
-    filtered_dynamic_groups = dyn_group_analysis.filter_dynamic_groups(name_filter=dg_entry_name.get(),
+    filtered_dynamic_groups = dyn_group_analysis.filter_dynamic_groups(domain_filter=dg_entry_domain.get(),
+                                                                       name_filter=dg_entry_name.get(),
                                                                        type_filter=dg_entry_type.get(),
                                                                        ocid_filter=dg_entry_ocid.get()
                                                                        )
@@ -262,25 +267,28 @@ def update_output_dg(default_open: bool = False):
 
     # Cell to pretty
     for index, statement in enumerate(filtered_dynamic_groups, start=0):
-        formatted_rules = "\n".join(statement[3])
-        formatted_broken_ocid = "\n".join(statement[5])
+        formatted_rules = "\n".join(statement[4])
+        formatted_broken_ocid = "\n".join(statement[6])
         # formatted_rule = policy_print(statement[2], 0)
         # logger.info(f"Formatted rules: {formatted_rule}")
 
         sheet_dynamic_group.set_cell_data(r=index,
-                                          c=3,
+                                          c=4,
                                           value=formatted_rules,
                                           keep_formatting=True)
         sheet_dynamic_group.set_cell_data(r=index,
-                                          c=5,
+                                          c=6,
                                           value=formatted_broken_ocid,
                                           keep_formatting=True)
         
         # Look for issues and highlight
-        if not statement[4]:
+        if not statement[5]:
             sheet_dynamic_group.highlight_cells(row=index, column='all', bg="pink")
     # Size it
     sheet_dynamic_group.set_all_cell_sizes_to_text()
+
+    # Update Count
+    dg_label_loaded.config(text=f"Statements (Filtered): {len(filtered_dynamic_groups)}")
 
 def update_load_options():
     # Control the load button
@@ -297,42 +305,6 @@ def update_load_options():
         input_recursion.config(state=tk.ACTIVE)
         btn_load.config(text="Load Policies from ROOT compartment only, and Dynamic Groups")
 
-# def update_show_my_details():
-#     if show_only_my_user.get():
-#         # Update the filter for me and re-run
-#         entry_subj.delete(0,tk.END)
-#         logger.info(f"Loading groups: {policy_analysis.tenancy_ocid} : {policy_analysis.config["user"]}")
-#         # Load my groups
-#         idc = policy_analysis.idm_client
-#         me = idc.get_user(
-#             # compartment_id=policy_analysis.tenancy_ocid,
-#             user_id=policy_analysis.config["user"],
-#             attributes="groups"
-#         ).data        
-#         # my_groups = idc.list_groups(
-#         #     compartment_id=policy_analysis.tenancy_ocid,
-#         #     #user_id=policy_analysis.config["user"]
-#         # ).data
-#         logger.info(f"Groups: {me.groups}")
-
-#         all_my_groups = []
-#         for g in me.groups:
-#             logger.info(f"Group: {g.display}")
-#             all_my_groups.append(g.display)
-#         #     # my_groups = idc.list_user_group_memberships(
-#         #     #     compartment_id=policy_analysis.tenancy_ocid,
-#         #     #     group_id=g.id
-#         #     # ).data 
-#         #     for ug in my_groups:
-#         #         logger.info(f"User Group: {ug.user_id} / {ug.group_id}")
-#         entry_subj.insert(0, "|".join(all_my_groups))
-#         update_output()
-
-#     if show_only_my_compartment.get():
-#         entry_loc.delete(0,tk.END)
-#         entry_loc.insert(0,"agregory")
-#         update_output()
-
 def analyze_dynamic_group():
     # Get name of DG from policy
     current_selection = sheet_policies.get_currently_selected()
@@ -345,14 +317,13 @@ def analyze_dynamic_group():
         subject = sheet_policies.data[selected_row][7]
         logger.info(f"Selected data: {sheet_policies.data[selected_row][selected_column]}")
 
-        # subject_type_box = (current_selection.row, current_selection.column)
-        # subject_box = (current_selection.row, current_selection.column)
-        # subject_type = sheet_policies[subject_type_box].data
-        # subject = sheet_policies[subject_box].data
-        # logger.info(f"Selected: {subject_type} / {subject}")
+        # Only take action if it is a Dynamic Group
         if subject_type == "dynamic-group":
             # Switch to DG and enable filter
-            dg_entry_name.insert(0,subject)
+            dg_entry_domain.delete(0, tk.END)
+            dg_entry_name.delete(0, tk.END)
+            dg_entry_domain.insert(0,subject[0])
+            dg_entry_name.insert(0,subject[1])
             tab_control.select(".!notebook.!frame2")
             update_output_dg()
 
@@ -360,6 +331,21 @@ def analyze_dynamic_group():
 
     # Parse Statement Again
 
+# From the Policy Screen, run the DG exists Analysis
+def run_policy_statement_dynamic_group_analysis():
+    """Let the Policy class handle this"""
+    invalid_list = policy_analysis.check_for_invalid_dynamic_groups(dynamic_groups=dyn_group_analysis.dynamic_groups)
+
+    # Create work statements
+    text_work.delete('1.0', tk.END)
+    for inv in invalid_list:
+        oci_command = f"# Delete Statement incorrect\noci iam policy update --policy-id {inv[0]} --st {inv[1]}\n"
+        text_work.insert(tk.END, oci_command)
+
+    update_output()
+    logger.info(f"Ran Policy Analysis for DGs not in use: {len(invalid_list)}")
+
+# From the DG Screen, run the DG in use Analysis
 def run_dynamic_group_inuse_analysis():
     """Let the DG class handle this"""
     # Set Statements
@@ -367,15 +353,19 @@ def run_dynamic_group_inuse_analysis():
     # Run the anlaysis
     unused_dynamic_groups = dyn_group_analysis.run_dg_in_use_analysis()
 
-    text_work.delete('1.0', tk.END)
-    for dg in unused_dynamic_groups:
-        oci_command = f"# Delete Dynamic Group {dg[0]}\noci iam dynamic-group delete --dynamic-group-id {dg[1]}\n"
-        text_work.insert(tk.END, oci_command)
+    # Create work statements
+    # text_work.delete('1.0', tk.END)
+    # for dg in unused_dynamic_groups:
+    #     oci_command = f"# Delete Dynamic Group {dg[0]}\noci iam dynamic-group delete --dynamic-group-id {dg[1]}\n"
+    #     text_work.insert(tk.END, oci_command)
 
     update_output_dg()
     logger.info(f"Ran DG In Use Analysis from UI - Unused: {len(unused_dynamic_groups)}")
 
+# From the DG Screen, run the DG in use Analysis
 def run_dynamic_group_ocid_analysis():
+    """Run in the DG class as a thread"""
+
     # Set Statements
     dyn_group_analysis.set_statements(policy_analysis.regular_statements)
     # Run the anlaysis in a thread
@@ -386,13 +376,6 @@ def run_dynamic_group_ocid_analysis():
 
     update_output_dg()
     logger.info(f"Ran DG OCID Analysis from UI")
-
-def run_policy_dynamic_group_analysis():
-    """Check each DG-based policy statement to see if the DG exists, and if it is valid"""
-    logger.info(f"Calling Policy DG Analysis")
-    policy_analysis.check_for_invalid_dynamic_groups(dynamic_groups=dyn_group_analysis.dynamic_groups)
-    update_output()
-    logger.info(f"Called Policy DG Analysis")
 
 # Check progress meter for updates
 def update_progress():
@@ -410,6 +393,7 @@ def update_progress():
     # Set an event every 1s forever
     window.after(1000, update_progress)
 
+# Load a pre-created filtered result (policies)
 def load_file():
     """Load a JSON file from disk"""
     filepath = askopenfilename(
@@ -438,6 +422,7 @@ def load_file():
     entry_policy.insert(0, input_json.get("policy-name-filter"))
     update_output()
 
+# Save filtered policy statements
 def save_file():
     """Save the current tksheet file as a new file."""
 
@@ -500,16 +485,6 @@ def save_file():
                 csv_writer.writerow([st[0], st[1], st[3], f"{st[4]}", st[6], st[7], st[8], st[9], st[10], st[12], st[13], st[14]])
     logger.info(f"Finished writing file: {filepath}")
 
-# def add_new_tab():
-#     tab_consolidation = ttk.Frame(tab_control)
-#     tab_control.add(tab_consolidation, text="Consolidation")
-#     current_selection = sheet_policies.get_selected_rows()
-#     logger.info(f"Selected data: {current_selection}")
-#     if current_selection:
-#         for row in current_selection:
-#             # selected_row = sheet_policies.displayed_row_to_data(current_selection.row)
-#             logger.info(f"Selected data: {sheet_policies.get_data(row)}")
-
 ########################################
 # Main Code
 # Pre-and Post-processing
@@ -526,9 +501,6 @@ if __name__ == "__main__":
     # Main Logger
     logging.basicConfig(level=logging.INFO, format='%(asctime)s %(name)s [%(threadName)s] %(levelname)s %(message)s')
     logger = logging.getLogger('oci-policy-analysis-main')
-
-    if verbose:
-        logger.setLevel(logging.DEBUG)
 
     # Update Logging Level
     if verbose:
@@ -554,7 +526,11 @@ if __name__ == "__main__":
 
     window = tk.Tk()
     window.title("Policy and Dynamic Group Analysis")
-    
+    f = font.nametofont("TkDefaultFont")
+    f.configure(family="Oracle Sans",
+                size=12,
+                weight=font.NORMAL)
+
     # Main Window has 2 rows, top and bottom
     # Top is inputs to load policies
     # Bottom is tabbed display
@@ -571,7 +547,9 @@ if __name__ == "__main__":
     tab_control.add(tab_policy, text=POLICY_TAB_NAME)
     tab_control.add(tab_dg, text=DG_TAB_NAME)
     tab_control.add(tab_work_items, text=WORK_TAB_NAME)
+
     logger.debug(f"Tab: {tab_control}")
+    
     # Frames
     frm_init = ttk.Frame(window, borderwidth=2)
     frm_policy_top = ttk.Frame(tab_policy, borderwidth=2)
@@ -614,7 +592,13 @@ if __name__ == "__main__":
 
     # Init Button
     btn_load = ttk.Button(frm_init, width=50, text="Load Policies and Dynamic Groups from ROOT compartment only", command=load_policy_analysis_from_client)
-    btn_load.grid(row=0, column=4, columnspan=2, rowspan=2, sticky="ew", padx=25)
+    btn_load.grid(row=0, column=4, rowspan=2, sticky="ew", padx=25)
+
+    # Status Area
+    label_status1 = ttk.Label(master=frm_init, text="Status:")
+    label_status1.grid(row=0, column=5, sticky="ew", padx=5)
+    label_status2 = ttk.Label(master=frm_init, text="Not Loaded")
+    label_status2.grid(row=1, column=5, sticky="ew", padx=5)
 
     # Progress Bar
     # global progressbar_val
@@ -706,14 +690,6 @@ if __name__ == "__main__":
 
     separator = ttk.Separator(frm_policy_top, orient=tk.HORIZONTAL)
     separator.grid(row=5, column=0, columnspan=4)
-    # # Show my permissions - essentially a filter on my groups or location
-    # show_only_my_user = tk.BooleanVar()
-    # show_only_my_compartment = tk.BooleanVar()
-    # input_my_user = ttk.Checkbutton(frm_filter, text='Show My Policies', variable=show_only_my_user, state=tk.DISABLED, command=update_show_my_details)
-    # input_my_user.grid(row=6, column=1, sticky="ew", padx=25, pady=3)
-    # input_my_compartment = ttk.Checkbutton(frm_filter, text='Show My Compartment', variable=show_only_my_compartment, state=tk.DISABLED, command=update_show_my_details)
-    # input_my_compartment.grid(row=6, column=2,  sticky="ew", padx=25, pady=3)
-
 
     # Output Show
     label_loaded = ttk.Label(master=frm_output, text="Statements Loaded (No Filter): ")
@@ -736,52 +712,62 @@ if __name__ == "__main__":
     show_resource.grid(row=0, column=5, sticky="ew", padx=15, pady=3)
     show_regular.grid(row=0, column=6, sticky="ew", padx=15, pady=3)
     show_expanded.grid(row=0, column=7, sticky="ew", padx=15, pady=3)
-  
-    # btn_cons = ttk.Button(master=frm_output, text="Consolidate", state=tk.DISABLED, command=add_new_tab)
-    # btn_cons.grid(row=1, column=0, sticky="ew", padx=5, pady=2)
-
 
     # Define dg button but don't place it
-    btn_dg = ttk.Button(master=frm_actions, text="Analyze Dynamic Group", state=tk.ACTIVE, command=analyze_dynamic_group)
-
+    btn_statement_dg_valid = ttk.Button(master=frm_output, text="Analyze Dynamic Group Statements", state=tk.ACTIVE, command=run_policy_statement_dynamic_group_analysis)
+    btn_statement_dg_valid.grid(row=0, column=8, sticky="ew", padx=5, pady=3)
+    
+    ##################################
     # Dynamic Groups Tab
-
     # Filters
     dg_label_filter = ttk.Label(master=frm_dyn_group_filter, text="Filters (Each filter supports | as OR) - Dynamic Group has Name and matching statements")
     dg_label_filter.grid(row=0, column=0, sticky="ew", columnspan=4, padx=5, pady=3)
 
+    dg_label_domain = ttk.Label(master=frm_dyn_group_filter, text="Dynamic Group Domain")
+    dg_label_domain.grid(row=1, column=0, sticky="ew", padx=5, pady=3)
+    dg_entry_domain = tk.Entry(master=frm_dyn_group_filter, state=tk.DISABLED, width=40)
+    dg_entry_domain.grid(row=1, column=1, sticky="ew", padx=5, pady=3)
+
     dg_label_name = ttk.Label(master=frm_dyn_group_filter, text="Dynamic Group Name")
-    dg_label_name.grid(row=1, column=0, sticky="ew", padx=5, pady=3)
+    dg_label_name.grid(row=1, column=2, sticky="ew", padx=5, pady=3)
     dg_entry_name = tk.Entry(master=frm_dyn_group_filter, state=tk.DISABLED, width=40)
-    dg_entry_name.grid(row=1, column=1, sticky="ew", padx=5, pady=3)
+    dg_entry_name.grid(row=1, column=3, sticky="ew", padx=5, pady=3)
 
     dg_label_type = ttk.Label(master=frm_dyn_group_filter, text="Statement type\nresource/compartment/instance etc")
-    dg_label_type.grid(row=1, column=2, sticky="ew", padx=5, pady=3)
+    dg_label_type.grid(row=2, column=0, sticky="ew", padx=5, pady=3)
     dg_entry_type = tk.Entry(master=frm_dyn_group_filter, state=tk.DISABLED, width=40)
-    dg_entry_type.grid(row=1, column=3, sticky="ew", padx=5, pady=3)
+    dg_entry_type.grid(row=2, column=1, sticky="ew", padx=5, pady=3)
 
     dg_label_ocid = ttk.Label(master=frm_dyn_group_filter, text="Matching Rule OCID\n(any part of OCID within)")
-    dg_label_ocid.grid(row=2, column=0, sticky="ew", padx=5, pady=3)
+    dg_label_ocid.grid(row=2, column=2, sticky="ew", padx=5, pady=3)
     dg_entry_ocid = tk.Entry(master=frm_dyn_group_filter, state=tk.DISABLED, width=40)
-    dg_entry_ocid.grid(row=2, column=1, sticky="ew", padx=5, pady=3)
+    dg_entry_ocid.grid(row=2, column=3, sticky="ew", padx=5, pady=3)
 
     dg_btn_update = ttk.Button(frm_dyn_group_filter, text="Update Filter", state=tk.DISABLED, command=update_output_dg)
     dg_btn_update.grid(row=3, column=0, columnspan=2, sticky="ew", padx=5, pady=3)
     dg_btn_clear = ttk.Button(frm_dyn_group_filter, text="Clear Filters", state=tk.DISABLED, command=clear_filters_dg)
     dg_btn_clear.grid(row=3, column=2, columnspan=2, sticky="ew", padx=5, pady=3)
 
+    dg_separator = ttk.Separator(frm_dyn_group_filter, orient=tk.HORIZONTAL)
+    dg_separator.grid(row=4, column=0, sticky="ew", columnspan=4)
+
+    # DG Actions
+    dg_label_loaded = ttk.Label(master=frm_dyn_group_actions, text="Statements Loaded: ")
+    dg_label_loaded.grid(row=0, column=0, sticky="ew", padx=5, pady=3)
+
     btn_dyn_group_inuse_analysis = ttk.Button(master=frm_dyn_group_actions, text="Run In Use Analysis", command=run_dynamic_group_inuse_analysis)
     btn_dyn_group_ocid_analysis = ttk.Button(master=frm_dyn_group_actions, text="Run OCID Analysis", command=run_dynamic_group_ocid_analysis)
 
-    btn_dyn_group_inuse_analysis.grid(row=0, column=0, columnspan=2, sticky="ew", padx=5, pady=3)
-    btn_dyn_group_ocid_analysis.grid(row=0, column=2, columnspan=2, sticky="ew", padx=5, pady=3)
+    btn_dyn_group_inuse_analysis.grid(row=0, column=1, columnspan=2, sticky="ew", padx=5, pady=3)
+    btn_dyn_group_ocid_analysis.grid(row=0, column=3, columnspan=2, sticky="ew", padx=5, pady=3)
 
+    # DG Bottom Frame
     sheet_policies = Sheet(parent=frm_policy,
                            theme="light green",
                         #    data=[[f"Row {r}, Column {c}" for c in range(10)] for r in range(100)],
                            font=("PT Mono", 11, "normal"),
-                           header_font=("Courier New", 11, "bold"),
-                           index_font=("Courier New", 11, "bold"),
+                           header_font=("Oracle Sans", 12, "bold"),
+                           index_font=("Oracle Sans", 12, "bold"),
                         #    displayed_columns=([0,3,4], False),
                            headers=("Policy Name","Policy OCID","Compartment OCID","Hierarchy","Statement Text", "Valid",
                                     "Subject Type","Subject","Verb","Resource","Permission","Location Type","Location",
@@ -798,7 +784,6 @@ if __name__ == "__main__":
                                    "shift_cell_select", # Shift Cell
                                    "row_select" # Select rows
     )
-    sheet_policies.popup_menu_add_command("Analyze Dynamic Group Statements", run_policy_dynamic_group_analysis)    # Insert to main window
     sheet_policies.popup_menu_add_command("Analyze Dynamic Group", analyze_dynamic_group)    # Insert to main window
     sheet_policies.popup_menu_add_command("Save csv", save_file)    # Insert to main window
     sheet_policies.pack(expand=True, fill=tk.BOTH, side= tk.TOP)
@@ -807,10 +792,10 @@ if __name__ == "__main__":
                            theme="light blue",
                         #    data=[[f"Row {r}, Column {c}" for c in range(10)] for r in range(100)],
                            font=("PT Mono", 11, "normal"),
-                           header_font=("Courier New", 11, "bold"),
-                           index_font=("Courier New", 11, "bold"),
+                           header_font=("Oracle Sans", 12, "bold"),
+                           index_font=("Oracle Sans", 12, "bold"),
                         #    displayed_columns=([0,3,4], False),
-                           headers=("Dynamic Group Name","Dynamic Group OCID","Matching Statement","Rule Component","DG In Use", "Invalid OCIDs", "Creation Time")
+                           headers=("Dynamic Group Domain", "Dynamic Group Name","Dynamic Group OCID","Matching Statement","Rule Component","DG In Use", "Invalid OCIDs", "Creation Time")
     )
     
     sheet_dynamic_group.set_options(auto_resize_columns=150)
@@ -828,7 +813,7 @@ if __name__ == "__main__":
     frm_filter.grid(row=0, column=0, sticky="nsew")
     separator.grid(row=1, column=0, sticky="nsew")
     frm_output.grid(row=2, column=0, sticky="nsew")
-    #frm_actions.grid(row=2, column=0, sticky="nsew")
+    frm_actions.grid(row=3, column=0, sticky="nsew")
     frm_policy.pack(expand=True, fill=tk.BOTH)
     frm_policy_top.pack(expand=False, fill=tk.BOTH)
     frm_policy_bottom.pack(expand=True, fill=tk.BOTH, side=tk.TOP)
@@ -836,7 +821,7 @@ if __name__ == "__main__":
     frm_dyn_group_actions.pack(expand=False, fill=tk.BOTH)
     frm_dyn_group_output.pack(expand=True, fill=tk.BOTH)
  
-    # Work Items Tab
+    # # Work Items Tab
     text_work = ttk.Text(master=tab_work_items, font="TkFixedFont")
     text_work.pack(expand=True, fill=tk.BOTH)
 
@@ -847,7 +832,8 @@ if __name__ == "__main__":
     progress = Progress(progress_val=0)
     policy_analysis = PolicyAnalysis(progress=progress,
                                      verbose=verbose)
-    dyn_group_analysis = DynamicGroupAnalysis(progress=progress, verbose=False)
+    dyn_group_analysis = DynamicGroupAnalysis(progress=progress, 
+                                              verbose=verbose)
 
     # Start updating Progress Meter, using loop
     update_progress()

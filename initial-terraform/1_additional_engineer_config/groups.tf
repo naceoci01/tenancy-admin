@@ -17,6 +17,7 @@ data "oci_identity_domains_group" "ce-group" {
   attribute_sets = ["all"]
 }
 
+# Existing ID Domain
 data "oci_identity_domain" "ce-domain" {
   domain_id = var.domain_id
 }
