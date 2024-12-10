@@ -1,0 +1,19 @@
+# Title shown in Application Information tab.
+title: Admin
+# Sub Title shown in Application Information tab.
+description: Create admin compartments inside the tenancy.
+informationalText: Only for Admins
+schemaVersion: 1.1.0
+version: "20190304"
+
+locale: "en"
+variableGroups:
+  - title: "Hidden Variables" 
+    visible: false
+    variables:
+      - tenancy_ocid
+      - user_ocid
+      - fingerprint
+      - private_key_path
+      - region
+      - private_key_password

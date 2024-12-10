@@ -19,7 +19,8 @@ locals {
     )
     compute_quota_statements = concat(
         [
-            "zero compute quota in compartment ${data.oci_identity_compartment.cloud-eng-comp.name}"
+            "zero compute-core quota in compartment ${data.oci_identity_compartment.cloud-eng-comp.name}",
+            "zero compute-memory quota in compartment ${data.oci_identity_compartment.cloud-eng-comp.name}"
         ],
         [
             for comp in local.comp_names: "set compute-memory quota /standard-*/ to 120 in compartment ${data.oci_identity_compartment.cloud-eng-comp.name}:${comp}"

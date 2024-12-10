@@ -4,22 +4,6 @@ locals {
 
   # Keys
   cloud_engineering_domain_key         = "CLOUD-ENGINEERS-DOMAIN"
-  cloud_engineering_group_key         = "CLOUD-ENGINEERS-GROUP"
-  cloud_engineering_group_description = "Group for all users that are Cloud Engineers (CE) in group ${var.domain_name}-users"
-
-  # Groups
-  cloud_engineers_group = {
-    (local.cloud_engineering_group_key) = {
-      identity_domain_id = module.cislz_identity_domains.identity_domains.CLOUD-ENGINEERS-DOMAIN.id
-      name               = "${var.domain_name}-users"
-      description        = local.cloud_engineering_group_description
-    }
-  }
-
-  # Merge all groups
-  identity_domain_groups_configuration = {
-    groups : merge(local.cloud_engineers_group)
-  }
 
   identity_domains_configuration = {
     # default_compartment_id : "TENANCY-ROOT",

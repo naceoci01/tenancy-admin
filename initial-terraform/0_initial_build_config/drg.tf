@@ -1,6 +1,6 @@
 locals {
     network_configuration = {
-        default_compartment_id = var.tenancy_ocid,
+        default_compartment_id = "${module.cislz_compartments.compartments.SHARED-CMP.id}",
         network_configuration_categories = var.use_drg ? {
             production = {
                 non_vcn_specific_gateways = {
