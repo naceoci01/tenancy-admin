@@ -1,7 +1,7 @@
 # Title shown in Application Information tab.
 title: Admin
 # Sub Title shown in Application Information tab.
-description: Create admin compartments inside the tenancy.
+description: Create admin compartment inside the tenancy.
 informationalText: Only for Admin compartment at the moment
 schemaVersion: 1.1.0
 version: "20190304"
