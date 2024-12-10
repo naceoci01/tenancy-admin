@@ -1,7 +1,7 @@
 # Title shown in Application Information tab.
 title: Cloud Engineering Main
 # Sub Title shown in Application Information tab.
-description: Create all of the compartments, basic dynamic groups, and policies needed to have a cloud-engineering structure inside the tenancy.
+description: For each engineer in main CE group, create a compartment, dynamic group, and quota policies to allow them to operate.
 informationalText: Groups and Dynamic Groups will be located inside of the non-default Identity Domain.
 schemaVersion: 1.1.0
 version: "20190304"
