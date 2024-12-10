@@ -10,4 +10,4 @@ variable "private_key_path" { default = "" }
 variable "private_key_password" { default = "" }
 
 # Required Inputs
-variable "network_configuration" {}
+# variable "network_configuration" {}
