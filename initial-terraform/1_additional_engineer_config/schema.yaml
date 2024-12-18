@@ -15,6 +15,9 @@ variableGroups:
   - title: "Root Compartment Configuration"
     variables:
       - cloud_engineering_root_compartment_ocid
+  - title: "Quota Configuration"
+    variables:
+      - per-engineer-vcn-quota
   - title: "Hidden Variables" 
     visible: false
     variables:
@@ -40,3 +43,8 @@ variables:
     title: Engineer Group ID (IDCS)
     description: You need to get this from the API, it is not the OCID
     type: string
+
+  per-engineer-vcn-quota:
+    title: Per Engineer VCN Quota
+    description: Number of VCNs an engineer can create within their own compartment
+    type: int

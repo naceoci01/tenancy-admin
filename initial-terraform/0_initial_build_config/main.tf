@@ -31,11 +31,6 @@ module "cislz_identity_domains" {
   identity_domain_dynamic_groups_configuration  = local.identity_domain_dynamic_groups_configuration
 }
 
-module "terraform-oci-landing-zone-networking" {
-  source = "github.com/oci-landing-zones/terraform-oci-modules-networking"
-  network_configuration = local.network_configuration
-}
-
 # See vaults.tf for vaults_configuration
 module "cislz_vaults" {
   source = "github.com/oracle-quickstart/terraform-oci-cis-landing-zone-security/vaults"

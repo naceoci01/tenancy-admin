@@ -17,7 +17,7 @@ variable "domain_id" {
 
 variable "engineer_group_name" {
     description = "Name of shared engineer group"
-    default = "cloud-engineering-users"
+    default = "cloud-engineering-domain-users"
 }
 
 variable "engineer_compartment_base_name" { 
@@ -25,15 +25,18 @@ variable "engineer_compartment_base_name" {
     default = "cloud-engineering"
 }
 
-variable "use_drg" {
-    type = bool
-    description = "Whether to create a DRG"
-}
-variable "rpc_peer_ocid" {
-    description = "OCID of RPC Peering Connection (optional)"
-    default = null
-}
-variable "rpc_peer_region" {
-    description = "OCID of RPC Peering Connection (optional)"
-    default = null
-}
+# variable "use_drg" {
+#     type = bool
+#     description = "Whether to create a DRG"
+# }
+# variable "rpc_peer_ocid" {
+#     description = "OCID of RPC Peering Connection (optional)"
+#     default = null
+# }
+# variable "rpc_peer_attachment_name" {
+#     description = "Name of the attachment"
+# }
+# variable "rpc_peer_region" {
+#     description = "OCID of RPC Peering Connection (optional)"
+#     default = null
+# }

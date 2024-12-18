@@ -9,6 +9,8 @@ locals {
     osmh_dynamic_group_name = "all-osmh-instances"
     adb_dynamic_group_key = "ADB-DYN-GROUP"
     adb_dynamic_group_name = "all-adb-instances"
+    stackmon_dynamic_group_key = "STACKMON-DYN-GROUP"
+    stackmon_dynamic_group_name = "all-stackmon-instances"
 
     # Dynamic Groups
     all_dynamic_groups = {
@@ -16,17 +18,19 @@ locals {
             identity_domain_id = var.domain_id
             name          = local.osmh_dynamic_group_name
             description   = "Allows any instance to be an OSMH instance"
-            matching_rule = "resource.type='managementagent'"
-            defined_tags  = {}
-            freeform_tags = {}
+            matching_rule = "ANY {ALL {resource.type='managementagent', resource.compartment.id != 'xxxx'}, instance.compartment.id != 'xxxx'}"
         },
         (local.adb_dynamic_group_key) = {
             identity_domain_id = var.domain_id
             name          = local.adb_dynamic_group_name
-            description   = "Allows any ADB instance to be part of this DG"
+            description   = "Allows any instance to be an ADB instance - Resource Principal"
             matching_rule = "resource.type='autonomousdatabase'"
-            defined_tags  = {}
-            freeform_tags = {}
+        },
+        (local.stackmon_dynamic_group_key) = {
+            identity_domain_id = var.domain_id
+            name          = local.stackmon_dynamic_group_name
+            description   = "Allows any Stackmon instance to be part of this DG"
+            matching_rule = "ANY {ALL {resource.type='managementagent', resource.compartment.id !='xxxx'}, ALL {instance.compartment.id != 'xxxx'} }"
         }    }
     
     # Merge all DGs into one config

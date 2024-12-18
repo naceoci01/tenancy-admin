@@ -7,7 +7,7 @@ module "cislz_compartments" {
   compartments_configuration = local.compartments_configuration
 }
 
-# module "terraform-oci-landing-zone-networking" {
-#   source = "github.com/oci-landing-zones/terraform-oci-modules-networking"
-#   network_configuration = var.network_configuration
-# }
+module "terraform-oci-landing-zone-networking" {
+  source = "github.com/oci-landing-zones/terraform-oci-modules-networking"
+  network_configuration = local.network_configuration
+}

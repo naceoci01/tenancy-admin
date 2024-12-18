@@ -8,7 +8,7 @@ locals {
             description = "Top level compartment for all cloud engineers",
         },
         SPECIAL-CMP = {
-            name = "${var.engineer_compartment_base_name}-projects", 
+            name = "xx-${var.engineer_compartment_base_name}-projects", 
             description = "Special project compartments", 
         },
         SHARED-CMP = {

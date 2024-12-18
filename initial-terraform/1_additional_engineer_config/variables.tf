@@ -25,3 +25,8 @@ variable "cloud_engineering_groupid" {
     description = "This group ID is NOT an OCID.  It is found via API and it is the IDCS ID"
     default = "cf91a190f2584c65bcf29360fd17c277"
 }
+
+variable "per-engineer-vcn-quota" {
+    type = number
+    description = "Number of VCNs allowed per engineer"
+}
