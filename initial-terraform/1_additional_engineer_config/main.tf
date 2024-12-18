@@ -17,8 +17,8 @@ module "cislz_compartments" {
   compartments_configuration = local.compartments_configuration
 }
 
-module "cislz_identity_domains" {
-  source       = "github.com/oracle-quickstart/terraform-oci-cis-landing-zone-iam/identity-domains"
-  tenancy_ocid                                  = var.tenancy_ocid
-  identity_domain_dynamic_groups_configuration  = local.identity_domain_dynamic_groups_configuration
-}
+# module "cislz_identity_domains" {
+#   source       = "github.com/oracle-quickstart/terraform-oci-cis-landing-zone-iam/identity-domains"
+#   tenancy_ocid                                  = var.tenancy_ocid
+#   identity_domain_dynamic_groups_configuration  = local.identity_domain_dynamic_groups_configuration
+# }
