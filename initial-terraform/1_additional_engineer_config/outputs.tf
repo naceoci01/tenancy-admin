@@ -5,10 +5,10 @@
 #   value = module.cislz_compartments.compartments
 # }
 
-output "identity-domain-dynamic-groups" {
-  description = "The identity domain groups."
-  value       = module.cislz_identity_domains.identity_domain_dynamic_groups
-}
+# output "identity-domain-dynamic-groups" {
+#   description = "The identity domain groups."
+#   value       = module.cislz_identity_domains.identity_domain_dynamic_groups
+# }
 
 # output "oci_identity_domains_group" {
 #   value = oci_identity_domains_group.ce-group
