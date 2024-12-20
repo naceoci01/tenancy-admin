@@ -49,4 +49,4 @@ variables:
     title: Name of IAM group for engineers
     type: string
     description: Change as necessary
-    default: cloud-engineering-users
+    default: cloud-engineering-domain-users

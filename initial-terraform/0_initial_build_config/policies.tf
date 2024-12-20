@@ -12,7 +12,8 @@ locals {
       description : "Cloud Engineers IAM permissions"
       compartment_id : "TENANCY-ROOT" # Instead of an OCID, you can replace it with the string "TENANCY-ROOT" for attaching the policy to the Root compartment.
       statements : [
-        "allow group '${local.cloud_engineering_domain_name}'/'${var.engineer_group_name}' to manage dynamic-groups in tenancy where target.resource.domain.name='cloud-engineer-domain' //Allows Cloud Engineers only to modify DG within their domain",
+        "allow group '${local.cloud_engineering_domain_name}'/'${var.engineer_group_name}' to manage dynamic-groups in tenancy where ALL { target.resource.domain.name='${local.cloud_engineering_domain_name}', request.permission != 'DYNAMIC_GROUP_DELETE' } //Allows Cloud Engineers only to modify DG within their domain",
+        "allow group '${local.cloud_engineering_domain_name}'/'${var.engineer_group_name}' to manage policies in compartment ${local.core_policy_engineer_compartment} //Allows Cloud Engineers only to manage policies in CE hierarchy",
         "allow group '${local.cloud_engineering_domain_name}'/'${var.engineer_group_name}' to inspect compartments in tenancy //Allows Cloud Engineers only to list compartments",
         "allow group '${local.cloud_engineering_domain_name}'/'${var.engineer_group_name}' to read quotas in tenancy //Allows Cloud Engineers see quotas"
       ]
@@ -22,13 +23,16 @@ locals {
       description : "Cloud Engineers Service Enablement permissions"
       compartment_id : "TENANCY-ROOT"
       statements : [
+        "allow group ${local.core_policy_group_name} to use loganalytics-resources-family in tenancy //Allows Cloud Engineers to use Logging Analytics",
+        "allow group ${local.core_policy_group_name} to use loganalytics-features-family in tenancy //Allows Cloud Engineers to use Logging Analytics",
         "allow group ${local.core_policy_group_name} to manage loganalytics-resources-family in compartment ${local.core_policy_engineer_compartment} //Allows Cloud Engineers to work Logging Analytics",
         "allow group ${local.core_policy_group_name} to manage loganalytics-features-family in compartment ${local.core_policy_engineer_compartment} //Allows Cloud Engineers to work Logging Analytics",
-        "allow group ${local.core_policy_group_name} to read loganalytics-features-family in tenancy //Allows Cloud Engineers to see Logging Analytics features tenancy-wide",
         "allow group ${local.core_policy_group_name} to manage serviceconnectors in compartment ${local.core_policy_engineer_compartment} //Allows Cloud Engineers to use Service Connector Hub",
+        "allow group ${local.core_policy_group_name} to manage stream-family in compartment ${local.core_policy_engineer_compartment} //Allows Cloud Engineers to use OCI Streaming",
         "allow group ${local.core_policy_group_name} to manage logging-family in compartment ${local.core_policy_engineer_compartment} //Allows Cloud Engineers to use OCI Logging",
         "allow group ${local.core_policy_group_name} to manage email-family in compartment ${local.core_policy_engineer_compartment} //Allows Cloud Engineers to use email",
         "allow group ${local.core_policy_group_name} to manage ons-family in compartment ${local.core_policy_engineer_compartment} //Allows Cloud Engineers to use notifications and topics",
+        "allow group ${local.core_policy_group_name} to manage cloudevents-rules in compartment ${local.core_policy_engineer_compartment} //Allows Cloud Engineers to use Event Rules",
         "allow group ${local.core_policy_group_name} to manage cloud-guard-family in compartment ${local.core_policy_engineer_compartment} //Allows Cloud Engineers to use Cloud Guard",
         "allow group ${local.core_policy_group_name} to manage orm-family in compartment ${local.core_policy_engineer_compartment} //Allows Cloud Engineers to use ORM Stacks",
         "allow group ${local.core_policy_group_name} to read work-requests in tenancy //Required tenancy-level for KMS Vaults",
@@ -67,8 +71,12 @@ locals {
         "allow group ${local.core_policy_group_name} to manage autonomous-database-family in compartment ${local.core_policy_engineer_compartment} //Allow CE to work with all Autonomous main CE compartment",
         "allow group ${local.core_policy_group_name} to read dbmgmt-family in tenancy //Allow CE to see all DBMgmt resources tenancy-wide",
         "allow group ${local.core_policy_group_name} to manage dbmgmt-family in compartment ${local.core_policy_engineer_compartment} where ALL { request.permission != 'DBMGMT_PRIVATE_ENDPOINT_DELETE', request.permission != 'DBMGMT_PRIVATE_ENDPOINT_CREATE', request.permission != 'DBMGMT_PRIVATE_ENDPOINT_UPDATE' } //Allow CE to use almost all DBMgmt in CE Compartment",
-        "allow group ${local.core_policy_group_name} to manage dbmgmt-family in compartment ${local.core_policy_shared_compartment}:exacs where ALL { request.permission != 'DBMGMT_PRIVATE_ENDPOINT_DELETE', request.permission != 'DBMGMT_PRIVATE_ENDPOINT_CREATE', request.permission != 'DBMGMT_PRIVATE_ENDPOINT_UPDATE' } //Allow CE touse almost all DBMgmt in ExaCS Compartment",
-        # "allow group 'cloud-engineering-domain'/'cloud-engineering-domain-users' to manage database-tools-connections in compartment cloud-engineering //Allow CE to work with SQL worksheets in main CE compartment"
+        "allow group ${local.core_policy_group_name} to manage dbmgmt-family in compartment ${local.core_policy_shared_compartment}:exacs where ALL { request.permission != 'DBMGMT_PRIVATE_ENDPOINT_DELETE', request.permission != 'DBMGMT_PRIVATE_ENDPOINT_CREATE', request.permission != 'DBMGMT_PRIVATE_ENDPOINT_UPDATE' } //Allow CE to use almost all DBMgmt in ExaCS Compartment",
+        "allow group ${local.core_policy_group_name} to manage data-safe-family in compartment ${local.core_policy_engineer_compartment} //Allow CE to use Data Safe in Main CE Compartment",
+        "allow group ${local.core_policy_group_name} to manage data-safe-family in compartment ${local.core_policy_shared_compartment}:exacs //Allow CE to use Data Safe in ExaCS Compartment",
+        "allow group ${local.core_policy_group_name} to manage database-tools-connections in compartment cloud-engineering //Allow CE to work with SQL worksheets in main CE compartment",
+        "allow group ${local.core_policy_group_name} to manage database-tools-connections in compartment ${local.core_policy_shared_compartment}:exacs //Allow CE to work with SQL worksheets in ExaCS compartment",
+        "Allow service dpd to read secret-family in compartment ${local.core_policy_shared_compartment} //Service Permission for Database management",
       ]
     },
     "CE-SEC-POLICY" : {
@@ -125,8 +133,6 @@ locals {
         "allow group ${local.core_policy_group_name} to read process-automation-instances in compartment ${local.core_policy_shared_compartment}:OIC //Allow OIC Admins to manage all Process Automation",
         "allow group ${local.core_policy_group_name} to read metrics in compartment ${local.core_policy_shared_compartment}:OIC //Allow OIC Admins to read all metrics in OIC",
         "allow group ${local.core_policy_group_name} to read visualbuilder-instance in compartment ${local.core_policy_shared_compartment}:OIC //Allow OIC Admins to manage VBCS",
-        # "allow group ${local.core_policy_group_name} to use integration-instance in compartment ${local.core_policy_shared_compartment}:OIC //Allow CE to use all shared OIC",
-        # "allow group ${local.core_policy_group_name} to use integration-instance in compartment ${local.core_policy_shared_compartment}:OIC //Allow CE to use all shared OIC",
       ]
     },
     "CE-EXACS-POLICY" : {
@@ -138,14 +144,15 @@ locals {
         "allow group ${local.core_policy_group_name} to manage autonomous-databases in compartment ${local.core_policy_shared_compartment}:exacs //ADB access for ADB-Dedicated",        
         "allow group ${local.core_policy_group_name} to read virtual-network-family in compartment ${local.core_policy_shared_compartment}:exacs //Allow CE to see all ExaCS VCN Resources",        
         "allow group ${local.core_policy_group_name} to manage databases in compartment ${local.core_policy_shared_compartment}:exacs //Allow CE to manage databases Resources",
+        "allow group ${local.core_policy_group_name} to manage pluggable-databases in compartment ${local.core_policy_shared_compartment}:exacs //Allow CE to manage databases Resources",
         "allow group ${local.core_policy_group_name} to use db-homes in compartment ${local.core_policy_shared_compartment}:exacs //Allow CE to use database home Resources",
         "allow group ${local.core_policy_group_name} to use cloud-vmclusters in compartment ${local.core_policy_shared_compartment}:exacs //Allow CE to create databases in VM Cluster",
         "allow group ${local.core_policy_group_name} to manage backups in compartment ${local.core_policy_shared_compartment}:exacs //Allow CE to manage database backups for ExaCS",
+        "allow group ${local.core_policy_group_name} to read metrics in compartment ${local.core_policy_shared_compartment}:exacs //Allow CE see Metrics for ExaCS",
         "allow group ${local.core_policy_group_name} to read loganalytics-resources-family in compartment ${local.core_policy_shared_compartment}:exacs //Allow CE see any Logging Analytics for ExaCS",
         "allow group ${local.core_policy_group_name} to manage vnics in compartment ${local.core_policy_shared_compartment}:exacs //Allow CE to use DBMGMT for ExaCS",
         "allow group ${local.core_policy_group_name} to use subnets in compartment ${local.core_policy_shared_compartment}:exacs //Allow CE to use DBMGMT for ExaCS",
         "allow group ${local.core_policy_group_name} to use network-security-groups in compartment ${local.core_policy_shared_compartment}:exacs //Allow CE to use DBMGMT for ExaCS",
-        "Allow service dpd to read secret-family in compartment ${local.core_policy_shared_compartment} //Service Permission for Database management",
         "Allow service dpd to read secret-family in compartment ${local.core_policy_engineer_compartment} //Service Permission for Database management"
         # move this
       ]
@@ -169,6 +176,18 @@ locals {
         "ALLOW DYNAMIC-GROUP all-stackmon-instances TO {INSTANCE_UPDATE} IN COMPARTMENT ${local.core_policy_engineer_compartment} where request.instance.id = target.instance.id",
         "ALLOW GROUP ${local.core_policy_engineer_compartment} TO READ tag-namespaces IN TENANCY",
         "ALLOW GROUP ${local.core_policy_engineer_compartment} TO READ tag-defaults IN TENANCY"
+      ]
+    },
+    "CE-GENAI-POLICY" : {
+      name : "cloud-engineering-GENAI-policy"
+      description : "Permissions for Generative AI"
+      compartment_id : "TENANCY-ROOT"
+      statements : [
+        "allow group ${local.core_policy_group_name} to use generative-ai-chat in compartment ${local.core_policy_engineer_compartment} //Allow CE to Use GenAI Chat",        
+        "allow group ${local.core_policy_group_name} to use generative-ai-text-generation in compartment ${local.core_policy_engineer_compartment} //Allow CE to Use GenAI Text",        
+        "allow group ${local.core_policy_group_name} to use generative-ai-text-summarization in compartment ${local.core_policy_engineer_compartment} //Allow CE to Use GenAI Text Summarization",        
+        "allow group ${local.core_policy_group_name} to use generative-ai-text-embedding in compartment ${local.core_policy_engineer_compartment} //Allow CE to Use GenAI Text Embedding",        
+        "allow group ${local.core_policy_group_name} to read generative-ai-work-request in compartment ${local.core_policy_engineer_compartment} //Allow CE to read GenAI Work requests",        
       ]
     },
   }
