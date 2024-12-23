@@ -9,10 +9,10 @@ output "compartments" {
 #   value       = module.cislz_identity_domains.identity_domain_groups
 # }
 
-# output "identity-domain-dynamic-groups" {
-#   description = "The identity domain groups."
-#   value       = module.cislz_identity_domains.identity_domain_dynamic_groups
-# }
+output "identity-domain-dynamic-groups" {
+  description = "The identity domain groups."
+  value       = module.cislz_identity_domains.identity_domain_dynamic_groups
+}
 
 output "policies" {
   value = module.cislz_policies.policies

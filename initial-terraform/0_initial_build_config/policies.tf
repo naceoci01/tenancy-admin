@@ -14,8 +14,11 @@ locals {
       statements : [
         "allow group '${local.cloud_engineering_domain_name}'/'${var.engineer_group_name}' to manage dynamic-groups in tenancy where ALL { target.resource.domain.name='${local.cloud_engineering_domain_name}', request.permission != 'DYNAMIC_GROUP_DELETE' } //Allows Cloud Engineers only to modify DG within their domain",
         "allow group '${local.cloud_engineering_domain_name}'/'${var.engineer_group_name}' to manage policies in compartment ${local.core_policy_engineer_compartment} //Allows Cloud Engineers only to manage policies in CE hierarchy",
-        "allow group '${local.cloud_engineering_domain_name}'/'${var.engineer_group_name}' to inspect compartments in tenancy //Allows Cloud Engineers only to list compartments",
-        "allow group '${local.cloud_engineering_domain_name}'/'${var.engineer_group_name}' to read quotas in tenancy //Allows Cloud Engineers see quotas"
+        "allow group '${local.cloud_engineering_domain_name}'/'${var.engineer_group_name}' to read policies in TENANCY //Allows Cloud Engineers only to read policies in entire tenancy",
+        "allow group '${local.cloud_engineering_domain_name}'/'${var.engineer_group_name}' to read domains in TENANCY //Allows Cloud Engineers only to read domains in entire tenancy",
+        "allow group '${local.cloud_engineering_domain_name}'/'${var.engineer_group_name}' to read dynamic-groups in TENANCY //Allows Cloud Engineers only to read DG in entire tenancy",
+        "allow group '${local.cloud_engineering_domain_name}'/'${var.engineer_group_name}' to inspect compartments in TENANCY //Allows Cloud Engineers only to list compartments",
+        "allow group '${local.cloud_engineering_domain_name}'/'${var.engineer_group_name}' to read quotas in TENANCY //Allows Cloud Engineers see quotas"
       ]
     },
     "CE-SERVICES-POLICY" : {
@@ -94,6 +97,8 @@ locals {
         "allow group ${local.core_policy_group_name} to manage secret-family in compartment ${local.core_policy_engineer_compartment} //Allow CE to manage secrets in main CE compartment",
         "allow group ${local.core_policy_group_name} to use key-delegate in compartment ${local.core_policy_shared_compartment} //Allow CE to use key-delegate in shared CE compartment",
         "allow service keymanagementservice to manage vaults in tenancy //Required tenancy-level for KMS Vaults",
+        "allow dynamic-group '${local.cloud_engineering_domain_name}'/'${local.certificate_dynamic_group_name}' to use keys in compartment ${local.core_policy_shared_compartment} //Allows certificate Service access to shared vault",
+        "allow dynamic-group '${local.cloud_engineering_domain_name}'/'${local.certificate_dynamic_group_name}' to manage objects in compartment ${local.core_policy_shared_compartment} //Allows certificate Service access to shared vault and OSS",
       ]
     },
     "CE-OSMH-INST-POLICY" : {
@@ -110,6 +115,21 @@ locals {
         "allow dynamic-group '${local.cloud_engineering_domain_name}'/'${local.osmh_dynamic_group_name}' to {APPMGMT_MONITORED_INSTANCE_READ, APPMGMT_MONITORED_INSTANCE_ACTIVATE} in compartment ${module.cislz_compartments.compartments.CLOUD-ENG.name} where request.instance.id = target.monitored-instance.id",
         "allow dynamic-group '${local.cloud_engineering_domain_name}'/'${local.osmh_dynamic_group_name}' to {INSTANCE_READ, INSTANCE_UPDATE} in compartment ${module.cislz_compartments.compartments.CLOUD-ENG.name} where request.instance.id = target.instance.id",
         "allow dynamic-group '${local.cloud_engineering_domain_name}'/'${local.osmh_dynamic_group_name}' to {APPMGMT_WORK_REQUEST_READ, INSTANCE_AGENT_PLUGIN_INSPECT} in compartment ${module.cislz_compartments.compartments.CLOUD-ENG.name}",
+      ]
+    },
+    "CE-WLS-INST-POLICY" : {
+      name : "cloud-engineering-WLS-DG-policy"
+      description : "Cloud Engineers WebLogic Stack permissions"
+      compartment_id : "TENANCY-ROOT"
+      statements : [
+        "allow dynamic-group all-instances read secret-bundles in compartment ${local.core_policy_shared_compartment} //WLS Instances to read secrets",
+        "allow dynamic-group all-instances manage instance-family in compartment ${local.core_policy_engineer_compartment} //WLS Instances to manage instances",
+        "allow dynamic-group all-instances manage volume-family in compartment ${local.core_policy_engineer_compartment} //WLS Instances to manage volumes",
+        "allow dynamic-group all-instances manage virtual-network-family in compartment ${local.core_policy_engineer_compartment} //WLS Instances to manage VCNs",
+        "allow dynamic-group all-instances manage load-balancers in compartment ${local.core_policy_engineer_compartment} //WLS Instances to manage LB",
+        "allow dynamic-group all-instances inspect database-family in compartment ${local.core_policy_engineer_compartment} //WLS Instances to see DB resources",
+        "allow dynamic-group all-instances use autonomous-transaction-processing-family in compartment ${local.core_policy_engineer_compartment} //WLS Instances to use ATP",
+        "allow dynamic-group all-instances use logging-family in compartment ${local.core_policy_engineer_compartment} //WLS Instances to use Logging",
       ]
     },
     "CE-ADB-POLICY" : {
