@@ -5,7 +5,7 @@ locals {
 
         vaults = {
             CLOUD-ENGINEERING-VAULT = {
-                name = "${var.engineer_compartment_base_name}-shared-vault"
+                name = "${var.engineer_compartment_base_name}-shared-vault-phx"
             }
         }
     } 
