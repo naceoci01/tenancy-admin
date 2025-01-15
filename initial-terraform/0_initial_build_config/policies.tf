@@ -131,6 +131,11 @@ locals {
         "allow service faas to read repos in tenancy where request.operation='ListContainerImageSignatures' //Allow FAAS to read repos",
         "allow service faas to {KEY_READ} in tenancy where request.operation='GetKeyVersion' //Allow FAAS to read keys",
         "allow service faas to {KEY_VERIFY} in tenancy where request.operation='Verify' //Allow FAAS to verify keys",
+        "allow dynamic-group '${local.cloud_engineering_domain_name}'/'${local.func_dynamic_group_name}' to manage object-family in compartment ${local.core_policy_engineer_compartment} //Allow Functions DG to manage OSS in main CE compartment",
+        "allow dynamic-group '${local.cloud_engineering_domain_name}'/'${local.func_dynamic_group_name}' to manage ons-family in compartment ${local.core_policy_engineer_compartment} //Allow Functions DG to manage OSS in main CE compartment",
+        "allow dynamic-group '${local.cloud_engineering_domain_name}'/'${local.func_dynamic_group_name}' to manage object-family in compartment ${local.core_policy_engineer_compartment} //Allow Functions DG to manage OSS in main CE compartment",
+        "allow dynamic-group '${local.cloud_engineering_domain_name}'/'${local.func_dynamic_group_name}' to use secret-family in compartment ${local.core_policy_engineer_compartment} //Allow Functions DG use keys OSS in main CE compartment",
+        "allow dynamic-group '${local.cloud_engineering_domain_name}'/'${local.func_dynamic_group_name}' to use secret-family in compartment ${local.core_policy_shared_compartment} //Allow Functions DG to use keys in shared CE compartment",
       ]
     },
     "CE-GG-POLICY" : {
