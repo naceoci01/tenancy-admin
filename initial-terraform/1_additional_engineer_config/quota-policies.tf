@@ -28,6 +28,9 @@ locals {
         [
             for comp in local.comp_names: "set compute-core quota /standard-*/ to 8 in compartment ${data.oci_identity_compartment.cloud-eng-comp.name}:${comp}"
         ],
+        [
+            for comp in local.comp_names: "set container-engine quota virtual-node-count to 3 in compartment ${data.oci_identity_compartment.cloud-eng-comp.name}:${comp}"
+        ],
     )
     storage_quota_statements = concat(
         [

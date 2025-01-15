@@ -18,7 +18,8 @@ locals {
         "allow group '${local.cloud_engineering_domain_name}'/'${var.engineer_group_name}' to read domains in TENANCY //Allows Cloud Engineers only to read domains in entire tenancy",
         "allow group '${local.cloud_engineering_domain_name}'/'${var.engineer_group_name}' to read dynamic-groups in TENANCY //Allows Cloud Engineers only to read DG in entire tenancy",
         "allow group '${local.cloud_engineering_domain_name}'/'${var.engineer_group_name}' to inspect compartments in TENANCY //Allows Cloud Engineers only to list compartments",
-        "allow group '${local.cloud_engineering_domain_name}'/'${var.engineer_group_name}' to read quotas in TENANCY //Allows Cloud Engineers see quotas"
+        "allow group '${local.cloud_engineering_domain_name}'/'${var.engineer_group_name}' to read quotas in TENANCY //Allows Cloud Engineers see quotas",
+        "allow group '${local.cloud_engineering_domain_name}'/'${var.engineer_group_name}' to read resource-availability in tenancy //Allows Cloud Engineers to view service limits tenancy-wide"
       ]
     },
     "CE-SERVICES-POLICY" : {
@@ -121,7 +122,7 @@ locals {
     },
     "CE-FUNC-POLICY" : {
       name : "cloud-engineering-FUNCTIONS-policy"
-      description : "Cloud Engineers Security permissions"
+      description : "Cloud Engineers Functions permissions"
       compartment_id : "TENANCY-ROOT"
       statements : [
         "allow group ${local.core_policy_group_name} to manage repos in compartment ${local.core_policy_engineer_compartment} //Allow CE to manage all Container Repos in main CE compartment",
@@ -130,6 +131,18 @@ locals {
         "allow service faas to read repos in tenancy where request.operation='ListContainerImageSignatures' //Allow FAAS to read repos",
         "allow service faas to {KEY_READ} in tenancy where request.operation='GetKeyVersion' //Allow FAAS to read keys",
         "allow service faas to {KEY_VERIFY} in tenancy where request.operation='Verify' //Allow FAAS to verify keys",
+      ]
+    },
+    "CE-GG-POLICY" : {
+      name : "cloud-engineering-GOLDENGATE-policy"
+      description : "Cloud Engineers GOldenGate permissions"
+      compartment_id : "TENANCY-ROOT"
+      statements : [
+        "allow group ${local.core_policy_group_name} to manage goldengate-family in compartment ${local.core_policy_engineer_compartment} //Allow CE to manage all GoldenGate in main CE compartment",
+        "allow dynamic-group '${local.cloud_engineering_domain_name}'/'${local.gg_dynamic_group_name}' to use keys in compartment ${local.core_policy_shared_compartment} //Allow GG DG to use keys in shared CE compartment",
+        "allow dynamic-group '${local.cloud_engineering_domain_name}'/'${local.gg_dynamic_group_name}' to use vault in compartment ${local.core_policy_shared_compartment} //Allow GG DG to use keys in shared CE compartment",
+        "allow dynamic-group '${local.cloud_engineering_domain_name}'/'${local.gg_dynamic_group_name}' to manage object-family in compartment ${local.core_policy_engineer_compartment} //Allow GG DG to manage OSS in main CE compartment",
+        "allow service goldengate to {idcs_user_viewer, domain_resources_viewer} in tenancy //GG Service to see domains",
       ]
     },
     "CE-OSMH-INST-POLICY" : {

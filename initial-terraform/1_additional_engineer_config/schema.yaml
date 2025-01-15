@@ -48,3 +48,4 @@ variables:
     title: Per Engineer VCN Quota
     description: Number of VCNs an engineer can create within their own compartment
     type: int
+    default: 2

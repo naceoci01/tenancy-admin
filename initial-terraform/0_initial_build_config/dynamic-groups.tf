@@ -13,6 +13,8 @@ locals {
   stackmon_dynamic_group_name    = "all-stackmon-instances"
   certificate_dynamic_group_key  = "CERT-AUTH-DYN-GROUP"
   certificate_dynamic_group_name = "CertificateAuthority-DG"
+  gg_dynamic_group_key         = "GG-DYN-GROUP"
+  gg_dynamic_group_name        = "all-goldengate-deployments-DG"
 
   # Dynamic Groups
   all_dynamic_groups = {
@@ -39,6 +41,12 @@ locals {
       name               = local.certificate_dynamic_group_name
       description        = "For use by Certificates Service - creating a CA"
       matching_rule      = "resource.type='certificateauthority'"
+    },
+    (local.gg_dynamic_group_key) = {
+      identity_domain_id = var.domain_id
+      name               = local.gg_dynamic_group_name
+      description        = "Defines all GoldenGate Deployments"
+      matching_rule      = "resource.type = 'goldengatedeployment'"
     }
   }
 
