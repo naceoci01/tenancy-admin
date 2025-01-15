@@ -50,7 +50,10 @@ locals {
         ],
         [
             for comp in local.comp_names: "set vcn quota vcn-count to 2 in compartment ${data.oci_identity_compartment.cloud-eng-comp.name}:${comp}"
-        ]      
+        ],
+        [
+            for comp in local.comp_names: "set vcn quota reserved-public-ip-count to 2 in compartment ${data.oci_identity_compartment.cloud-eng-comp.name}:${comp}"
+        ]    
     )
 }
 
