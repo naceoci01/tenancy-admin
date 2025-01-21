@@ -78,6 +78,11 @@ locals {
       compartment_id : "TENANCY-ROOT"
       statements : [
         "allow group ${local.core_policy_group_name} to manage autonomous-database-family in compartment ${local.core_policy_engineer_compartment} //Allow CE to work with all Autonomous main CE compartment",
+        "allow group ${local.core_policy_group_name} to manage db-systems in compartment ${local.core_policy_engineer_compartment} //Allow CE to work with all Base DB main CE compartment",
+        "allow group ${local.core_policy_group_name} to manage db-nodes in compartment ${local.core_policy_engineer_compartment} //Allow CE to work with all Base DB main CE compartment",
+        "allow group ${local.core_policy_group_name} to manage db-homes in compartment ${local.core_policy_engineer_compartment} //Allow CE to work with all Base DB main CE compartment",
+        "allow group ${local.core_policy_group_name} to manage db-backups in compartment ${local.core_policy_engineer_compartment} //Allow CE to work with all Base DB main CE compartment",
+        "allow group ${local.core_policy_group_name} to manage databases in compartment ${local.core_policy_engineer_compartment} //Allow CE to work with all Base DB main CE compartment",
         "allow group ${local.core_policy_group_name} to read dbmgmt-family in tenancy //Allow CE to see all DBMgmt resources tenancy-wide",
         "allow group ${local.core_policy_group_name} to manage dbmgmt-family in compartment ${local.core_policy_engineer_compartment} where ALL { request.permission != 'DBMGMT_PRIVATE_ENDPOINT_DELETE', request.permission != 'DBMGMT_PRIVATE_ENDPOINT_CREATE', request.permission != 'DBMGMT_PRIVATE_ENDPOINT_UPDATE' } //Allow CE to use almost all DBMgmt in CE Compartment",
         "allow group ${local.core_policy_group_name} to manage dbmgmt-family in compartment ${local.core_policy_shared_compartment}:exacs where ALL { request.permission != 'DBMGMT_PRIVATE_ENDPOINT_DELETE', request.permission != 'DBMGMT_PRIVATE_ENDPOINT_CREATE', request.permission != 'DBMGMT_PRIVATE_ENDPOINT_UPDATE' } //Allow CE to use almost all DBMgmt in ExaCS Compartment",
