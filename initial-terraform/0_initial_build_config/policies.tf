@@ -277,6 +277,7 @@ locals {
         "allow service rcs to manage recovery-service-family in tenancy",
         "allow service rcs to manage virtual-network-family in tenancy",
         "allow group ${local.core_policy_group_name} to manage recovery-service-subnet in compartment ${local.core_policy_engineer_compartment} //Allow CE to manage Recovery Subnets in CE Compartment",        
+        "allow group ${local.core_policy_group_name} to manage recovery-service-protected-database in compartment ${local.core_policy_engineer_compartment} //Allow CE to manage Recovery Subnets in CE Compartment",        
       ]
     },
 
