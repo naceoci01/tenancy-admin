@@ -93,22 +93,6 @@ locals {
         "Allow service dpd to read secret-family in compartment ${local.core_policy_shared_compartment} //Service Permission for Database management",
       ]
     },
-    "CE-DB-POLICY" : {
-      name : "cloud-engineering-DATABASE-policy"
-      description : "Cloud Engineers Database Service permissions"
-      compartment_id : "TENANCY-ROOT"
-      statements : [
-        "allow group ${local.core_policy_group_name} to manage autonomous-database-family in compartment ${local.core_policy_engineer_compartment} //Allow CE to work with all Autonomous main CE compartment",
-        "allow group ${local.core_policy_group_name} to read dbmgmt-family in tenancy //Allow CE to see all DBMgmt resources tenancy-wide",
-        "allow group ${local.core_policy_group_name} to manage dbmgmt-family in compartment ${local.core_policy_engineer_compartment} where ALL { request.permission != 'DBMGMT_PRIVATE_ENDPOINT_DELETE', request.permission != 'DBMGMT_PRIVATE_ENDPOINT_CREATE', request.permission != 'DBMGMT_PRIVATE_ENDPOINT_UPDATE' } //Allow CE to use almost all DBMgmt in CE Compartment",
-        "allow group ${local.core_policy_group_name} to manage dbmgmt-family in compartment ${local.core_policy_shared_compartment}:exacs where ALL { request.permission != 'DBMGMT_PRIVATE_ENDPOINT_DELETE', request.permission != 'DBMGMT_PRIVATE_ENDPOINT_CREATE', request.permission != 'DBMGMT_PRIVATE_ENDPOINT_UPDATE' } //Allow CE to use almost all DBMgmt in ExaCS Compartment",
-        "allow group ${local.core_policy_group_name} to manage data-safe-family in compartment ${local.core_policy_engineer_compartment} //Allow CE to use Data Safe in Main CE Compartment",
-        "allow group ${local.core_policy_group_name} to manage data-safe-family in compartment ${local.core_policy_shared_compartment}:exacs //Allow CE to use Data Safe in ExaCS Compartment",
-        "allow group ${local.core_policy_group_name} to manage database-tools-connections in compartment cloud-engineering //Allow CE to work with SQL worksheets in main CE compartment",
-        "allow group ${local.core_policy_group_name} to manage database-tools-connections in compartment ${local.core_policy_shared_compartment}:exacs //Allow CE to work with SQL worksheets in ExaCS compartment",
-        "Allow service dpd to read secret-family in compartment ${local.core_policy_shared_compartment} //Service Permission for Database management",
-      ]
-    },
     "CE-SEC-POLICY" : {
       name : "cloud-engineering-SECURITY-policy"
       description : "Cloud Engineers Security permissions"
