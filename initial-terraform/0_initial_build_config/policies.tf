@@ -262,6 +262,19 @@ locals {
         "allow group ${local.core_policy_group_name} to read generative-ai-work-request in compartment ${local.core_policy_engineer_compartment} //Allow CE to read GenAI Work requests",        
       ]
     },
+    "CE-ARS-POLICY" : {
+      name : "cloud-engineering-ARS-policy"
+      description : "Permissions for Autonomous Recovery Service"
+      compartment_id : "TENANCY-ROOT"
+      statements : [
+        "allow service database to manage recovery-service-family in tenancy",
+        "allow service database to manage tagnamespace in tenancy",
+        "allow service rcs to manage recovery-service-family in tenancy",
+        "allow service rcs to manage virtual-network-family in tenancy",
+        "allow group ${local.core_policy_group_name} to manage recovery-service-subnet in compartment ${local.core_policy_engineer_compartment} //Allow CE to manage Recovery Subnets in CE Compartment",        
+      ]
+    },
+
   }
 
   # Merge all policies
