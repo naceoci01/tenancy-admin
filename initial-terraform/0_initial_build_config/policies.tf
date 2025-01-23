@@ -18,7 +18,7 @@ locals {
         "allow group '${local.cloud_engineering_domain_name}'/'${var.engineer_group_name}' to read domains in TENANCY //Allows Cloud Engineers only to read domains in entire tenancy",
         "allow group '${local.cloud_engineering_domain_name}'/'${var.engineer_group_name}' to read dynamic-groups in TENANCY //Allows Cloud Engineers only to read DG in entire tenancy",
         "allow group '${local.cloud_engineering_domain_name}'/'${var.engineer_group_name}' to inspect compartments in TENANCY //Allows Cloud Engineers only to list compartments",
-        "allow group '${local.cloud_engineering_domain_name}'/'${var.engineer_group_name}' to manage compartments in ${local.core_policy_engineer_compartment} //Allows Cloud Engineers manage compartments within main CE Compartment",
+        "allow group '${local.cloud_engineering_domain_name}'/'${var.engineer_group_name}' to manage compartments in compartment ${local.core_policy_engineer_compartment} //Allows Cloud Engineers manage compartments within main CE Compartment",
         "allow group '${local.cloud_engineering_domain_name}'/'${var.engineer_group_name}' to read quotas in TENANCY //Allows Cloud Engineers see quotas",
         "allow group '${local.cloud_engineering_domain_name}'/'${var.engineer_group_name}' to read resource-availability in tenancy //Allows Cloud Engineers to view service limits tenancy-wide"
       ]
