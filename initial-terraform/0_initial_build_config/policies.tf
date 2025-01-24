@@ -252,6 +252,16 @@ locals {
         "allow group ${local.core_policy_group_name} to read generative-ai-work-request in compartment ${local.core_policy_engineer_compartment} //Allow CE to read GenAI Work requests",        
       ]
     },
+    "CE-AI-POLICY" : {
+      name : "cloud-engineering-AI-policy"
+      description : "Permissions for AI Services"
+      compartment_id : "TENANCY-ROOT"
+      statements : [
+        "allow group ${local.core_policy_group_name} to use ai-vision-family in compartment ${local.core_policy_engineer_compartment} //Allow CE to use Vision",        
+        "allow group ${local.core_policy_group_name} to manage ai-service-speech-family in compartment ${local.core_policy_engineer_compartment} //Allow CE to manage Speech",        
+        "allow group ${local.core_policy_group_name} to manage ai-service-language-family in compartment ${local.core_policy_engineer_compartment} //Allow CE to manage Language"     
+      ]
+    },
     "CE-ARS-POLICY" : {
       name : "cloud-engineering-ARS-policy"
       description : "Permissions for Autonomous Recovery Service"
