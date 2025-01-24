@@ -257,9 +257,10 @@ locals {
       description : "Permissions for AI Services"
       compartment_id : "TENANCY-ROOT"
       statements : [
-        "allow group ${local.core_policy_group_name} to use ai-vision-family in compartment ${local.core_policy_engineer_compartment} //Allow CE to use Vision",        
+        "allow group ${local.core_policy_group_name} to use ai-service-vision-family in compartment ${local.core_policy_engineer_compartment} //Allow CE to use Vision",        
         "allow group ${local.core_policy_group_name} to manage ai-service-speech-family in compartment ${local.core_policy_engineer_compartment} //Allow CE to manage Speech",        
-        "allow group ${local.core_policy_group_name} to manage ai-service-language-family in compartment ${local.core_policy_engineer_compartment} //Allow CE to manage Language"     
+        "allow group ${local.core_policy_group_name} to manage ai-service-language-family in compartment ${local.core_policy_engineer_compartment} //Allow CE to manage Language",     
+        "allow group ${local.core_policy_group_name} to manage ai-service-document-family in compartment ${local.core_policy_engineer_compartment} //Allow CE to manage Document Understanding"     
       ]
     },
     "CE-ARS-POLICY" : {
