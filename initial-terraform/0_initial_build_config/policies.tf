@@ -250,7 +250,10 @@ locals {
         "allow group ${local.core_policy_group_name} to use generative-ai-text-summarization in compartment ${local.core_policy_engineer_compartment} //Allow CE to Use GenAI Text Summarization",        
         "allow group ${local.core_policy_group_name} to use generative-ai-text-embedding in compartment ${local.core_policy_engineer_compartment} //Allow CE to Use GenAI Text Embedding",        
         "allow group ${local.core_policy_group_name} to read generative-ai-work-request in compartment ${local.core_policy_engineer_compartment} //Allow CE to read GenAI Work requests",        
-        "allow group ${local.core_policy_group_name} to manage genai-agent-family in compartment ${local.core_policy_engineer_compartment} //Allow CE to manage GenAI Agents"     
+        "allow group ${local.core_policy_group_name} to manage genai-agent-family in compartment ${local.core_policy_engineer_compartment} //Allow CE to manage GenAI Agents",
+        "allow dynamic-group '${local.cloud_engineering_domain_name}'/'${local.genai_agent_group_name}' to read objects in compartment ${local.core_policy_engineer_compartment} //DG Access to object storage",    
+        "allow dynamic-group '${local.cloud_engineering_domain_name}'/'${local.genai_agent_group_name}' to read database-tools-family in compartment ${local.core_policy_engineer_compartment} //DG Access to DB Tools",    
+        "allow dynamic-group '${local.cloud_engineering_domain_name}'/'${local.genai_agent_group_name}' to read secret-bundle in compartment ${local.core_policy_shared_compartment} //DG access to Vault secrets",    
       ]
     },
     "CE-AI-POLICY" : {

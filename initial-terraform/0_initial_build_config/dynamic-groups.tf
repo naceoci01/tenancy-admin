@@ -16,7 +16,9 @@ locals {
   gg_dynamic_group_key         = "GG-DYN-GROUP"
   gg_dynamic_group_name        = "all-goldengate-deployments-DG"
   func_dynamic_group_key         = "FUNC-DYN-GROUP"
-  func_dynamic_group_name        = "all-functions-DG"
+  func_dynamic_group_name        = "all-functions-DG"  
+  genai_agent_dynamic_group_key  = "GENAI-DYN-GROUP"
+  genai_agent_group_name        = "all-genai-agents-DG"
 
   # Dynamic Groups
   all_dynamic_groups = {
@@ -55,6 +57,12 @@ locals {
       name               = local.func_dynamic_group_name
       description        = "Defines all OCI Functions"
       matching_rule      = "resource.type = 'fnfunc'"
+    },
+    (local.genai_agent_dynamic_group_key) = {
+      identity_domain_id = var.domain_id
+      name               = local.genai_agent_group_name
+      description        = "Defines all OCI GenaAI Agents or Ingestion Jobs"
+      matching_rule      = "ANY {resource.type = 'genaiagent', resource.type='genaiagentdataingestionjob'}"
     }
 
   }
