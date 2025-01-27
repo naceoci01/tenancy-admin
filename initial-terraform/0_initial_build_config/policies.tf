@@ -250,6 +250,7 @@ locals {
         "allow group ${local.core_policy_group_name} to use generative-ai-text-summarization in compartment ${local.core_policy_engineer_compartment} //Allow CE to Use GenAI Text Summarization",        
         "allow group ${local.core_policy_group_name} to use generative-ai-text-embedding in compartment ${local.core_policy_engineer_compartment} //Allow CE to Use GenAI Text Embedding",        
         "allow group ${local.core_policy_group_name} to read generative-ai-work-request in compartment ${local.core_policy_engineer_compartment} //Allow CE to read GenAI Work requests",        
+        "allow group ${local.core_policy_group_name} to manage genai-agent-family in compartment ${local.core_policy_engineer_compartment} //Allow CE to manage GenAI Agents"     
       ]
     },
     "CE-AI-POLICY" : {
@@ -260,7 +261,7 @@ locals {
         "allow group ${local.core_policy_group_name} to use ai-service-vision-family in compartment ${local.core_policy_engineer_compartment} //Allow CE to use Vision",        
         "allow group ${local.core_policy_group_name} to manage ai-service-speech-family in compartment ${local.core_policy_engineer_compartment} //Allow CE to manage Speech",        
         "allow group ${local.core_policy_group_name} to manage ai-service-language-family in compartment ${local.core_policy_engineer_compartment} //Allow CE to manage Language",     
-        "allow group ${local.core_policy_group_name} to manage ai-service-document-family in compartment ${local.core_policy_engineer_compartment} //Allow CE to manage Document Understanding"     
+        "allow group ${local.core_policy_group_name} to manage ai-service-document-family in compartment ${local.core_policy_engineer_compartment} //Allow CE to manage Document Understanding",     
       ]
     },
     "CE-ARS-POLICY" : {
