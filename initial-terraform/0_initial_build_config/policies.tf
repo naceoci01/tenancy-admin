@@ -287,11 +287,11 @@ locals {
       compartment_id : "TENANCY-ROOT"
       statements : [
         "allow service datascience to use virtual-network-family in tenancy",
-        "allow group ${local.core_policy_group_name} to manage virtual-network-family in compartment ${local.core_policy_group_name}:DataScience",
-        "allow group ${local.core_policy_group_name} to manage data-science-family in compartment ${local.core_policy_group_name}:DataScience",
-        "allow group ${local.core_policy_group_name} to manage object-family in compartment ${local.core_policy_group_name}:DataScience",
-        "allow dynamic-group '${local.cloud_engineering_domain_name}'/'${local.datascience_dynamic_group_name}' to manage objects in compartment ${local.core_policy_group_name}:DataScience //Allows DS DG to use OSS",
-        "allow dynamic-group '${local.cloud_engineering_domain_name}'/'${local.datascience_dynamic_group_name}' to manage data-science-family in compartment ${local.core_policy_group_name}:DataScience //Allows DS DG to use OSS",
+        "allow group ${local.core_policy_group_name} to manage virtual-network-family in compartment ${local.core_policy_shared_compartment}:DataScience",
+        "allow group ${local.core_policy_group_name} to manage data-science-family in compartment ${local.core_policy_shared_compartment}:DataScience",
+        "allow group ${local.core_policy_group_name} to manage object-family in compartment ${local.core_policy_shared_compartment}:DataScience",
+        "allow dynamic-group '${local.cloud_engineering_domain_name}'/'${local.datascience_dynamic_group_name}' to manage objects in compartment ${local.core_policy_shared_compartment}:DataScience //Allows DS DG to use OSS",
+        "allow dynamic-group '${local.cloud_engineering_domain_name}'/'${local.datascience_dynamic_group_name}' to manage data-science-family in compartment ${local.core_policy_shared_compartment}:DataScience //Allows DS DG to use OSS",
       ]
     }
   }
