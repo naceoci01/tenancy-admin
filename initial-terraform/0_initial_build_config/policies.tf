@@ -293,6 +293,7 @@ locals {
         "allow group ${local.core_policy_group_name} to manage data-science-family in compartment ${local.core_policy_datascience_compartment} // Allow CE to manage Data Science in DS Compartment",
         "allow group ${local.core_policy_group_name} to manage object-family in compartment ${local.core_policy_datascience_compartment} // Allow CE to set up Object Storage in DS Compartment",
         "allow group ${local.core_policy_group_name} to manage logging-family in compartment ${local.core_policy_datascience_compartment} // Allow CE to set up Logging in DS Compartment",
+        "allow group ${local.core_policy_group_name} to use metrics in compartment ${local.core_policy_datascience_compartment} // Allow CE to use metrics in DS Compartment",
         "allow dynamic-group '${local.cloud_engineering_domain_name}'/'${local.datascience_dynamic_group_name}' to manage objects in compartment ${local.core_policy_datascience_compartment} //Allows DS DG to use OSS",
         "allow dynamic-group '${local.cloud_engineering_domain_name}'/'${local.datascience_dynamic_group_name}' to manage data-science-family in compartment ${local.core_policy_datascience_compartment} //Allows DS DG to use OSS",
         "allow dynamic-group '${local.cloud_engineering_domain_name}'/'${local.datascience_dynamic_group_name}' to use log-content in compartment ${local.core_policy_datascience_compartment} //Allows DS DG to use Logging",
