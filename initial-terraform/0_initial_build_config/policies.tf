@@ -5,6 +5,7 @@ locals {
   core_policy_group_name           = "'${data.oci_identity_domain.ce_domain.display_name}'/'${var.engineer_group_name}'"
   core_policy_engineer_compartment = module.cislz_compartments.compartments.CLOUD-ENG.name
   core_policy_shared_compartment   = module.cislz_compartments.compartments.SHARED-CMP.name
+  core_policy_datascience_compartment = "${local.core_policy_shared_compartment}:DataScience"
 
   policies = {
     "CE-IAM-ROOT-POLICY" : {
@@ -72,6 +73,7 @@ locals {
         "allow group ${local.core_policy_group_name} to use drgs in compartment ${local.core_policy_shared_compartment} //Allows Cloud Engineers to connect to DRG in shared CE compartment",
         "allow group ${local.core_policy_group_name} to read dns in compartment ${local.core_policy_shared_compartment} //Allows Cloud Engineers to see DNS Views in shared CE compartment",
         "allow group ${local.core_policy_group_name} to read objectstorage-namespaces in tenancy //Allows Cloud Engineers to read objectstorage namespaces",
+        "allow group ${local.core_policy_group_name} to inspect tenancies in tenancy where request.operation='GetTenancy' //Allows Cloud Engineers to see tenancy and home region details"
       ]
     },
     "CE-DB-POLICY" : {
@@ -287,11 +289,13 @@ locals {
       compartment_id : "TENANCY-ROOT"
       statements : [
         "allow service datascience to use virtual-network-family in tenancy",
-        "allow group ${local.core_policy_group_name} to manage virtual-network-family in compartment ${local.core_policy_shared_compartment}:DataScience",
-        "allow group ${local.core_policy_group_name} to manage data-science-family in compartment ${local.core_policy_shared_compartment}:DataScience",
-        "allow group ${local.core_policy_group_name} to manage object-family in compartment ${local.core_policy_shared_compartment}:DataScience",
-        "allow dynamic-group '${local.cloud_engineering_domain_name}'/'${local.datascience_dynamic_group_name}' to manage objects in compartment ${local.core_policy_shared_compartment}:DataScience //Allows DS DG to use OSS",
-        "allow dynamic-group '${local.cloud_engineering_domain_name}'/'${local.datascience_dynamic_group_name}' to manage data-science-family in compartment ${local.core_policy_shared_compartment}:DataScience //Allows DS DG to use OSS",
+        "allow group ${local.core_policy_group_name} to manage virtual-network-family in compartment ${local.core_policy_datascience_compartment} // Allow CE to set up Networking in DS Compartment",
+        "allow group ${local.core_policy_group_name} to manage data-science-family in compartment ${local.core_policy_datascience_compartment} // Allow CE to manage Data Science in DS Compartment",
+        "allow group ${local.core_policy_group_name} to manage object-family in compartment ${local.core_policy_datascience_compartment} // Allow CE to set up Object Storage in DS Compartment",
+        "allow group ${local.core_policy_group_name} to manage logging-family in compartment ${local.core_policy_datascience_compartment} // Allow CE to set up Logging in DS Compartment",
+        "allow dynamic-group '${local.cloud_engineering_domain_name}'/'${local.datascience_dynamic_group_name}' to manage objects in compartment ${local.core_policy_datascience_compartment} //Allows DS DG to use OSS",
+        "allow dynamic-group '${local.cloud_engineering_domain_name}'/'${local.datascience_dynamic_group_name}' to manage data-science-family in compartment ${local.core_policy_datascience_compartment} //Allows DS DG to use OSS",
+        "allow dynamic-group '${local.cloud_engineering_domain_name}'/'${local.datascience_dynamic_group_name}' to use log-content in compartment ${local.core_policy_datascience_compartment} //Allows DS DG to use Logging",
       ]
     }
   }
