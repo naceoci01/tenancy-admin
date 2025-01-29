@@ -20,6 +20,11 @@ variable "engineer_group_name" {
     default = "cloud-engineering-domain-users"
 }
 
+variable "engineer_datascience_group_name" {
+    description = "Name of shared engineer group for Data Science"
+    default = "cloud-engineering-datascience-users"
+}
+
 variable "engineer_compartment_base_name" { 
     description = "Name of shared engineer compartment"
     default = "cloud-engineering"

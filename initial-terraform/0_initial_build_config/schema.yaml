@@ -50,3 +50,9 @@ variables:
     type: string
     description: Change as necessary
     default: cloud-engineering-domain-users
+
+  engineer_datascience_group_name:
+    title: Name of IAM group for Data Science engineers
+    type: string
+    description: Change as necessary
+    default: cloud-engineering-datascience-users
