@@ -19,6 +19,8 @@ locals {
   func_dynamic_group_name        = "all-functions-DG"  
   genai_agent_dynamic_group_key  = "GENAI-DYN-GROUP"
   genai_agent_group_name        = "all-genai-agents-DG"
+  datascience_dynamic_group_key  = "DS-DYN-GROUP"
+  datascience_dynamic_group_name = "all-datascience-DG"
 
   # Dynamic Groups
   all_dynamic_groups = {
@@ -63,6 +65,12 @@ locals {
       name               = local.genai_agent_group_name
       description        = "Defines all OCI GenaAI Agents or Ingestion Jobs"
       matching_rule      = "ANY {resource.type = 'genaiagent', resource.type='genaiagentdataingestionjob'}"
+    },
+    (local.datascience_dynamic_group_key) = {
+      identity_domain_id = var.domain_id
+      name               = local.datascience_dynamic_group_name
+      description        = "Defines all OCI Data Science"
+      matching_rule      = "ANY {resource.type = datasciencenotebooksession'}"
     }
 
   }

@@ -274,14 +274,26 @@ locals {
       compartment_id : "TENANCY-ROOT"
       statements : [
         "allow service database to manage recovery-service-family in tenancy",
-        "allow service database to manage tagnamespace in tenancy",
+        "allow group ${local.core_policy_group_name} to manage tagnamespace in tenancy",
         "allow service rcs to manage recovery-service-family in tenancy",
         "allow service rcs to manage virtual-network-family in tenancy",
         "allow group ${local.core_policy_group_name} to manage recovery-service-subnet in compartment ${local.core_policy_engineer_compartment} //Allow CE to manage Recovery Subnets in CE Compartment",        
         "allow group ${local.core_policy_group_name} to manage recovery-service-protected-database in compartment ${local.core_policy_engineer_compartment} //Allow CE to manage Recovery Subnets in CE Compartment",        
       ]
     },
-
+    "CE-DS-POLICY" : {
+      name : "cloud-engineering-DATASCIENCE-policy"
+      description : "Permissions for Data Science"
+      compartment_id : "TENANCY-ROOT"
+      statements : [
+        "allow service datascience to use virtual-network-family in tenancy",
+        "allow group ${local.core_policy_group_name} to manage virtual-network-family in compartment ${local.core_policy_group_name}:DataScience",
+        "allow group ${local.core_policy_group_name} to manage data-science-family in compartment ${local.core_policy_group_name}:DataScience",
+        "allow group ${local.core_policy_group_name} to manage object-family in compartment ${local.core_policy_group_name}:DataScience",
+        "allow dynamic-group '${local.cloud_engineering_domain_name}'/'${local.datascience_dynamic_group_name}' to manage objects in compartment ${local.core_policy_group_name}:DataScience //Allows DS DG to use OSS",
+        "allow dynamic-group '${local.cloud_engineering_domain_name}'/'${local.datascience_dynamic_group_name}' to manage data-science-family in compartment ${local.core_policy_group_name}:DataScience //Allows DS DG to use OSS",
+      ]
+    }
   }
 
   # Merge all policies

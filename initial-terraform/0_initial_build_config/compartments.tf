@@ -27,6 +27,14 @@ locals {
                     name = "ExaCS",
                     description = "Oracle Exadata Cloud Service"
                 },
+                MYSQL-CMP = {
+                    name = "MySQL",
+                    description = "Shared Heatwave"
+                },
+                DS-CMP = {
+                    name = "DataScience",
+                    description = "Shared Data Science"
+                },
             }
         }
     }
