@@ -7,6 +7,8 @@ locals {
   core_policy_engineer_compartment = module.cislz_compartments.compartments.CLOUD-ENG.name
   core_policy_shared_compartment   = module.cislz_compartments.compartments.SHARED-CMP.name
   core_policy_datascience_compartment = "${local.core_policy_shared_compartment}:DataScience"
+  core_policy_engineer_ocid = module.cislz_compartments.compartments.CLOUD-ENG.id
+
 
   policies = {
     "CE-IAM-ROOT-POLICY" : {
@@ -20,7 +22,7 @@ locals {
         "allow group '${local.cloud_engineering_domain_name}'/'${var.engineer_group_name}' to read domains in TENANCY //Allows Cloud Engineers only to read domains in entire tenancy",
         "allow group '${local.cloud_engineering_domain_name}'/'${var.engineer_group_name}' to read dynamic-groups in TENANCY //Allows Cloud Engineers only to read DG in entire tenancy",
         "allow group '${local.cloud_engineering_domain_name}'/'${var.engineer_group_name}' to inspect compartments in TENANCY //Allows Cloud Engineers only to list compartments",
-        "allow group '${local.cloud_engineering_domain_name}'/'${var.engineer_group_name}' to manage compartments in compartment ${local.core_policy_engineer_compartment} //Allows Cloud Engineers manage compartments within main CE Compartment",
+        "allow group '${local.cloud_engineering_domain_name}'/'${var.engineer_group_name}' to manage compartments in compartment ${local.core_policy_engineer_compartment} where target.compartment.id != '${local.core_policy_engineer_ocid}' //Allows Cloud Engineers manage compartments within main CE Compartment, but not main CE",
         "allow group '${local.cloud_engineering_domain_name}'/'${var.engineer_group_name}' to read quotas in TENANCY //Allows Cloud Engineers see quotas",
         "allow group '${local.cloud_engineering_domain_name}'/'${var.engineer_group_name}' to read resource-availability in tenancy //Allows Cloud Engineers to view service limits tenancy-wide",
         "allow group '${local.cloud_engineering_domain_name}'/'${var.engineer_group_name}' to manage tickets in tenancy //Allows Cloud Engineers manipulate tickets",
