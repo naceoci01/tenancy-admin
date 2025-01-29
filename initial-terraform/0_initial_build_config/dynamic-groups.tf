@@ -70,7 +70,7 @@ locals {
       identity_domain_id = var.domain_id
       name               = local.datascience_dynamic_group_name
       description        = "Defines all OCI Data Science"
-      matching_rule      = "ANY {resource.type = datasciencenotebooksession'}"
+      matching_rule      = "Any {resource.type='datasciencenotebooksession',resource.type='dataflow-family',resource.type='datasciencemodeldeployment',resource.type='datasciencejobrun'}"
     }
 
   }
