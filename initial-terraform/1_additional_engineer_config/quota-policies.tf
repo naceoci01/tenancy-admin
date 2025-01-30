@@ -26,10 +26,16 @@ locals {
             "zero compute-memory quota in compartment ${data.oci_identity_compartment.cloud-eng-comp.name}"
         ],
         [
-            for comp in local.comp_names: "set compute-memory quota /standard-*/ to 120 in compartment ${data.oci_identity_compartment.cloud-eng-comp.name}:${comp}"
+            for comp in local.comp_names: "set compute-memory quota standard-e5-memory-count to 120 in compartment ${data.oci_identity_compartment.cloud-eng-comp.name}:${comp}"
         ],
         [
-            for comp in local.comp_names: "set compute-core quota /standard-*/ to 8 in compartment ${data.oci_identity_compartment.cloud-eng-comp.name}:${comp}"
+            for comp in local.comp_names: "set compute-core quota standard-e5-core-count to 8 in compartment ${data.oci_identity_compartment.cloud-eng-comp.name}:${comp}"
+        ],
+        [
+            for comp in local.comp_names: "set compute-memory quota standard3-memory-count to 120 in compartment ${data.oci_identity_compartment.cloud-eng-comp.name}:${comp}"
+        ],
+        [
+            for comp in local.comp_names: "set compute-core quota standard3-core-count to 8 in compartment ${data.oci_identity_compartment.cloud-eng-comp.name}:${comp}"
         ],
         [
             for comp in local.comp_names: "set container-engine quota virtual-node-count to 3 in compartment ${data.oci_identity_compartment.cloud-eng-comp.name}:${comp}"
