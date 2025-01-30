@@ -56,3 +56,15 @@ variables:
     type: string
     description: Change as necessary
     default: cloud-engineering-datascience-users
+
+  engineer_doac_group_name:
+    title: Name of IAM group for Oracle Analytics engineers
+    type: string
+    description: Change as necessary
+    default: cloud-engineering-oac-users
+
+  engineer_mysql_group_name:
+    title: Name of IAM group for MySQL Heatwave engineers
+    type: string
+    description: Change as necessary
+    default: cloud-engineering-mysql-users

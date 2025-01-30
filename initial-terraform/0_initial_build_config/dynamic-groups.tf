@@ -23,6 +23,8 @@ locals {
   datascience_dynamic_group_name = "all-datascience-DG"
   datalabeling_dynamic_group_key  = "DL-DYN-GROUP"
   datalabeling_dynamic_group_name = "all-datalabeling-DG"
+  oac_dynamic_group_key  = "OAC-DYN-GROUP"
+  oac_dynamic_group_name = "all-oac-instance-DG"
 
   # Dynamic Groups
   all_dynamic_groups = {
@@ -79,7 +81,13 @@ locals {
       name               = local.datalabeling_dynamic_group_name
       description        = "Defines all OCI Data Labeling"
       matching_rule      = "resource.type='datalabelingdataset'"
-    }
+    },
+    (local.oac_dynamic_group_key) = {
+      identity_domain_id = var.domain_id
+      name               = local.oac_dynamic_group_name
+      description        = "Defines all OAC Instances"
+      matching_rule      = "resource.type='xxxx'"
+    }    
   }
 
   # Merge all DGs into one config

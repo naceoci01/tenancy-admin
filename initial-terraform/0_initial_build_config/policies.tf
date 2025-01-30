@@ -4,9 +4,13 @@ locals {
   # Policies
   core_policy_group_name           = "'${data.oci_identity_domain.ce_domain.display_name}'/'${var.engineer_group_name}'"
   core_policy_ds_group_name           = "'${data.oci_identity_domain.ce_domain.display_name}'/'${var.engineer_datascience_group_name}'"
+  core_policy_mysql_group_name           = "'${data.oci_identity_domain.ce_domain.display_name}'/'${var.engineer_mysql_group_name}'"
+  core_policy_oac_group_name           = "'${data.oci_identity_domain.ce_domain.display_name}'/'${var.engineer_oac_group_name}'"
   core_policy_engineer_compartment = module.cislz_compartments.compartments.CLOUD-ENG.name
   core_policy_shared_compartment   = module.cislz_compartments.compartments.SHARED-CMP.name
   core_policy_datascience_compartment = "${local.core_policy_shared_compartment}:DataScience"
+  core_policy_mysql_compartment = "${local.core_policy_shared_compartment}:MySQL"
+  core_policy_oac_compartment = "${local.core_policy_shared_compartment}:OAC"
   core_policy_engineer_ocid = module.cislz_compartments.compartments.CLOUD-ENG.id
 
 
@@ -291,7 +295,7 @@ locals {
     },
     "CE-DS-POLICY" : {
       name : "cloud-engineering-DATASCIENCE-policy"
-      description : "Permissions for Data Science"
+      description : "Permissions for Data Science - please request access to group cloud-engineering-datascience-users"
       compartment_id : "TENANCY-ROOT"
       statements : [
         "allow service datascience to use virtual-network-family in tenancy",
@@ -300,6 +304,7 @@ locals {
         "allow group ${local.core_policy_ds_group_name} to manage object-family in compartment ${local.core_policy_datascience_compartment} // Allow CE to set up Object Storage in DS Compartment",
         "allow group ${local.core_policy_ds_group_name} to manage logging-family in compartment ${local.core_policy_datascience_compartment} // Allow CE to set up Logging in DS Compartment",
         "allow group ${local.core_policy_ds_group_name} to use metrics in compartment ${local.core_policy_datascience_compartment} // Allow CE to use metrics in DS Compartment",
+        "allow group ${local.core_policy_group_name} to read data-science-family in compartment ${local.core_policy_datascience_compartment} //Allow CE to see Data Science and request access",
         "allow dynamic-group '${local.cloud_engineering_domain_name}'/'${local.datascience_dynamic_group_name}' to manage object-family in compartment ${local.core_policy_datascience_compartment} //Allows DS DG to manage OSS",
         "allow dynamic-group '${local.cloud_engineering_domain_name}'/'${local.datascience_dynamic_group_name}' to manage data-science-family in compartment ${local.core_policy_datascience_compartment} //Allows DS DG to use OSS",
         "allow dynamic-group '${local.cloud_engineering_domain_name}'/'${local.datascience_dynamic_group_name}' to manage dataflow-family in compartment ${local.core_policy_datascience_compartment} //Allows DS DG to use OSS",
@@ -317,6 +322,34 @@ locals {
         "allow dynamic-group '${local.cloud_engineering_domain_name}'/'${local.datalabeling_dynamic_group_name}' to read objects in compartment ${local.core_policy_engineer_compartment} //Allows DL DG to read OSS",
         "allow dynamic-group '${local.cloud_engineering_domain_name}'/'${local.datalabeling_dynamic_group_name}' to read buckets in compartment ${local.core_policy_engineer_compartment} //Allows DL DG to read OSS",
         "allow dynamic-group '${local.cloud_engineering_domain_name}'/'${local.datalabeling_dynamic_group_name}' to manage objects in compartment ${local.core_policy_engineer_compartment} //Allows DL DG to manage OSS objects",
+      ]
+    },
+    "CE-MYSQL-POLICY" : {
+      name : "cloud-engineering-MYSQL-policy"
+      description : "Permissions for MySQL Heatwave - please request access to group cloud-engineering-mysql-users"
+      compartment_id : "TENANCY-ROOT"
+      statements : [
+        "allow service mysql_dp_auth TO {AUTHENTICATION_INSPECT, GROUP_MEMBERSHIP_INSPECT, DYNAMIC_GROUP_INSPECT} IN TENANCY // Allow MySQL to use Mapped Proxy Users",
+        "allow group ${local.core_policy_mysql_group_name} to use dbmgmt-mysql-family in compartment ${local.core_policy_mysql_compartment} // MySQL Management",
+        "allow group ${local.core_policy_mysql_group_name} to read metrics in compartment ${local.core_policy_mysql_compartment} // Metrics from MySQL",
+        "allow group ${local.core_policy_mysql_group_name} to manage alarms in compartment ${local.core_policy_mysql_compartment} // Set up alarms for MySQL",
+        "allow group ${local.core_policy_mysql_group_name} to read virtual-network-family in compartment ${local.core_policy_mysql_compartment} // See Networking for MySQL",
+        "allow group ${local.core_policy_mysql_group_name} to use mysql-family in compartment ${local.core_policy_mysql_compartment} // Start and Stop - no creation",
+        "allow group ${local.core_policy_mysql_group_name} to read management-dashboard in compartment ${local.core_policy_mysql_compartment} // MySQL Management",
+        "allow group ${local.core_policy_mysql_group_name} to read management-saved-search in compartment ${local.core_policy_mysql_compartment} // MySQL Management",
+        "allow group ${local.core_policy_group_name} to read mysql-family in compartment ${local.core_policy_mysql_compartment} //Allow CE to see MySQL and request access",
+      ]
+    },
+    "CE-OAC-POLICY" : {
+      name : "cloud-engineering-OAC-policy"
+      description : "Permissions for Oracle Analytics - please request access to group cloud-engineering-oac-users"
+      compartment_id : "TENANCY-ROOT"
+      statements : [
+        "allow group ${local.core_policy_oac_group_name} to use analytics-instances in compartment ${local.core_policy_oac_compartment} // Allow CE to use existing OAC in CE Compartment",
+        "allow group ${local.core_policy_oac_group_name} to manage analytics-instance-work-requests in compartment ${local.core_policy_oac_compartment} // Allow CE to use existing OAC in CE Compartment",
+        "allow group ${local.core_policy_group_name} to read analytics-instances in compartment ${local.core_policy_oac_compartment} //Allow CE to see OAC and request access",
+        "allow dynamic-group '${local.cloud_engineering_domain_name}'/'${local.oac_dynamic_group_name}' to manage objects in compartment ${local.core_policy_oac_compartment} //Allows OAC to manage OSS objects",
+        "allow dynamic-group '${local.cloud_engineering_domain_name}'/'${local.oac_dynamic_group_name}' to read buckets in compartment ${local.core_policy_oac_compartment} //Allows OAC to read OSS buckets",
       ]
     }
   }

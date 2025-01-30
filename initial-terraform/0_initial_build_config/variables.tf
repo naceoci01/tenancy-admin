@@ -25,6 +25,16 @@ variable "engineer_datascience_group_name" {
     default = "cloud-engineering-datascience-users"
 }
 
+variable "engineer_oac_group_name" {
+    description = "Name of shared engineer group for Analytics"
+    default = "cloud-engineering-oac-users"
+}
+
+variable "engineer_mysql_group_name" {
+    description = "Name of shared engineer group for MySQL"
+    default = "cloud-engineering-mysql-users"
+}
+
 variable "engineer_compartment_base_name" { 
     description = "Name of shared engineer compartment"
     default = "cloud-engineering"
