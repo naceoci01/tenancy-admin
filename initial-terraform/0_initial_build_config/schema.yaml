@@ -57,7 +57,7 @@ variables:
     description: Change as necessary
     default: cloud-engineering-datascience-users
 
-  engineer_doac_group_name:
+  engineer_oac_group_name:
     title: Name of IAM group for Oracle Analytics engineers
     type: string
     description: Change as necessary
