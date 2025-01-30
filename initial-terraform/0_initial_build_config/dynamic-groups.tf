@@ -21,6 +21,8 @@ locals {
   genai_agent_group_name        = "all-genai-agents-DG"
   datascience_dynamic_group_key  = "DS-DYN-GROUP"
   datascience_dynamic_group_name = "all-datascience-DG"
+  datalabeling_dynamic_group_key  = "DL-DYN-GROUP"
+  datalabeling_dynamic_group_name = "all-datalabeling-DG"
 
   # Dynamic Groups
   all_dynamic_groups = {
@@ -71,8 +73,13 @@ locals {
       name               = local.datascience_dynamic_group_name
       description        = "Defines all OCI Data Science"
       matching_rule      = "Any {resource.type='datasciencenotebooksession',resource.type='dataflow-family',resource.type='datasciencemodeldeployment',resource.type='datasciencejobrun'}"
+    },
+    (local.datalabeling_dynamic_group_key) = {
+      identity_domain_id = var.domain_id
+      name               = local.datalabeling_dynamic_group_name
+      description        = "Defines all OCI Data Labeling"
+      matching_rule      = "resource.type='datalabelingdataset'"
     }
-
   }
 
   # Merge all DGs into one config
