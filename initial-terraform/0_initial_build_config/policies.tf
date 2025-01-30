@@ -314,7 +314,7 @@ locals {
         "allow group ${local.core_policy_ds_group_name} to manage data-labeling-family in compartment ${local.core_policy_engineer_compartment} // Allow CE to set up Data Labeling in CE Compartment",
         "allow dynamic-group '${local.cloud_engineering_domain_name}'/'${local.datalabeling_dynamic_group_name}' to read objects in compartment ${local.core_policy_engineer_compartment} //Allows DL DG to read OSS",
         "allow dynamic-group '${local.cloud_engineering_domain_name}'/'${local.datalabeling_dynamic_group_name}' to read buckets in compartment ${local.core_policy_engineer_compartment} //Allows DL DG to read OSS",
-        "allow dynamic-group '${local.cloud_engineering_domain_name}'/'${local.datalabeling_dynamic_group_name}' to manage objects in compartment ${local.core_policy_engineer_compartment} //Allows DL DG to read OSS",
+        "allow dynamic-group '${local.cloud_engineering_domain_name}'/'${local.datalabeling_dynamic_group_name}' to manage objects in compartment ${local.core_policy_engineer_compartment} //Allows DL DG to manage OSS objects",
       ]
     }
   }
