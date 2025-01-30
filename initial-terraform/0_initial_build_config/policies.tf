@@ -274,12 +274,14 @@ locals {
         "allow group ${local.core_policy_group_name} to manage ai-service-document-family in compartment ${local.core_policy_engineer_compartment} //Allow CE to manage Document Understanding",     
       ]
     },
+  
     "CE-ARS-POLICY" : {
       name : "cloud-engineering-ARS-policy"
       description : "Permissions for Autonomous Recovery Service"
       compartment_id : "TENANCY-ROOT"
       statements : [
         "allow service database to manage recovery-service-family in tenancy",
+        "allow service database to manage tagnamespace in tenancy",
         "allow group ${local.core_policy_group_name} to manage tagnamespace in tenancy",
         "allow service rcs to manage recovery-service-family in tenancy",
         "allow service rcs to manage virtual-network-family in tenancy",
