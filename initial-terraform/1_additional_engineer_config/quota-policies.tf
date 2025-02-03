@@ -11,7 +11,7 @@ locals {
             for comp in local.comp_names: "set database quota /*-total-storage-tb/ to 1 in compartment ${data.oci_identity_compartment.cloud-eng-comp.name}:${comp}"
         ],
         [
-            for comp in local.comp_names: "set database quota /*-ecpu-count/ to 4 in compartment ${data.oci_identity_compartment.cloud-eng-comp.name}:${comp}"
+            for comp in local.comp_names: "set database quota /*-ecpu-count/ to 6 in compartment ${data.oci_identity_compartment.cloud-eng-comp.name}:${comp}"
         ],
         [
             for comp in local.comp_names: "set database quota vm-block-storage-gb to 512 in compartment ${data.oci_identity_compartment.cloud-eng-comp.name}:${comp}"
