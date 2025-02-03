@@ -26,8 +26,8 @@ variable "engineer_datascience_group_name" {
 }
 
 variable "engineer_oac_group_name" {
-    description = "Name of shared engineer group for Analytics"
-    default = "cloud-engineering-oac-users"
+    description = "Name of group for Analytics Admins"
+    default = "cloud-engineering-oacadmin-users"
 }
 
 variable "engineer_mysql_group_name" {

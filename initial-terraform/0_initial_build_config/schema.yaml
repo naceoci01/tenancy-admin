@@ -58,10 +58,10 @@ variables:
     default: cloud-engineering-datascience-users
 
   engineer_oac_group_name:
-    title: Name of IAM group for Oracle Analytics engineers
+    title: Name of IAM group for Oracle Analytics Admins
     type: string
     description: Change as necessary
-    default: cloud-engineering-oac-users
+    default: cloud-engineering-oacadmin-users
 
   engineer_mysql_group_name:
     title: Name of IAM group for MySQL Heatwave engineers

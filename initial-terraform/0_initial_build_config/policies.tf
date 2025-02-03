@@ -102,6 +102,7 @@ locals {
         "allow group ${local.core_policy_group_name} to manage data-safe-family in compartment ${local.core_policy_shared_compartment}:exacs //Allow CE to use Data Safe in ExaCS Compartment",
         "allow group ${local.core_policy_group_name} to manage database-tools-connections in compartment cloud-engineering //Allow CE to work with SQL worksheets in main CE compartment",
         "allow group ${local.core_policy_group_name} to manage database-tools-connections in compartment ${local.core_policy_shared_compartment}:exacs //Allow CE to work with SQL worksheets in ExaCS compartment",
+        "allow group ${local.core_policy_group_name} to use database-tools-private-endpoints in compartment ${local.core_policy_shared_compartment}:exacs //Allow CE to work with SQL worksheets in ExaCS compartment",
         "Allow service dpd to read secret-family in compartment ${local.core_policy_shared_compartment} //Service Permission for Database management",
       ]
     },
@@ -227,6 +228,8 @@ locals {
         "allow group ${local.core_policy_group_name} to manage vnics in compartment ${local.core_policy_shared_compartment}:exacs //Allow CE to use DBMGMT for ExaCS",
         "allow group ${local.core_policy_group_name} to use subnets in compartment ${local.core_policy_shared_compartment}:exacs //Allow CE to use DBMGMT for ExaCS",
         "allow group ${local.core_policy_group_name} to use network-security-groups in compartment ${local.core_policy_shared_compartment}:exacs //Allow CE to use DBMGMT for ExaCS",
+        "allow group ${local.core_policy_group_name} to use bastion in compartment ${local.core_policy_shared_compartment}:exacs //Allow CE to use existing bastion for ExaCS",
+        "allow group ${local.core_policy_group_name} to manage bastion-session in compartment ${local.core_policy_shared_compartment}:exacs //Allow CE to manage bastion sessions for ExaCS",
         "Allow service dpd to read secret-family in compartment ${local.core_policy_engineer_compartment} //Service Permission for Database management"
         # move this
       ]
@@ -334,7 +337,7 @@ locals {
         "allow group ${local.core_policy_mysql_group_name} to read metrics in compartment ${local.core_policy_mysql_compartment} // Metrics from MySQL",
         "allow group ${local.core_policy_mysql_group_name} to manage alarms in compartment ${local.core_policy_mysql_compartment} // Set up alarms for MySQL",
         "allow group ${local.core_policy_mysql_group_name} to read virtual-network-family in compartment ${local.core_policy_mysql_compartment} // See Networking for MySQL",
-        "allow group ${local.core_policy_mysql_group_name} to use mysql-family in compartment ${local.core_policy_mysql_compartment} // Start and Stop - no creation",
+        "allow group ${local.core_policy_mysql_group_name} to manage mysql-family in compartment ${local.core_policy_mysql_compartment} where request.operation != 'CreateDbSystem' // Start and Stop - no creation",
         "allow group ${local.core_policy_mysql_group_name} to read management-dashboard in compartment ${local.core_policy_mysql_compartment} // MySQL Management",
         "allow group ${local.core_policy_mysql_group_name} to read management-saved-search in compartment ${local.core_policy_mysql_compartment} // MySQL Management",
         "allow group ${local.core_policy_group_name} to read mysql-family in compartment ${local.core_policy_mysql_compartment} //Allow CE to see MySQL and request access",
@@ -342,14 +345,20 @@ locals {
     },
     "CE-OAC-POLICY" : {
       name : "cloud-engineering-OAC-policy"
-      description : "Permissions for Oracle Analytics - please request access to group cloud-engineering-oac-users"
+      description : "Permissions for Oracle Analytics - please request admin access to group ${local.core_policy_oac_group_name}"
       compartment_id : "TENANCY-ROOT"
       statements : [
-        "allow group ${local.core_policy_oac_group_name} to use analytics-instances in compartment ${local.core_policy_oac_compartment} // Allow CE to use existing OAC in CE Compartment",
-        "allow group ${local.core_policy_oac_group_name} to manage analytics-instance-work-requests in compartment ${local.core_policy_oac_compartment} // Allow CE to use existing OAC in CE Compartment",
-        "allow group ${local.core_policy_group_name} to read analytics-instances in compartment ${local.core_policy_oac_compartment} //Allow CE to see OAC and request access",
-        "allow dynamic-group '${local.cloud_engineering_domain_name}'/'${local.oac_dynamic_group_name}' to manage objects in compartment ${local.core_policy_oac_compartment} //Allows OAC to manage OSS objects",
-        "allow dynamic-group '${local.cloud_engineering_domain_name}'/'${local.oac_dynamic_group_name}' to read buckets in compartment ${local.core_policy_oac_compartment} //Allows OAC to read OSS buckets",
+        "allow group ${local.core_policy_group_name} to use analytics-instances in compartment ${local.core_policy_oac_compartment} // Allow CE to see and stop/start existing OAC in Shared OAC Compartment",
+        "allow group ${local.core_policy_group_name} to read analytics-instance-work-requests in compartment ${local.core_policy_oac_compartment} // Allow CE to see OAC Work Requests in Shared OAC Compartment",
+        "allow group ${local.core_policy_oac_group_name} to manage analytics-instances in compartment ${local.core_policy_oac_compartment} // Allow OAC Admin CE to use create OAC in Shared OAC Compartment",
+        "allow group ${local.core_policy_oac_group_name} to manage analytics-instance-work-requests in compartment ${local.core_policy_oac_compartment} // Allow CE to use existing OAC in Shared OAC Compartment",
+        "allow dynamic-group '${local.cloud_engineering_domain_name}'/'${local.oac_dynamic_group_name}' to manage objects in compartment ${local.core_policy_oac_compartment} //Allows OAC DG to manage OSS objects",
+        "allow dynamic-group '${local.cloud_engineering_domain_name}'/'${local.oac_dynamic_group_name}' to read buckets in compartment ${local.core_policy_oac_compartment} //Allows OAC DG to read OSS buckets",
+        "allow dynamic-group '${local.cloud_engineering_domain_name}'/'${local.oac_dynamic_group_name}' to use ai-service-vision-family in compartment ${local.core_policy_oac_compartment} //Allows OAC DG to use OCI Vision",
+        "allow dynamic-group '${local.cloud_engineering_domain_name}'/'${local.oac_dynamic_group_name}' to use ai-service-document-family in compartment ${local.core_policy_oac_compartment} //Allows OAC DG to use OCI Document Understanding",
+        "allow dynamic-group '${local.cloud_engineering_domain_name}'/'${local.oac_dynamic_group_name}' to use ai-service-language-family in compartment ${local.core_policy_oac_compartment} //Allows OAC DG to use OCI Language",
+        "allow dynamic-group '${local.cloud_engineering_domain_name}'/'${local.oac_dynamic_group_name}' to use functions-family in compartment ${local.core_policy_oac_compartment} //Allows OAC DG to use functions",
+        "allow dynamic-group '${local.cloud_engineering_domain_name}'/'${local.oac_dynamic_group_name}' to use data-science-family in compartment ${local.core_policy_oac_compartment} //Allows OAC DG to use functions",
       ]
     }
   }
