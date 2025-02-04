@@ -25,6 +25,8 @@ locals {
   datalabeling_dynamic_group_name = "all-datalabeling-DG"
   oac_dynamic_group_key  = "OAC-DYN-GROUP"
   oac_dynamic_group_name = "all-oac-instance-DG"
+  oda_dynamic_group_key  = "ODA-DYN-GROUP"
+  oda_dynamic_group_name = "all-oda-instance-DG"
 
   # Dynamic Groups
   all_dynamic_groups = {
@@ -87,9 +89,16 @@ locals {
       name               = local.oac_dynamic_group_name
       description        = "Defines all OAC Instances"
       matching_rule      = "resource.type='xxxx'"
-    }    
+    },
+    (local.oda_dynamic_group_key) = {
+      #identity_domain_id = var.domain_id
+      name               = local.oda_dynamic_group_name
+      description        = "Defines all ODA Instances"
+      matching_rule      = "resource.type='odainstance'"
+    }   
   }
 
+#resource.type='odainstance'
   # Merge all DGs into one config
   identity_domain_dynamic_groups_configuration = {
     # dynamic_groups : merge(local.engineer_dg, local.osmh_dynamic_group)

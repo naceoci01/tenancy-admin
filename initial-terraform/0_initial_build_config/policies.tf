@@ -11,6 +11,7 @@ locals {
   core_policy_datascience_compartment = "${local.core_policy_shared_compartment}:DataScience"
   core_policy_mysql_compartment = "${local.core_policy_shared_compartment}:MySQL"
   core_policy_oac_compartment = "${local.core_policy_shared_compartment}:OAC"
+  core_policy_oda_compartment = "${local.core_policy_shared_compartment}:ODA"
   core_policy_engineer_ocid = module.cislz_compartments.compartments.CLOUD-ENG.id
 
 
@@ -50,6 +51,7 @@ locals {
         "allow group ${local.core_policy_group_name} to manage cloudevents-rules in compartment ${local.core_policy_engineer_compartment} //Allows Cloud Engineers to use Event Rules",
         "allow group ${local.core_policy_group_name} to manage cloud-guard-family in compartment ${local.core_policy_engineer_compartment} //Allows Cloud Engineers to use Cloud Guard",
         "allow group ${local.core_policy_group_name} to manage orm-family in compartment ${local.core_policy_engineer_compartment} //Allows Cloud Engineers to use ORM Stacks",
+        "allow group ${local.core_policy_group_name} to manage disaster-recovery-family in compartment ${local.core_policy_engineer_compartment} //Allows Cloud Engineers to use Full Stack DR Service",
         "allow group ${local.core_policy_group_name} to read work-requests in tenancy //Required tenancy-level for KMS Vaults",
         "allow group ${local.core_policy_group_name} to use cloud-shell in tenancy //Required tenancy-level for Cloud Shell",
         "allow group ${local.core_policy_group_name} to use cloud-shell-public-network in tenancy //Required tenancy-level for Cloud Shell",
@@ -359,6 +361,21 @@ locals {
         "allow dynamic-group '${local.cloud_engineering_domain_name}'/'${local.oac_dynamic_group_name}' to use ai-service-language-family in compartment ${local.core_policy_oac_compartment} //Allows OAC DG to use OCI Language",
         "allow dynamic-group '${local.cloud_engineering_domain_name}'/'${local.oac_dynamic_group_name}' to use functions-family in compartment ${local.core_policy_oac_compartment} //Allows OAC DG to use functions",
         "allow dynamic-group '${local.cloud_engineering_domain_name}'/'${local.oac_dynamic_group_name}' to use data-science-family in compartment ${local.core_policy_oac_compartment} //Allows OAC DG to use functions",
+        "allow any-user to read buckets in compartment ${local.core_policy_oac_compartment} where request.principal.type='analyticsinstance' //Allow OAC to see buckets in OAC compartment",
+        "allow any-user to read buckets in compartment ${local.core_policy_engineer_compartment} where request.principal.type='analyticsinstance' //Allow OAC to see buckets in CE compartment",
+        "allow any-user to manage objects in compartment ${local.core_policy_oac_compartment} where request.principal.type='analyticsinstance' //Allow OAC to manage objects in OAC compartment",
+        "allow any-user to manage objects in compartment ${local.core_policy_engineer_compartment} where request.principal.type='analyticsinstance' // OAC to manage objects in CE compartment",
+      ]
+    },
+    "CE-ODA-POLICY" : {
+      name : "cloud-engineering-ODA-policy"
+      description : "Permissions for Oracle Digital Assistant"
+      compartment_id : "TENANCY-ROOT"
+      statements : [
+        "allow group ${local.core_policy_group_name} to use oda-family in compartment ${local.core_policy_oda_compartment} //Allow CE to Use GenAI Chat",        
+        "allow dynamic-group 'Default'/'${local.oda_dynamic_group_name}' to manage genai-agent-family in compartment ${local.core_policy_engineer_compartment} //DG Access to AI Agents",    
+        "allow dynamic-group 'Default'/'${local.oda_dynamic_group_name}' to manage object-family in compartment ${local.core_policy_engineer_compartment} //DG Access to OSS",    
+        "allow dynamic-group 'Default'/'${local.oda_dynamic_group_name}' to manage agent-family in compartment ${local.core_policy_engineer_compartment} //DG Access to AI Agents",    
       ]
     }
   }
