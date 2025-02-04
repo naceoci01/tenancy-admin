@@ -11,10 +11,13 @@ variable "private_key_password" { default = "" }
 variable "home_region" {description = "Your tenancy home region"}
 
 # Required Inputs
-variable "domain_id" {
-    description = "OCID of Identity domain (nondefault)"
+variable "default_domain_id" {
+    description = "OCID of Default Identity domain"
 }
 
+variable "ce_domain_id" {
+    description = "OCID of Cloud Engineers Identity domain (nondefault)"
+}
 variable "engineer_group_name" {
     description = "Name of shared engineer group"
     default = "cloud-engineering-domain-users"

@@ -40,10 +40,15 @@ variables:
     default: cloud-engineering
     required: true
 
-  domain_id:
+  ce_domain_id:
     title: Identity Domain OCID
     type: string
-    description: Already created Identity Domain.
+    description: Already created Identity Domain for cloud engineers.
+
+  default_domain_id:
+    title: Identity Domain OCID
+    type: string
+    description: Default Identity Domain for tenancy.
 
   engineer_group_name:
     title: Name of IAM group for engineers
