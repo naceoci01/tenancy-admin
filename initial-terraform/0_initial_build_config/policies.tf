@@ -232,7 +232,7 @@ locals {
         "allow group ${local.core_policy_group_name} to manage databases in compartment ${local.core_policy_shared_compartment}:exacs //Allow CE to manage databases Resources",
         "allow group ${local.core_policy_group_name} to manage pluggable-databases in compartment ${local.core_policy_shared_compartment}:exacs //Allow CE to manage databases Resources",
         "allow group ${local.core_policy_group_name} to use db-homes in compartment ${local.core_policy_shared_compartment}:exacs //Allow CE to use database home Resources",
-        "allow group ${local.core_policy_group_name} to use cloud-vmclusters in compartment ${local.core_policy_shared_compartment}:exacs //Allow CE to create databases in VM Cluster",
+        "allow group ${local.core_policy_group_name} to use cloud-vmclusters in compartment ${local.core_policy_shared_compartment}:exacs where request.permission != 'CLOUD_VM_CLUSTER_UPDATE_SSH_KEY' //Allow CE to create databases in VM Cluster without Adding SSH Key",
         "allow group ${local.core_policy_group_name} to manage dbnode-console-connection in compartment ${local.core_policy_shared_compartment}:exacs //Allow CE to create databases in VM Cluster",
         "allow group ${local.core_policy_group_name} to manage backups in compartment ${local.core_policy_shared_compartment}:exacs //Allow CE to manage database backups for ExaCS",
         "allow group ${local.core_policy_group_name} to read metrics in compartment ${local.core_policy_shared_compartment}:exacs //Allow CE see Metrics for ExaCS",
