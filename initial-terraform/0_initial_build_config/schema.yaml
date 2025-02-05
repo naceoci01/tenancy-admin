@@ -12,10 +12,16 @@ variableGroups:
     variables:
       - home_region
       - domain_id
-      - engineer_group_name
   - title: "Compartment Configuration"
     variables:
       - engineer_compartment_base_name
+  - title: "Group Configuration"
+    variables:
+      - engineer_group_name
+      - engineer_oac_group_name
+      - engineer_datascience_group_name
+      - engineer_mysql_group_name
+      - exacs_admin_group_name
   - title: "Hidden Variables" 
     visible: false
     variables:
@@ -73,3 +79,9 @@ variables:
     type: string
     description: Change as necessary
     default: cloud-engineering-mysql-users
+
+  exacs_admin_group_name:
+    title: Name of IAM group for ExaCS Admins
+    type: string
+    description: Change as necessary
+    default: cloud-engineering-exacs-admins

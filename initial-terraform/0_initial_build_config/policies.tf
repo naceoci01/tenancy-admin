@@ -6,6 +6,7 @@ locals {
   core_policy_ds_group_name           = "'${data.oci_identity_domain.ce_domain.display_name}'/'${var.engineer_datascience_group_name}'"
   core_policy_mysql_group_name           = "'${data.oci_identity_domain.ce_domain.display_name}'/'${var.engineer_mysql_group_name}'"
   core_policy_oac_group_name           = "'${data.oci_identity_domain.ce_domain.display_name}'/'${var.engineer_oac_group_name}'"
+  core_policy_exacs_admin_group_name           = "'${data.oci_identity_domain.ce_domain.display_name}'/'${var.exacs_admin_group_name}'"
   core_policy_engineer_compartment = module.cislz_compartments.compartments.CLOUD-ENG.name
   core_policy_shared_compartment   = module.cislz_compartments.compartments.SHARED-CMP.name
   core_policy_datascience_compartment = "${local.core_policy_shared_compartment}:DataScience"
@@ -232,7 +233,7 @@ locals {
         "allow group ${local.core_policy_group_name} to manage databases in compartment ${local.core_policy_shared_compartment}:exacs //Allow CE to manage databases Resources",
         "allow group ${local.core_policy_group_name} to manage pluggable-databases in compartment ${local.core_policy_shared_compartment}:exacs //Allow CE to manage databases Resources",
         "allow group ${local.core_policy_group_name} to use db-homes in compartment ${local.core_policy_shared_compartment}:exacs //Allow CE to use database home Resources",
-        "allow group ${local.core_policy_group_name} to use cloud-vmclusters in compartment ${local.core_policy_shared_compartment}:exacs where request.permission != 'CLOUD_VM_CLUSTER_UPDATE_SSH_KEY' //Allow CE to create databases in VM Cluster without Adding SSH Key",
+        "allow group ${local.core_policy_group_name} to use cloud-vmclusters in compartment ${local.core_policy_shared_compartment}:exacs where all { request.permission != 'CLOUD_VM_CLUSTER_UPDATE_SSH_KEY' , request.permission != 'CLOUD_VM_CLUSTER_UPDATE' } //Allow CE to create databases in VM Cluster without Adding SSH Key",
         "allow group ${local.core_policy_group_name} to manage dbnode-console-connection in compartment ${local.core_policy_shared_compartment}:exacs //Allow CE to create databases in VM Cluster",
         "allow group ${local.core_policy_group_name} to manage backups in compartment ${local.core_policy_shared_compartment}:exacs //Allow CE to manage database backups for ExaCS",
         "allow group ${local.core_policy_group_name} to read metrics in compartment ${local.core_policy_shared_compartment}:exacs //Allow CE see Metrics for ExaCS",
@@ -242,8 +243,12 @@ locals {
         "allow group ${local.core_policy_group_name} to use network-security-groups in compartment ${local.core_policy_shared_compartment}:exacs //Allow CE to use DBMGMT for ExaCS",
         "allow group ${local.core_policy_group_name} to use bastion in compartment ${local.core_policy_shared_compartment}:exacs //Allow CE to use existing bastion for ExaCS",
         "allow group ${local.core_policy_group_name} to manage bastion-session in compartment ${local.core_policy_shared_compartment}:exacs //Allow CE to manage bastion sessions for ExaCS",
-        "Allow service dpd to read secret-family in compartment ${local.core_policy_engineer_compartment} //Service Permission for Database management"
-        # move this
+        "Allow service dpd to read secret-family in compartment ${local.core_policy_engineer_compartment} //Service Permission for Database management",
+        "allow group ${local.core_policy_exacs_admin_group_name} to manage cloud-vmclusters in compartment ${local.core_policy_shared_compartment}:exacs //Allow Admins for VM Cluster",
+        "allow group ${local.core_policy_exacs_admin_group_name} to manage cloud-exadata-infrastructures in compartment ${local.core_policy_shared_compartment}:exacs //Allow Admins to manage Infra",
+        "allow group ${local.core_policy_exacs_admin_group_name} to manage db-homes in compartment ${local.core_policy_shared_compartment}:exacs //Allow Admins to manage DB Homes",
+
+        # core_policy_exacs_admin_group_name
       ]
     },
     "CE-APM-POLICY" : {
