@@ -8,6 +8,9 @@ locals {
             "zero database quota in compartment ${data.oci_identity_compartment.cloud-eng-comp.name}"
         ],
         [
+            "zero nosql quota in compartment ${data.oci_identity_compartment.cloud-eng-comp.name}"
+        ],
+        [
             for comp in local.comp_names: "set database quota /*-total-storage-tb/ to 1 in compartment ${data.oci_identity_compartment.cloud-eng-comp.name}:${comp}"
         ],
         [
@@ -18,6 +21,15 @@ locals {
         ],
         [
             for comp in local.comp_names: "set database quota vm-standard-e5-ocpu-count to 2 in compartment ${data.oci_identity_compartment.cloud-eng-comp.name}:${comp}"
+        ],
+        [
+            for comp in local.comp_names: "set nosql quota read-unit-count to 100 in compartment ${data.oci_identity_compartment.cloud-eng-comp.name}:${comp}"
+        ],
+        [
+            for comp in local.comp_names: "set nosql quota write-unit-count to 10 in compartment ${data.oci_identity_compartment.cloud-eng-comp.name}:${comp}"
+        ],
+        [
+            for comp in local.comp_names: "set nosql quota table-size-gb to 100 in compartment ${data.oci_identity_compartment.cloud-eng-comp.name}:${comp}"
         ]
     )
     compute_quota_statements = concat(
