@@ -148,13 +148,14 @@ locals {
       description : "Cloud Engineers GOldenGate permissions"
       compartment_id : "TENANCY-ROOT"
       statements : [
-        "allow group ${local.core_policy_group_name} to manage goldengate-connections in compartment ${local.core_policy_engineer_compartment} //Allow CE to manage GoldenGate connections in main CE compartment",
-        "allow group ${local.core_policy_group_name} to manage goldengate-connection-assignments in compartment ${local.core_policy_engineer_compartment} //Allow CE to manage GoldenGate assignments in main CE compartment",
+        "allow group ${local.core_policy_group_name} to manage goldengate-connections in compartment ${local.core_policy_shared_compartment}:GoldenGate //Allow CE to manage GoldenGate connections in shared GG compartment",
+        "allow group ${local.core_policy_group_name} to manage goldengate-connection-assignments in compartment ${local.core_policy_shared_compartment}:GoldenGate //Allow CE to manage GoldenGate assignments in shared GG compartment",
         "allow group ${local.core_policy_group_name} to use goldengate-deployments in compartment ${local.core_policy_shared_compartment}:GoldenGate //Allow CE to use all GoldenGate deployments in shared GG compartment",
         "allow group ${local.core_policy_group_name} to read logging-family in compartment ${local.core_policy_shared_compartment}:GoldenGate //Allow CE to view all GoldenGate logs in shared GG compartment",
         "allow group ${local.core_policy_group_name} to read load-balancers in compartment ${local.core_policy_shared_compartment}:GoldenGate //Allow CE to view all LB in shared GG compartment",
         "allow group ${local.core_policy_gg_admin_group_name} to manage goldengate-family in compartment ${local.core_policy_shared_compartment}:GoldenGate //Allow GG Admin in shared GG compartment",
         "allow group ${local.core_policy_gg_admin_group_name} to manage load-balancers in compartment ${local.core_policy_shared_compartment}:GoldenGate //Allow GG Admin in shared GG compartment",
+        "allow group ${local.core_policy_gg_admin_group_name} to manage logging-family in compartment ${local.core_policy_shared_compartment}:GoldenGate //Allow GG Admin in shared GG compartment",
         "allow dynamic-group '${local.default_domain_name}'/'${local.gg_dynamic_group_name}' to use keys in compartment ${local.core_policy_shared_compartment} //Allow GG DG to use keys in shared CE compartment",
         "allow dynamic-group '${local.default_domain_name}'/'${local.gg_dynamic_group_name}' to use vault in compartment ${local.core_policy_shared_compartment} //Allow GG DG to use vault in shared CE compartment",
         "allow dynamic-group '${local.default_domain_name}'/'${local.gg_dynamic_group_name}' to manage object-family in compartment ${local.core_policy_engineer_compartment} //Allow GG DG to manage OSS in main CE compartment",
