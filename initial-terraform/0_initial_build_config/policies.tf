@@ -57,6 +57,7 @@ locals {
         "allow group ${local.core_policy_group_name} to read work-requests in tenancy //Required tenancy-level for KMS Vaults",
         "allow group ${local.core_policy_group_name} to use cloud-shell in tenancy //Required tenancy-level for Cloud Shell",
         "allow group ${local.core_policy_group_name} to use cloud-shell-public-network in tenancy //Required tenancy-level for Cloud Shell",
+        "allow group ${local.core_policy_group_name} to read usage-report in tenancy //Cost Reporting visibility",
       ]
     },
     "CE-CORE-POLICY" : {
@@ -76,6 +77,7 @@ locals {
         "allow group ${local.core_policy_group_name} to manage management-agent-install-keys in compartment ${local.core_policy_engineer_compartment} //Allow CE to work with all compute within main CE compartment",
         "allow group ${local.core_policy_group_name} to manage volume-family in compartment ${local.core_policy_engineer_compartment} //Allow CE to work with all block storage within main CE compartment",
         "allow group ${local.core_policy_group_name} to manage virtual-network-family in compartment ${local.core_policy_engineer_compartment} where request.permission!='DRG_CREATE' //Allow CE to manage networking within main CE compartment - not DRG",
+        "allow group ${local.core_policy_group_name} to manage vcns in compartment ${local.core_policy_shared_compartment} where request.permission='VCN_UPDATE' //Allow CE to add private views to shared VCN, for DNS resolution",
         "allow group ${local.core_policy_group_name} to manage load-balancers in compartment ${local.core_policy_engineer_compartment} //Allow CE to manage Load Balancers within main CE compartment",
         "allow group ${local.core_policy_group_name} to manage certificate-authority-family in compartment ${local.core_policy_engineer_compartment} //Allow CE to manage Certificate Service within main CE compartment",
         "allow group ${local.core_policy_group_name} to manage leaf-certificate-family in compartment ${local.core_policy_engineer_compartment} //Allow CE to manage Certificate Service within main CE compartment",
@@ -105,7 +107,8 @@ locals {
         "allow group ${local.core_policy_group_name} to manage data-safe-family in compartment ${local.core_policy_engineer_compartment} //Allow CE to use Data Safe in Main CE Compartment",
         "allow group ${local.core_policy_group_name} to manage database-tools-connections in compartment cloud-engineering //Allow CE to work with SQL worksheets in main CE compartment",
         "allow group ${local.core_policy_group_name} to manage database-tools-connections in compartment ${local.core_policy_shared_compartment}:exacs //Allow CE to work with SQL worksheets in ExaCS compartment",
-        "allow group ${local.core_policy_group_name} to use database-tools-private-endpoints in compartment ${local.core_policy_shared_compartment}:exacs //Allow CE to work with SQL worksheets in ExaCS compartment",
+        "allow group ${local.core_policy_group_name} to use database-tools-private-endpoints in compartment ${local.core_policy_shared_compartment}:exacs //Allow CE to work with PE in ExaCS compartment",
+        "allow group ${local.core_policy_group_name} to use database-tools-private-endpoints in compartment ${local.core_policy_shared_compartment} //Allow CE to work with PE in Shared compartment",
         "Allow service dpd to read secret-family in compartment ${local.core_policy_shared_compartment} //Service Permission for Database management",
       ]
     },
@@ -153,6 +156,8 @@ locals {
         "allow group ${local.core_policy_group_name} to use goldengate-deployments in compartment ${local.core_policy_shared_compartment}:GoldenGate //Allow CE to use all GoldenGate deployments in shared GG compartment",
         "allow group ${local.core_policy_group_name} to read logging-family in compartment ${local.core_policy_shared_compartment}:GoldenGate //Allow CE to view all GoldenGate logs in shared GG compartment",
         "allow group ${local.core_policy_group_name} to read load-balancers in compartment ${local.core_policy_shared_compartment}:GoldenGate //Allow CE to view all LB in shared GG compartment",
+        "allow group ${local.core_policy_group_name} to use ons-topics in compartment ${local.core_policy_shared_compartment}:GoldenGate //Allow CE to view ONS Topics in shared GG compartment",
+        "allow group ${local.core_policy_group_name} to manage ons-subscriptions in compartment ${local.core_policy_shared_compartment}:GoldenGate //Allow CE to Subscribe to Notifications in shared GG compartment",
         "allow group ${local.core_policy_gg_admin_group_name} to manage goldengate-family in compartment ${local.core_policy_shared_compartment}:GoldenGate //Allow GG Admin in shared GG compartment",
         "allow group ${local.core_policy_gg_admin_group_name} to manage load-balancers in compartment ${local.core_policy_shared_compartment}:GoldenGate //Allow GG Admin in shared GG compartment",
         "allow group ${local.core_policy_gg_admin_group_name} to manage logging-family in compartment ${local.core_policy_shared_compartment}:GoldenGate //Allow GG Admin in shared GG compartment",
