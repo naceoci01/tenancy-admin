@@ -1,28 +1,81 @@
 # Terraform to configure tenancy
 
-This is 2 stacks designed to create our initial tenancy.  It is broken into 2 parts:
+(doc in progress - 02/11/2025)
 
-1) Initial build of compartment structure, group, and initial users
+To set up a "Cloud Engineer" tenancy, there are several main steps to getting set up.  The scripts here will do some of them.
 
-2) Creation of individual users and dynamic groups
+- Parent Tenancy Steps
+- Github Repo for these stacks
+- Create Identity Domain and initial Groups (Stack 00)
+- Configure SSO (with optional JIT)
+- Create main compartments, policies and dynamic groups (Stack 0)
+- Ongoing (via cron or function) Compartment and quota policy per engineer (Stack 1)
+- Create admin compartment, server, and dynamic group (Stack 2)
+- Create advanced services (TBD)
 
-Each of these has a subdirectory with a Resource Manager config (terraform config).  To use either, create a stack and update the variables.
+## Parent Tenancy
+Subscribe all needed regions
+Tenancy govenance rules 
+Subscribe child to governance rules
+...
 
-## Details (Part 1)
-This stack requires an existing identity domain to exist and needs the OCID of it.  It may eventually be available to create the domain itself, along with enterprise required security (MFA), and then use the domain for the dynamic groups and shared group that get created.  
+## Github Repo
 
-It also requires the name of the IAM group (to be created in Identity Domain), and the name of a top-level compartment for all users to (eventually be) exist under.
+Stacks in this repo are in subfolders, so they can be pulled from single GitHub repo.
 
-General policies are created for use by this group in this compartment, and thus it should be possible to enable new users simply by adding the user to the group and creating a compartment.
+Configure a Configuration Source Provider in home region, using an Org-based repo and a Personal Access Token.
 
-This stack also creates a basic quota policy to zero out the regions and services across the board, so as to prevent creation of resources in the top level compartment, such as `cloud-engineering`.
+From this, you then can create the stacks
 
-Finally, it creates a DRG at the root of the tenancy, for potential use with other tenancies or FastConnect/IPSec.
+## Create Identity domain (Stack 00)
 
-## Details (Part 2)
+Strategy is to avoid using default identity domain for anything other than admin user, some dynamic groups.
 
-This stack defines a grouping (*not IAM*) of compartments to be created, and then creates the following:
+Use Stack 00 to create a basic Identity domain and note the name and OCID.  There is some functionality to create groups for main cloud engineer community and other purposes later on.  
 
-- A compartment under the main `cloud-engineering` compartment
-- A Dynamic Group for that compartment
-- A quota policy, grouped by the name of the grouping, with statements allowing each compartment to contain a set number or size of resources.
+NOTE - this one CANNOT be re-run over and over as re-creation of the main `cloud-engineering` group will remove all members.
+
+## Enable SSO for Domain (no stack)
+
+Set up SSO and JIT, using Oracle's production SSO configuration
+
+Screen shots TBD
+
+## Compartments, Policies, Dynamic Groups (Stack 1)
+
+This should create a majority of policies and Dynamic Groups needed for various services.  At the moment, it set up policies for:
+
+- CORE (compute, network, storage)
+- SERVICES (OCI
+- EXACS
+- GG
+- OSMH
+- DB
+- ADB
+- FUNC
+- OIC
+- more
+
+TODO: set up resource manager schema.yaml to enable or disable (DG, compartment, policy) by service.  For example, if Data Science is not needed, don't create the shared compartment and policies for it.
+
+**NOTE - this one can be re-run over and over as policies are added.  It will overwrite manual changes**
+
+## Admin Compartment (Stack 2)
+
+VCN, server for admins to use, along with Dynamic Group allowing instance principal execution of scripts.
+
+## Ongoing Engineer Compartments (Stack 1)
+
+This one can be set via cron to run every so often (20 min currently) and checks the membership of the main `cloud-engineering group`, and then for each user, adds or updates a compartment for them (using first half of email name minus @oracle.com), then updates a set of compartment quotas to allow each engineer to have a set of resources.
+
+**NOTE - this one can be updated and pushed to repo, then will automatically pick up changes next run.  Or run it manually**
+
+## Advanced Services
+
+TBD for this section.  Ech service must be set up, but these could all be scripted. 
+
+What has been done manually
+
+- Regional DRG and RPC connection for all regions (all in `cloud-engineering-shared`)
+
+
