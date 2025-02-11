@@ -77,7 +77,6 @@ locals {
         "allow group ${local.core_policy_group_name} to manage management-agent-install-keys in compartment ${local.core_policy_engineer_compartment} //Allow CE to work with all compute within main CE compartment",
         "allow group ${local.core_policy_group_name} to manage volume-family in compartment ${local.core_policy_engineer_compartment} //Allow CE to work with all block storage within main CE compartment",
         "allow group ${local.core_policy_group_name} to manage virtual-network-family in compartment ${local.core_policy_engineer_compartment} where request.permission!='DRG_CREATE' //Allow CE to manage networking within main CE compartment - not DRG",
-        "allow group ${local.core_policy_group_name} to manage vcns in compartment ${local.core_policy_shared_compartment} where request.permission='VCN_UPDATE' //Allow CE to add private views to shared VCN, for DNS resolution",
         "allow group ${local.core_policy_group_name} to manage load-balancers in compartment ${local.core_policy_engineer_compartment} //Allow CE to manage Load Balancers within main CE compartment",
         "allow group ${local.core_policy_group_name} to manage certificate-authority-family in compartment ${local.core_policy_engineer_compartment} //Allow CE to manage Certificate Service within main CE compartment",
         "allow group ${local.core_policy_group_name} to manage leaf-certificate-family in compartment ${local.core_policy_engineer_compartment} //Allow CE to manage Certificate Service within main CE compartment",
@@ -153,6 +152,7 @@ locals {
       statements : [
         "allow group ${local.core_policy_group_name} to manage goldengate-connections in compartment ${local.core_policy_shared_compartment}:GoldenGate //Allow CE to manage GoldenGate connections in shared GG compartment",
         "allow group ${local.core_policy_group_name} to manage goldengate-connection-assignments in compartment ${local.core_policy_shared_compartment}:GoldenGate //Allow CE to manage GoldenGate assignments in shared GG compartment",
+        "allow group ${local.core_policy_group_name} to manage vcns in compartment ${local.core_policy_shared_compartment}:GoldenGate where request.permission='VCN_UPDATE' //Allow CE to add private views to shared VCN, for DNS resolution",
         "allow group ${local.core_policy_group_name} to use goldengate-deployments in compartment ${local.core_policy_shared_compartment}:GoldenGate //Allow CE to use all GoldenGate deployments in shared GG compartment",
         "allow group ${local.core_policy_group_name} to read logging-family in compartment ${local.core_policy_shared_compartment}:GoldenGate //Allow CE to view all GoldenGate logs in shared GG compartment",
         "allow group ${local.core_policy_group_name} to read load-balancers in compartment ${local.core_policy_shared_compartment}:GoldenGate //Allow CE to view all LB in shared GG compartment",
@@ -408,6 +408,19 @@ locals {
         "allow dynamic-group '${local.default_domain_name}'/'${local.oda_dynamic_group_name}' to manage genai-agent-family in compartment ${local.core_policy_engineer_compartment} //DG Access to AI Agents",    
         "allow dynamic-group '${local.default_domain_name}'/'${local.oda_dynamic_group_name}' to manage object-family in compartment ${local.core_policy_engineer_compartment} //DG Access to OSS",    
         "allow dynamic-group '${local.default_domain_name}'/'${local.oda_dynamic_group_name}' to manage agent-family in compartment ${local.core_policy_engineer_compartment} //DG Access to AI Agents",    
+      ]
+    },
+    "CE-VNPA-POLICY" : {
+      name : "cloud-engineering-VNPA-policy"
+      description : "Permissions for Network Path Analyzer"
+      compartment_id : "TENANCY-ROOT"
+      statements : [
+        "allow group ${local.core_policy_group_name} to manage vn-path-analyzer-test in compartment ${local.core_policy_engineer_compartment} //Allow CE to Use Network Path Analyzer",        
+        "allow any-user to inspect compartments in tenancy where all { request.principal.type = 'vnpa-service' } //Required VNPA",        
+        "allow any-user to read instances in tenancy where all { request.principal.type = 'vnpa-service' } //Required VNPA",    
+        "allow any-user to read virtual-network-family in tenancy where all { request.principal.type = 'vnpa-service' } //Required VNPA",    
+        "allow any-user to read load-balancers in tenancy where all { request.principal.type = 'vnpa-service' } //Required VNPA",
+        "allow any-user to read network-security-group in tenancy where all { request.principal.type = 'vnpa-service' } //Required VNPA"
       ]
     }
   }
