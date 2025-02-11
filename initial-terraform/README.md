@@ -45,15 +45,20 @@ Screen shots TBD
 
 This should create a majority of policies and Dynamic Groups needed for various services.  At the moment, it set up policies for:
 
-- CORE (compute, network, storage)
-- SERVICES (OCI
-- EXACS
-- GG
-- OSMH
-- DB
-- ADB
-- FUNC
-- OIC
+- Compute, network, storage (CORE)
+- OCI Tenancy Services (SERVICES) - logging, metrics, notifications, alarms, SQL Tools, Cloud Shell, etc
+- Exadata Cloud Service (EXACS)
+- GoldenGate (GG) - shared
+- OS Management Hub (OSMH)
+- Database (DB) - Base, NoSQL
+- MySQL Heatwave (MYSQL) - shared
+- Autonomous DB (ADB) - with resource principals
+- Functions (FUNC)
+- Oracle Integration 3 (OIC) - shared with resource principals
+- Network Path Analyzer (VNPA)
+- AI Services (AI)
+- GenAI Services (GENAI)
+- Oracle Digital Assistant (ODA) - shared
 - more
 
 TODO: set up resource manager schema.yaml to enable or disable (DG, compartment, policy) by service.  For example, if Data Science is not needed, don't create the shared compartment and policies for it.
@@ -77,5 +82,15 @@ TBD for this section.  Ech service must be set up, but these could all be script
 What has been done manually
 
 - Regional DRG and RPC connection for all regions (all in `cloud-engineering-shared`)
+- VCNs for each of (ExaCS, MySQL, GoldenGate) with DRG attachments, SecLists, NSGs, routing rules
+- ExaCS Clusters for 19c and 23ai
+- ExaScale Clusters
+- ADB-Dedicated Clusters for 19c and 23ai
+- Oracle Integration instances with associated OAUTH apps, (file server, process automation, Visual builder enabled and configured)
+- Oracle Analytics Cloud instances with permissions for cloud-engineers to use
+- Oracle Digital Assitant instances
+- MySQL Systems using OCI Authentication Proxy (for all engineers)
+- GoldenGate Deployments to be shared by everyone
+- Data Science compartment for use by anyone, with dynamic groups allowing access to rest of tenancy
 
 
