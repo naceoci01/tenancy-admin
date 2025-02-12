@@ -67,7 +67,16 @@ TODO: set up resource manager schema.yaml to enable or disable (DG, compartment,
 
 ## Admin Compartment (Stack 2)
 
-VCN, server for admins to use, along with Dynamic Group allowing instance principal execution of scripts.
+VCN, server for admins to use, along with Dynamic Group allowing instance principal execution of scripts. 
+
+Scripts include
+
+- Auto-Tag (schedule)
+- Auto-Shutdown (cost savings)
+- Extirpater / SuperDelete (as needed)
+- Tenancy-wide scale-down scripts (like ADB Storage)
+
+Also good practice to install Usage2ADW ADB-S and put binaries on admin VM.
 
 ## Ongoing Engineer Compartments (Stack 1)
 
@@ -75,9 +84,9 @@ This one can be set via cron to run every so often (20 min currently) and checks
 
 **NOTE - this one can be updated and pushed to repo, then will automatically pick up changes next run.  Or run it manually**
 
-## Advanced Services
+## Service Enablement
 
-TBD for this section.  Ech service must be set up, but these could all be scripted. 
+TBD for this section.  Each service must be set up, but these could all be scripted. 
 
 What has been done manually
 
@@ -92,5 +101,6 @@ What has been done manually
 - MySQL Systems using OCI Authentication Proxy (for all engineers)
 - GoldenGate Deployments to be shared by everyone
 - Data Science compartment for use by anyone, with dynamic groups allowing access to rest of tenancy
+- Logging Analytics and Connector Hubs for Audit, Flow Logs, and other things
 
 
