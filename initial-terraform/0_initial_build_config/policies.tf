@@ -457,10 +457,12 @@ locals {
           "allow group ${local.core_policy_mysql_group_name} to read management-dashboard in compartment ${local.core_policy_mysql_compartment} // MySQL Management",
           "allow group ${local.core_policy_mysql_group_name} to read management-saved-search in compartment ${local.core_policy_mysql_compartment} // MySQL Management",
           "allow group ${local.core_policy_group_name} to read mysql-family in compartment ${local.core_policy_mysql_compartment} //Allow CE to see MySQL and request access",
-          "allow dynamic-group '${local.default_domain_name}'/'${local.mysql_dynamic_group_name}' to read buckets in compartment ${local.core_policy_datascience_compartment} //Allows MySQL DB Systems to read OSS buckets",
-          "allow dynamic-group '${local.default_domain_name}'/'${local.mysql_dynamic_group_name}' to manage objects in compartment ${local.core_policy_datascience_compartment} //Allows MySQL DB Systems to read OSS buckets",
-          "allow dynamic-group '${local.default_domain_name}'/'${local.mysql_dynamic_group_name}' to use generative-ai-chat in compartment ${local.core_policy_datascience_compartment} //Allows MySQL DB Systems to use GenAI",
-          "allow dynamic-group '${local.default_domain_name}'/'${local.mysql_dynamic_group_name}' to use generative-ai-text-embedding in compartment ${local.core_policy_datascience_compartment} //Allows MySQL DB Systems to use GenAI",
+          "allow dynamic-group '${local.default_domain_name}'/'${local.mysql_dynamic_group_name}' to read buckets in compartment ${local.core_policy_mysql_compartment} //Allows MySQL DB Systems to read OSS buckets",
+          "allow dynamic-group '${local.default_domain_name}'/'${local.mysql_dynamic_group_name}' to manage objects in compartment ${local.core_policy_mysql_compartment} //Allows MySQL DB Systems to read OSS buckets",
+          "allow dynamic-group '${local.default_domain_name}'/'${local.mysql_dynamic_group_name}' to read buckets in compartment ${local.core_policy_engineer_compartment} //Allows MySQL DB Systems to read OSS buckets in CE Shared",
+          "allow dynamic-group '${local.default_domain_name}'/'${local.mysql_dynamic_group_name}' to manage objects in compartment ${local.core_policy_engineer_compartment} //Allows MySQL DB Systems to read OSS buckets in CE Shared",
+          "allow dynamic-group '${local.default_domain_name}'/'${local.mysql_dynamic_group_name}' to use generative-ai-chat in compartment ${local.core_policy_mysql_compartment} //Allows MySQL DB Systems to use GenAI",
+          "allow dynamic-group '${local.default_domain_name}'/'${local.mysql_dynamic_group_name}' to use generative-ai-text-embedding in compartment ${local.core_policy_mysql_compartment} //Allows MySQL DB Systems to use GenAI",
         ]
       },
     } : {}, #No policy MYSQL
