@@ -13,6 +13,7 @@ locals {
   core_policy_datascience_compartment = "${local.core_policy_shared_compartment}:DataScience"
   core_policy_mysql_compartment       = "${local.core_policy_shared_compartment}:MySQL"
   core_policy_oac_compartment         = "${local.core_policy_shared_compartment}:OAC"
+  core_policy_exacs_compartment       = "${local.core_policy_shared_compartment}:ExaCS"
   core_policy_oda_compartment         = "${local.core_policy_shared_compartment}:ODA"
   core_policy_engineer_ocid           = module.cislz_compartments.compartments.CLOUD-ENG.id
   default_domain_name                 = "Default"
@@ -203,6 +204,10 @@ locals {
           "allow service rcs to manage virtual-network-family in tenancy",
           "allow group ${local.core_policy_group_name} to manage recovery-service-subnet in compartment ${local.core_policy_engineer_compartment} //Allow CE to manage Recovery Subnets in CE Compartment",
           "allow group ${local.core_policy_group_name} to manage recovery-service-protected-database in compartment ${local.core_policy_engineer_compartment} //Allow CE to manage Recovery Subnets in CE Compartment",
+          "allow group ${local.core_policy_group_name} to use recovery-service-policy in compartment ${local.core_policy_engineer_compartment} //Allow CE to manage Recovery Subnets in CE Compartment",
+          "allow group ${local.core_policy_group_name} to use recovery-service-subnet in compartment ${local.core_policy_exacs_compartment} //Allow CE to manage Recovery Subnets in CE Compartment",
+          "allow group ${local.core_policy_group_name} to manage recovery-service-protected-database in compartment ${local.core_policy_exacs_compartment} //Allow CE to manage Recovery Subnets in CE Compartment",
+          "allow group ${local.core_policy_group_name} to use recovery-service-policy in compartment ${local.core_policy_exacs_compartment} //Allow CE to manage Recovery Subnets in CE Compartment",
         ]
       }
     },
