@@ -38,7 +38,9 @@ locals {
     compute_quota_statements = concat(
         [
             "zero compute-core quota in compartment ${data.oci_identity_compartment.cloud-eng-comp.name}",
-            "zero compute-memory quota in compartment ${data.oci_identity_compartment.cloud-eng-comp.name}"
+            "zero compute-memory quota in compartment ${data.oci_identity_compartment.cloud-eng-comp.name}",
+            "set compute-memory quota standard-a1-regional-memory-count to 10000000 in compartment ${data.oci_identity_compartment.cloud-eng-comp.name}",
+            "set compute-memory quota standard-a1-regional-core-count to 10000000 in compartment ${data.oci_identity_compartment.cloud-eng-comp.name}"
         ],
         [
             for comp in local.comp_names: "set compute-memory quota standard-e5-memory-count to 120 in compartment ${data.oci_identity_compartment.cloud-eng-comp.name}:${comp}"
@@ -53,10 +55,10 @@ locals {
             for comp in local.comp_names: "set compute-core quota standard3-core-count to 8 in compartment ${data.oci_identity_compartment.cloud-eng-comp.name}:${comp}"
         ],
         [
-            for comp in local.comp_names: "set compute-memory quota /standard-a1-*/-memory-count to 120 in compartment ${data.oci_identity_compartment.cloud-eng-comp.name}:${comp}"
+            for comp in local.comp_names: "set compute-memory quota standard-a1-memory-count to 120 in compartment ${data.oci_identity_compartment.cloud-eng-comp.name}:${comp}"
         ],
         [
-            for comp in local.comp_names: "set compute-core quota /standard-a1-*/-core-count to 8 in compartment ${data.oci_identity_compartment.cloud-eng-comp.name}:${comp}"
+            for comp in local.comp_names: "set compute-core quota standard-a1-core-count to 8 in compartment ${data.oci_identity_compartment.cloud-eng-comp.name}:${comp}"
         ],
         [
             for comp in local.comp_names: "set container-engine quota virtual-node-count to 3 in compartment ${data.oci_identity_compartment.cloud-eng-comp.name}:${comp}"
