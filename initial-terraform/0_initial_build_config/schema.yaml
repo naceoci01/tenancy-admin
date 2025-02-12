@@ -32,6 +32,7 @@ variableGroups:
       - create_oac
       - create_func
       - create_mysql
+      - create_gg
   - title: "Hidden Variables" 
     visible: false
     variables:

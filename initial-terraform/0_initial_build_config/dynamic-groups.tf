@@ -128,9 +128,9 @@ locals {
     } : {},
     var.create_mysql == true ?
     {
-      (local.gg_dynamic_group_key) = {
+      (local.mysql_dynamic_group_key) = {
         identity_domain_id = var.default_domain_id
-        name               = local.gg_dynamic_group_name
+        name               = local.mysql_dynamic_group_name
         description        = "Defines all MySQL DB Systems for Lakehouse access"
         matching_rule      = "resource.type = 'mysqldbsystem'"
       }
