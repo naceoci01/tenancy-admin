@@ -98,29 +98,29 @@ variables:
 
   create_oic:
     title: Create the OIC Policy and compartment
-    type: bool
+    type: boolean
   create_exa:
     title: Create the ExaCS Policy and compartment
-    type: bool
+    type: boolean
   create_oda:
     title: Create the ODA Policy and compartment
-    type: bool
+    type: boolean
   create_mysql:
     title: Create the MySQL Policy and compartment
-    type: bool
+    type: boolean
   create_oac:
     title: Create the OAC Policy and compartment
-    type: bool
+    type: boolean
   create_ds:
     title: Create the Data Science Policy and compartment
-    type: bool
+    type: boolean
   create_ai:
     title: Create the AI and GenAI Policy
-    type: bool
+    type: boolean
   create_gg:
     title: Create the GoldenGate Policy and compartment
-    type: bool
+    type: boolean
   create_func:
     title: Create the OOCI Functions Policy
-    type: bool
+    type: boolean
 
