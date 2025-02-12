@@ -48,10 +48,52 @@ variable "engineer_compartment_base_name" {
     default = "cloud-engineering"
 }
 
-# variable "use_drg" {
-#     type = bool
-#     description = "Whether to create a DRG"
-# }
+variable "create_oic" {
+    type = bool
+    description = "Whether to enable Oracle Integration"
+}
+
+variable "create_exa" {
+    type = bool
+    description = "Whether to enable Oracle Integration"
+}
+
+variable "create_oda" {
+    type = bool
+    description = "Whether to enable Oracle Digital Assistant"
+}
+
+variable "create_mysql" {
+    type = bool
+    description = "Whether to enable MySQL"
+}
+
+variable "create_oac" {
+    type = bool
+    description = "Whether to enable Oracle Analytics Cloud"
+}
+
+variable "create_ds" {
+    type = bool
+    description = "Whether to enable Data Science and Labelling"
+}
+
+variable "create_ai" {
+    type = bool
+    description = "Whether to enable AI and GenAI"
+}
+
+variable "create_gg" {
+    type = bool
+    description = "Whether to enable GoldenGate"
+}
+
+variable "create_func" {
+    type = bool
+    description = "Whether to enable OCI Functions"
+}
+
+
 # variable "rpc_peer_ocid" {
 #     description = "OCID of RPC Peering Connection (optional)"
 #     default = null

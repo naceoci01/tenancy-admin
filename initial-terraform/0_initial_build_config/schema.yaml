@@ -22,6 +22,16 @@ variableGroups:
       - engineer_datascience_group_name
       - engineer_mysql_group_name
       - exacs_admin_group_name
+  - title: "Services" 
+    variables: 
+      - create_oic
+      - create_oda
+      - create_ai
+      - create_ds
+      - create_exa
+      - create_oac
+      - create_func
+      - create_mysql
   - title: "Hidden Variables" 
     visible: false
     variables:
@@ -85,3 +95,32 @@ variables:
     type: string
     description: Change as necessary
     default: cloud-engineering-exacs-admins
+
+  create_oic:
+    title: Create the OIC Policy and compartment
+    type: bool
+  create_exa:
+    title: Create the ExaCS Policy and compartment
+    type: bool
+  create_oda:
+    title: Create the ODA Policy and compartment
+    type: bool
+  create_mysql:
+    title: Create the MySQL Policy and compartment
+    type: bool
+  create_oac:
+    title: Create the OAC Policy and compartment
+    type: bool
+  create_ds:
+    title: Create the Data Science Policy and compartment
+    type: bool
+  create_ai:
+    title: Create the AI and GenAI Policy
+    type: bool
+  create_gg:
+    title: Create the GoldenGate Policy and compartment
+    type: bool
+  create_func:
+    title: Create the OOCI Functions Policy
+    type: bool
+
