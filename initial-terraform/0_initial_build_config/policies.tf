@@ -481,7 +481,8 @@ locals {
           "allow group ${local.core_policy_postgres_group_name} to read postgres-work-requests in compartment ${local.core_policy_postgres_compartment} // Postgres Management",
           "allow group ${local.core_policy_postgres_group_name} to read metrics in compartment ${local.core_policy_postgres_compartment} // Postgres Management",
           "allow group ${local.core_policy_group_name} to read all-resources in compartment ${local.core_policy_postgres_compartment} //Allow CE to read Postgres Compartment",
-
+          "allow group ${local.core_policy_postgres_group_name} to use bastions in compartment ${local.core_policy_mysql_compartment} // Postgres Bastion Usage",
+          "allow group ${local.core_policy_postgres_group_name} to manage bastion-sessions in compartment ${local.core_policy_mysql_compartment} // Postgres Bastion Usage",
         ]
       }
     } : {}, #No policy MYSQL
