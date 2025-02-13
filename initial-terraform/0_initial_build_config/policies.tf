@@ -5,6 +5,7 @@ locals {
   core_policy_group_name              = "'${data.oci_identity_domain.ce_domain.display_name}'/'${var.engineer_group_name}'"
   core_policy_ds_group_name           = "'${data.oci_identity_domain.ce_domain.display_name}'/'${var.engineer_datascience_group_name}'"
   core_policy_mysql_group_name        = "'${data.oci_identity_domain.ce_domain.display_name}'/'${var.engineer_mysql_group_name}'"
+  core_policy_postgres_group_name        = "'${data.oci_identity_domain.ce_domain.display_name}'/'${var.engineer_postgres_group_name}'"
   core_policy_oac_group_name          = "'${data.oci_identity_domain.ce_domain.display_name}'/'${var.engineer_oac_group_name}'"
   core_policy_exacs_admin_group_name  = "'${data.oci_identity_domain.ce_domain.display_name}'/'${var.exacs_admin_group_name}'"
   core_policy_gg_admin_group_name     = "'${data.oci_identity_domain.ce_domain.display_name}'/'GGS_Administrator'"
@@ -12,6 +13,7 @@ locals {
   core_policy_shared_compartment      = module.cislz_compartments.compartments.SHARED-CMP.name
   core_policy_datascience_compartment = "${local.core_policy_shared_compartment}:DataScience"
   core_policy_mysql_compartment       = "${local.core_policy_shared_compartment}:MySQL"
+  core_policy_postgres_compartment       = "${local.core_policy_shared_compartment}:Postgres"
   core_policy_oac_compartment         = "${local.core_policy_shared_compartment}:OAC"
   core_policy_exacs_compartment       = "${local.core_policy_shared_compartment}:ExaCS"
   core_policy_oda_compartment         = "${local.core_policy_shared_compartment}:ODA"
@@ -467,6 +469,21 @@ locals {
           "allow dynamic-group '${local.default_domain_name}'/'${local.mysql_dynamic_group_name}' to use generative-ai-text-embedding in compartment ${local.core_policy_mysql_compartment} //Allows MySQL DB Systems to use GenAI",
         ]
       },
+      "CE-POSTGRES-POLICY" : {
+        name : "cloud-engineering-POSTGRES-policy"
+        description : "Permissions for PostGres - please request access to group cloud-engineering-postgres-users"
+        compartment_id : "TENANCY-ROOT"
+        statements : [
+          "allow group ${local.core_policy_postgres_group_name} to manage postgres-db-systems in compartment ${local.core_policy_postgres_compartment} // Postgres Management",
+          "allow group ${local.core_policy_postgres_group_name} to manage postgres-backups in compartment ${local.core_policy_postgres_compartment} // Postgres Management",
+          "allow group ${local.core_policy_postgres_group_name} to manage postgres-configuration in compartment ${local.core_policy_postgres_compartment} // Postgres Management",
+          "allow group ${local.core_policy_postgres_group_name} to manage virtual-network-family in compartment ${local.core_policy_postgres_compartment} // Postgres VCN Management",
+          "allow group ${local.core_policy_postgres_group_name} to read postgres-work-requests in compartment ${local.core_policy_postgres_compartment} // Postgres Management",
+          "allow group ${local.core_policy_postgres_group_name} to read metrics in compartment ${local.core_policy_postgres_compartment} // Postgres Management",
+          "allow group ${local.core_policy_group_name} to read all-resources in compartment ${local.core_policy_postgres_compartment} //Allow CE to read Postgres Compartment",
+
+        ]
+      }
     } : {}, #No policy MYSQL
   )
 

@@ -38,6 +38,11 @@ variable "engineer_mysql_group_name" {
     default = "cloud-engineering-mysql-users"
 }
 
+variable "engineer_postgres_group_name" {
+    description = "Name of shared engineer group for Postgres"
+    default = "cloud-engineering-postgres-users"
+}
+
 variable "exacs_admin_group_name" {
     description = "Name of admins group for ExaCS"
     default = "cloud-engineering-exacs-admins"

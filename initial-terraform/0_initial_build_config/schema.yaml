@@ -91,6 +91,12 @@ variables:
     description: Change as necessary
     default: cloud-engineering-mysql-users
 
+  engineer_postgres_group_name:
+    title: Name of IAM group for Postgres engineers
+    type: string
+    description: Change as necessary
+    default: cloud-engineering-postgres-users
+
   exacs_admin_group_name:
     title: Name of IAM group for ExaCS Admins
     type: string
