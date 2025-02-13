@@ -31,6 +31,10 @@ locals {
                     name = "MySQL",
                     description = "Shared Heatwave"
                 },
+                POSTGRES-CMP = {
+                    name = "Postgres",
+                    description = "Shared Postgres"
+                },
                 DS-CMP = {
                     name = "DataScience",
                     description = "Shared Data Science"
