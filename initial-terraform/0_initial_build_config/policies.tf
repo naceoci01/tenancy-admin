@@ -199,15 +199,10 @@ locals {
         statements : [
           "allow service database to manage recovery-service-family in tenancy",
           "allow service database to manage tagnamespace in tenancy",
-          "allow group ${local.core_policy_group_name} to manage tagnamespace in tenancy",
           "allow service rcs to manage recovery-service-family in tenancy",
           "allow service rcs to manage virtual-network-family in tenancy",
-          "allow group ${local.core_policy_group_name} to manage recovery-service-subnet in compartment ${local.core_policy_engineer_compartment} //Allow CE to manage Recovery Subnets in CE Compartment",
-          "allow group ${local.core_policy_group_name} to manage recovery-service-protected-database in compartment ${local.core_policy_engineer_compartment} //Allow CE to manage Recovery Subnets in CE Compartment",
-          "allow group ${local.core_policy_group_name} to use recovery-service-policy in compartment ${local.core_policy_engineer_compartment} //Allow CE to manage Recovery Subnets in CE Compartment",
-          "allow group ${local.core_policy_group_name} to use recovery-service-subnet in compartment ${local.core_policy_exacs_compartment} //Allow CE to manage Recovery Subnets in CE Compartment",
-          "allow group ${local.core_policy_group_name} to manage recovery-service-protected-database in compartment ${local.core_policy_exacs_compartment} //Allow CE to manage Recovery Subnets in CE Compartment",
-          "allow group ${local.core_policy_group_name} to use recovery-service-policy in compartment ${local.core_policy_exacs_compartment} //Allow CE to manage Recovery Subnets in CE Compartment",
+          "allow group ${local.core_policy_group_name} to manage recovery-service-family in compartment ${local.core_policy_engineer_compartment} //Allow CE to manage Recovery Subnets in CE Compartment",
+          "allow group ${local.core_policy_group_name} to manage recovery-service-family in compartment ${local.core_policy_exacs_compartment} //Allow CE to manage Recovery Subnets in Exacs Compartment",
         ]
       }
     },
@@ -461,6 +456,8 @@ locals {
           "allow group ${local.core_policy_mysql_group_name} to manage mysql-family in compartment ${local.core_policy_mysql_compartment} where request.operation != 'CreateDbSystem' // Start and Stop - no creation",
           "allow group ${local.core_policy_mysql_group_name} to read management-dashboard in compartment ${local.core_policy_mysql_compartment} // MySQL Management",
           "allow group ${local.core_policy_mysql_group_name} to read management-saved-search in compartment ${local.core_policy_mysql_compartment} // MySQL Management",
+          "allow group ${local.core_policy_mysql_group_name} to use bastions in compartment ${local.core_policy_mysql_compartment} // MySQL Bastion Usage",
+          "allow group ${local.core_policy_mysql_group_name} to manage bastion-sessions in compartment ${local.core_policy_mysql_compartment} // MySQL Bastion Usage",
           "allow group ${local.core_policy_group_name} to read mysql-family in compartment ${local.core_policy_mysql_compartment} //Allow CE to see MySQL and request access",
           "allow dynamic-group '${local.default_domain_name}'/'${local.mysql_dynamic_group_name}' to read buckets in compartment ${local.core_policy_mysql_compartment} //Allows MySQL DB Systems to read OSS buckets",
           "allow dynamic-group '${local.default_domain_name}'/'${local.mysql_dynamic_group_name}' to manage objects in compartment ${local.core_policy_mysql_compartment} //Allows MySQL DB Systems to read OSS buckets",
