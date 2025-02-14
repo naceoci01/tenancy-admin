@@ -7,7 +7,7 @@ locals {
   core_policy_mysql_group_name        = "'${data.oci_identity_domain.ce_domain.display_name}'/'${var.engineer_mysql_group_name}'"
   core_policy_postgres_group_name        = "'${data.oci_identity_domain.ce_domain.display_name}'/'${var.engineer_postgres_group_name}'"
   core_policy_oac_group_name          = "'${data.oci_identity_domain.ce_domain.display_name}'/'${var.engineer_oac_group_name}'"
-  core_policy_exacs_admin_group_name  = "'${data.oci_identity_domain.ce_domain.display_name}'/'${var.exacs_admin_group_name}'"
+  core_policy_exacs_admin_group_name  = "'${data.oci_identity_domain.ce_domain.display_name}'/'${var.engineer_exacs_group_name}'"
   core_policy_gg_admin_group_name     = "'${data.oci_identity_domain.ce_domain.display_name}'/'GGS_Administrator'"
   core_policy_engineer_compartment    = module.cislz_compartments.compartments.CLOUD-ENG.name
   core_policy_shared_compartment      = module.cislz_compartments.compartments.SHARED-CMP.name
@@ -453,12 +453,6 @@ locals {
         statements : [
           "allow service mysql_dp_auth TO {AUTHENTICATION_INSPECT, GROUP_MEMBERSHIP_INSPECT, DYNAMIC_GROUP_INSPECT} IN TENANCY // Allow MySQL to use Mapped Proxy Users",
           "allow group ${local.core_policy_group_name} to use dbmgmt-mysql-family in compartment ${local.core_policy_mysql_compartment} // MySQL Management",
-          "allow group ${local.core_policy_group_name} to read metrics in compartment ${local.core_policy_mysql_compartment} // Metrics from MySQL",
-          "allow group ${local.core_policy_group_name} to read alarms in compartment ${local.core_policy_mysql_compartment} // Set up alarms for MySQL",
-          "allow group ${local.core_policy_group_name} to read virtual-network-family in compartment ${local.core_policy_mysql_compartment} // See Networking for MySQL",
-          "allow group ${local.core_policy_group_name} to read mysql-family in compartment ${local.core_policy_mysql_compartment} where request.operation != 'CreateDbSystem' // Start and Stop - no creation",
-          "allow group ${local.core_policy_group_name} to read management-dashboard in compartment ${local.core_policy_mysql_compartment} // MySQL Management",
-          "allow group ${local.core_policy_group_name} to read management-saved-search in compartment ${local.core_policy_mysql_compartment} // MySQL Management",
           "allow group ${local.core_policy_group_name} to use bastions in compartment ${local.core_policy_mysql_compartment} // MySQL Bastion Usage",
           "allow group ${local.core_policy_group_name} to manage bastion-sessions in compartment ${local.core_policy_mysql_compartment} // MySQL Bastion Usage",
           "allow group ${local.core_policy_mysql_group_name} to manage alarms in compartment ${local.core_policy_mysql_compartment} // Set up alarms for MySQL",
@@ -481,9 +475,6 @@ locals {
           "allow group ${local.core_policy_postgres_group_name} to manage postgres-backups in compartment ${local.core_policy_postgres_compartment} // Postgres Management",
           "allow group ${local.core_policy_postgres_group_name} to manage postgres-configuration in compartment ${local.core_policy_postgres_compartment} // Postgres Management",
           "allow group ${local.core_policy_postgres_group_name} to manage virtual-network-family in compartment ${local.core_policy_postgres_compartment} // Postgres VCN Management",
-          "allow group ${local.core_policy_postgres_group_name} to read postgres-work-requests in compartment ${local.core_policy_postgres_compartment} // Postgres Management",
-          "allow group ${local.core_policy_postgres_group_name} to read metrics in compartment ${local.core_policy_postgres_compartment} // Postgres Management",
-          "allow group ${local.core_policy_group_name} to read all-resources in compartment ${local.core_policy_postgres_compartment} //Allow CE to read Postgres Compartment",
           "allow group ${local.core_policy_postgres_group_name} to use bastions in compartment ${local.core_policy_postgres_compartment} // Postgres Bastion Usage",
           "allow group ${local.core_policy_postgres_group_name} to manage bastion-sessions in compartment ${local.core_policy_postgres_compartment} // Postgres Bastion Usage",
         ]
