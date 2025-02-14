@@ -21,7 +21,8 @@ variableGroups:
       - engineer_oac_group_name
       - engineer_datascience_group_name
       - engineer_mysql_group_name
-      - exacs_admin_group_name
+      - engineer_exacs_group_name
+      - engineer_postgres_group_name
   - title: "Services" 
     variables: 
       - create_oic
@@ -33,6 +34,7 @@ variableGroups:
       - create_func
       - create_mysql
       - create_gg
+      - create_postgres
   - title: "Hidden Variables" 
     visible: false
     variables:
@@ -96,6 +98,8 @@ variables:
     type: string
     description: Users in this group have the ability to create and use Postgres
     default: cloud-engineering-postgres-users
+    required: false
+    visible: create_postgres
 
   engineer_exacs_group_name:
     title: Name of IAM group for ExaCS Admins
@@ -128,6 +132,8 @@ variables:
     title: Create the GoldenGate Policy and compartment
     type: boolean
   create_func:
-    title: Create the OOCI Functions Policy
+    title: Create the OCI Functions Policy
     type: boolean
-
+  create_postgres:
+    title: Create the Postgres Compartment and Policy
+    type: boolean
