@@ -82,25 +82,25 @@ variables:
   engineer_oac_group_name:
     title: Name of IAM group for Oracle Analytics Admins
     type: string
-    description: Change as necessary
-    default: cloud-engineering-oacadmin-users
+    description: Users in this group have full admin over OAC Instances and within
+    default: cloud-engineering-oac-admins
 
   engineer_mysql_group_name:
-    title: Name of IAM group for MySQL Heatwave engineers
+    title: Name of IAM group for MySQL Heatwave Admins
     type: string
-    description: Change as necessary
-    default: cloud-engineering-mysql-users
+    description: Users in this group have full admin over MySQL and VCNs in MySQL compartment
+    default: cloud-engineering-mysql-admins
 
   engineer_postgres_group_name:
-    title: Name of IAM group for Postgres engineers
+    title: Name of IAM group for Postgres Users
     type: string
-    description: Change as necessary
+    description: Users in this group have the ability to create and use Postgres
     default: cloud-engineering-postgres-users
 
-  exacs_admin_group_name:
+  engineer_exacs_group_name:
     title: Name of IAM group for ExaCS Admins
     type: string
-    description: Change as necessary
+    description: Users in this group have the ability to create destry ExaCS Infa and VM Clusters
     default: cloud-engineering-exacs-admins
 
   create_oic:

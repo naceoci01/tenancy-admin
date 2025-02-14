@@ -24,18 +24,18 @@ variable "engineer_group_name" {
 }
 
 variable "engineer_datascience_group_name" {
-    description = "Name of shared engineer group for Data Science"
+    description = "Name of group for Data Science Users"
     default = "cloud-engineering-datascience-users"
 }
 
 variable "engineer_oac_group_name" {
     description = "Name of group for Analytics Admins"
-    default = "cloud-engineering-oacadmin-users"
+    default = "cloud-engineering-oac-admins"
 }
 
 variable "engineer_mysql_group_name" {
-    description = "Name of shared engineer group for MySQL"
-    default = "cloud-engineering-mysql-users"
+    description = "Name of group for MySQL Admins"
+    default = "cloud-engineering-mysql-admins"
 }
 
 variable "engineer_postgres_group_name" {
@@ -43,8 +43,8 @@ variable "engineer_postgres_group_name" {
     default = "cloud-engineering-postgres-users"
 }
 
-variable "exacs_admin_group_name" {
-    description = "Name of admins group for ExaCS"
+variable "engineer_exacs_group_name" {
+    description = "Name of group for ExaCS Admins"
     default = "cloud-engineering-exacs-admins"
 }
 
