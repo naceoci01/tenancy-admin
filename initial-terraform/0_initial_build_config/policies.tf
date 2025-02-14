@@ -27,19 +27,20 @@ locals {
         description : "Cloud Engineers IAM permissions"
         compartment_id : "TENANCY-ROOT" # Instead of an OCID, you can replace it with the string "TENANCY-ROOT" for attaching the policy to the Root compartment.
         statements : [
-          "allow group '${local.cloud_engineering_domain_name}'/'${var.engineer_group_name}' to manage dynamic-groups in tenancy where ALL { target.resource.domain.name='${local.cloud_engineering_domain_name}', request.permission != 'DYNAMIC_GROUP_DELETE' } //Allows Cloud Engineers only to modify DG within their domain",
-          "allow group '${local.cloud_engineering_domain_name}'/'${var.engineer_group_name}' to manage policies in compartment ${local.core_policy_engineer_compartment} //Allows Cloud Engineers only to manage policies in CE hierarchy",
-          "allow group '${local.cloud_engineering_domain_name}'/'${var.engineer_group_name}' to read policies in TENANCY //Allows Cloud Engineers only to read policies in entire tenancy",
-          "allow group '${local.cloud_engineering_domain_name}'/'${var.engineer_group_name}' to read domains in TENANCY //Allows Cloud Engineers only to read domains in entire tenancy",
-          "allow group '${local.cloud_engineering_domain_name}'/'${var.engineer_group_name}' to read dynamic-groups in TENANCY //Allows Cloud Engineers only to read DG in entire tenancy",
-          "allow group '${local.cloud_engineering_domain_name}'/'${var.engineer_group_name}' to inspect compartments in TENANCY //Allows Cloud Engineers only to list compartments",
-          "allow group '${local.cloud_engineering_domain_name}'/'${var.engineer_group_name}' to manage compartments in compartment ${local.core_policy_engineer_compartment} where target.resource.compartment.tag.Oracle-Tags.AllowCompartmentCreation = 'true' //Allows Cloud Engineers manage compartments within main CE Compartment, but not main CE",
-          "allow group '${local.cloud_engineering_domain_name}'/'${var.engineer_group_name}' to read quotas in TENANCY //Allows Cloud Engineers see quotas",
-          "allow group '${local.cloud_engineering_domain_name}'/'${var.engineer_group_name}' to read resource-availability in tenancy //Allows Cloud Engineers to view service limits tenancy-wide",
-          "allow group '${local.cloud_engineering_domain_name}'/'${var.engineer_group_name}' to manage tickets in tenancy //Allows Cloud Engineers manipulate tickets",
+          "allow group ${local.core_policy_group_name} to manage dynamic-groups in TENANCY where ALL { target.resource.domain.name='${local.cloud_engineering_domain_name}', request.permission != 'DYNAMIC_GROUP_DELETE' } //Allows Cloud Engineers only to modify DG within their domain",
+          "allow group ${local.core_policy_group_name} to manage policies in compartment ${local.core_policy_engineer_compartment} //Allows Cloud Engineers only to manage policies in CE hierarchy",
+          "allow group ${local.core_policy_group_name} to manage compartments in compartment ${local.core_policy_engineer_compartment} where target.resource.compartment.tag.Oracle-Tags.AllowCompartmentCreation = 'true' //Allows Cloud Engineers manage compartments within main CE Compartment, but not main CE",
+          "allow group ${local.core_policy_group_name} to manage tickets in TENANCY //Allows Cloud Engineers manipulate tickets",
+          "allow group ${local.core_policy_group_name} to read all-resources in TENANCY //CE can read ALL - showoci",
         ]
       }
     },
+          # "allow group '${local.cloud_engineering_domain_name}'/'${var.engineer_group_name}' to read policies in TENANCY //Allows Cloud Engineers only to read policies in entire tenancy",
+          # "allow group '${local.cloud_engineering_domain_name}'/'${var.engineer_group_name}' to read domains in TENANCY //Allows Cloud Engineers only to read domains in entire tenancy",
+          # "allow group '${local.cloud_engineering_domain_name}'/'${var.engineer_group_name}' to read dynamic-groups in TENANCY //Allows Cloud Engineers only to read DG in entire tenancy",
+          # "allow group '${local.cloud_engineering_domain_name}'/'${var.engineer_group_name}' to inspect compartments in TENANCY //Allows Cloud Engineers only to list compartments",
+          # "allow group '${local.cloud_engineering_domain_name}'/'${var.engineer_group_name}' to read quotas in TENANCY //Allows Cloud Engineers see quotas",
+          # "allow group '${local.cloud_engineering_domain_name}'/'${var.engineer_group_name}' to read resource-availability in tenancy //Allows Cloud Engineers to view service limits tenancy-wide",
     {
       "CE-SERVICES-POLICY" : {
         name : "cloud-engineering-SERVICE-policy"
@@ -451,16 +452,18 @@ locals {
         compartment_id : "TENANCY-ROOT"
         statements : [
           "allow service mysql_dp_auth TO {AUTHENTICATION_INSPECT, GROUP_MEMBERSHIP_INSPECT, DYNAMIC_GROUP_INSPECT} IN TENANCY // Allow MySQL to use Mapped Proxy Users",
-          "allow group ${local.core_policy_mysql_group_name} to use dbmgmt-mysql-family in compartment ${local.core_policy_mysql_compartment} // MySQL Management",
-          "allow group ${local.core_policy_mysql_group_name} to read metrics in compartment ${local.core_policy_mysql_compartment} // Metrics from MySQL",
+          "allow group ${local.core_policy_group_name} to use dbmgmt-mysql-family in compartment ${local.core_policy_mysql_compartment} // MySQL Management",
+          "allow group ${local.core_policy_group_name} to read metrics in compartment ${local.core_policy_mysql_compartment} // Metrics from MySQL",
+          "allow group ${local.core_policy_group_name} to read alarms in compartment ${local.core_policy_mysql_compartment} // Set up alarms for MySQL",
+          "allow group ${local.core_policy_group_name} to read virtual-network-family in compartment ${local.core_policy_mysql_compartment} // See Networking for MySQL",
+          "allow group ${local.core_policy_group_name} to read mysql-family in compartment ${local.core_policy_mysql_compartment} where request.operation != 'CreateDbSystem' // Start and Stop - no creation",
+          "allow group ${local.core_policy_group_name} to read management-dashboard in compartment ${local.core_policy_mysql_compartment} // MySQL Management",
+          "allow group ${local.core_policy_group_name} to read management-saved-search in compartment ${local.core_policy_mysql_compartment} // MySQL Management",
+          "allow group ${local.core_policy_group_name} to use bastions in compartment ${local.core_policy_mysql_compartment} // MySQL Bastion Usage",
+          "allow group ${local.core_policy_group_name} to manage bastion-sessions in compartment ${local.core_policy_mysql_compartment} // MySQL Bastion Usage",
           "allow group ${local.core_policy_mysql_group_name} to manage alarms in compartment ${local.core_policy_mysql_compartment} // Set up alarms for MySQL",
-          "allow group ${local.core_policy_mysql_group_name} to read virtual-network-family in compartment ${local.core_policy_mysql_compartment} // See Networking for MySQL",
+          "allow group ${local.core_policy_mysql_group_name} to manage virtual-network-family in compartment ${local.core_policy_mysql_compartment} // See Networking for MySQL",
           "allow group ${local.core_policy_mysql_group_name} to manage mysql-family in compartment ${local.core_policy_mysql_compartment} where request.operation != 'CreateDbSystem' // Start and Stop - no creation",
-          "allow group ${local.core_policy_mysql_group_name} to read management-dashboard in compartment ${local.core_policy_mysql_compartment} // MySQL Management",
-          "allow group ${local.core_policy_mysql_group_name} to read management-saved-search in compartment ${local.core_policy_mysql_compartment} // MySQL Management",
-          "allow group ${local.core_policy_mysql_group_name} to use bastions in compartment ${local.core_policy_mysql_compartment} // MySQL Bastion Usage",
-          "allow group ${local.core_policy_mysql_group_name} to manage bastion-sessions in compartment ${local.core_policy_mysql_compartment} // MySQL Bastion Usage",
-          "allow group ${local.core_policy_group_name} to read mysql-family in compartment ${local.core_policy_mysql_compartment} //Allow CE to see MySQL and request access",
           "allow dynamic-group '${local.default_domain_name}'/'${local.mysql_dynamic_group_name}' to read buckets in compartment ${local.core_policy_mysql_compartment} //Allows MySQL DB Systems to read OSS buckets",
           "allow dynamic-group '${local.default_domain_name}'/'${local.mysql_dynamic_group_name}' to manage objects in compartment ${local.core_policy_mysql_compartment} //Allows MySQL DB Systems to read OSS buckets",
           "allow dynamic-group '${local.default_domain_name}'/'${local.mysql_dynamic_group_name}' to read buckets in compartment ${local.core_policy_engineer_compartment} //Allows MySQL DB Systems to read OSS buckets in CE Shared",
