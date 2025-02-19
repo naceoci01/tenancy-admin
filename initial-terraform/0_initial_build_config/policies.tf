@@ -17,6 +17,7 @@ locals {
   core_policy_oac_compartment         = "${local.core_policy_shared_compartment}:OAC"
   core_policy_exacs_compartment       = "${local.core_policy_shared_compartment}:ExaCS"
   core_policy_oda_compartment         = "${local.core_policy_shared_compartment}:ODA"
+  core_policy_gg_compartment         = "${local.core_policy_shared_compartment}:GoldenGate"
   core_policy_engineer_ocid           = module.cislz_compartments.compartments.CLOUD-ENG.id
   default_domain_name                 = "Default"
 
@@ -61,6 +62,9 @@ locals {
           "allow group ${local.core_policy_group_name} to manage cloud-guard-family in compartment ${local.core_policy_engineer_compartment} //Allows Cloud Engineers to use Cloud Guard",
           "allow group ${local.core_policy_group_name} to manage orm-family in compartment ${local.core_policy_engineer_compartment} //Allows Cloud Engineers to use ORM Stacks",
           "allow group ${local.core_policy_group_name} to manage disaster-recovery-family in compartment ${local.core_policy_engineer_compartment} //Allows Cloud Engineers to use Full Stack DR Service",
+          "allow group ${local.core_policy_group_name} to manage vcns in compartment ${local.core_policy_shared_compartment} where request.operation!='CreateVcn' //Allow CE to use shared bastion",
+          "allow group ${local.core_policy_group_name} to use bastion in compartment ${local.core_policy_shared_compartment} //Allow CE to use shared bastion",
+          "allow group ${local.core_policy_group_name} to manage bastion-session in compartment ${local.core_policy_shared_compartment} //Allow CE to manage bastion sessions",
           "allow group ${local.core_policy_group_name} to read work-requests in tenancy //Required tenancy-level for KMS Vaults",
           "allow group ${local.core_policy_group_name} to use cloud-shell in tenancy //Required tenancy-level for Cloud Shell",
           "allow group ${local.core_policy_group_name} to use cloud-shell-public-network in tenancy //Required tenancy-level for Cloud Shell",
@@ -252,17 +256,17 @@ locals {
         description : "Cloud Engineers GOldenGate permissions"
         compartment_id : "TENANCY-ROOT"
         statements : [
-          "allow group ${local.core_policy_group_name} to manage goldengate-connections in compartment ${local.core_policy_shared_compartment}:GoldenGate //Allow CE to manage GoldenGate connections in shared GG compartment",
-          "allow group ${local.core_policy_group_name} to manage goldengate-connection-assignments in compartment ${local.core_policy_shared_compartment}:GoldenGate //Allow CE to manage GoldenGate assignments in shared GG compartment",
-          "allow group ${local.core_policy_group_name} to manage vcns in compartment ${local.core_policy_shared_compartment}:GoldenGate where request.permission='VCN_UPDATE' //Allow CE to add private views to shared VCN, for DNS resolution",
-          "allow group ${local.core_policy_group_name} to use goldengate-deployments in compartment ${local.core_policy_shared_compartment}:GoldenGate //Allow CE to use all GoldenGate deployments in shared GG compartment",
-          "allow group ${local.core_policy_group_name} to read logging-family in compartment ${local.core_policy_shared_compartment}:GoldenGate //Allow CE to view all GoldenGate logs in shared GG compartment",
-          "allow group ${local.core_policy_group_name} to read load-balancers in compartment ${local.core_policy_shared_compartment}:GoldenGate //Allow CE to view all LB in shared GG compartment",
-          "allow group ${local.core_policy_group_name} to use ons-topics in compartment ${local.core_policy_shared_compartment}:GoldenGate //Allow CE to view ONS Topics in shared GG compartment",
-          "allow group ${local.core_policy_group_name} to manage ons-subscriptions in compartment ${local.core_policy_shared_compartment}:GoldenGate //Allow CE to Subscribe to Notifications in shared GG compartment",
-          "allow group ${local.core_policy_gg_admin_group_name} to manage goldengate-family in compartment ${local.core_policy_shared_compartment}:GoldenGate //Allow GG Admin in shared GG compartment",
-          "allow group ${local.core_policy_gg_admin_group_name} to manage load-balancers in compartment ${local.core_policy_shared_compartment}:GoldenGate //Allow GG Admin in shared GG compartment",
-          "allow group ${local.core_policy_gg_admin_group_name} to manage logging-family in compartment ${local.core_policy_shared_compartment}:GoldenGate //Allow GG Admin in shared GG compartment",
+          "allow group ${local.core_policy_group_name} to manage goldengate-connections in compartment ${local.core_policy_gg_compartment} //Allow CE to manage GoldenGate connections in shared GG compartment",
+          "allow group ${local.core_policy_group_name} to manage goldengate-connection-assignments in compartment ${local.core_policy_gg_compartment} //Allow CE to manage GoldenGate assignments in shared GG compartment",
+          "allow group ${local.core_policy_group_name} to manage vcns in compartment ${local.core_policy_gg_compartment} where request.permission='VCN_UPDATE' //Allow CE to add private views to shared VCN, for DNS resolution",
+          "allow group ${local.core_policy_group_name} to use goldengate-deployments in compartment ${local.core_policy_gg_compartment} //Allow CE to use all GoldenGate deployments in shared GG compartment",
+          "allow group ${local.core_policy_group_name} to read logging-family in compartment ${local.core_policy_gg_compartment} //Allow CE to view all GoldenGate logs in shared GG compartment",
+          "allow group ${local.core_policy_group_name} to read load-balancers in compartment ${local.core_policy_gg_compartment} //Allow CE to view all LB in shared GG compartment",
+          "allow group ${local.core_policy_group_name} to use ons-topics in compartment ${local.core_policy_gg_compartment} //Allow CE to view ONS Topics in shared GG compartment",
+          "allow group ${local.core_policy_group_name} to manage ons-subscriptions in compartment ${local.core_policy_gg_compartment} //Allow CE to Subscribe to Notifications in shared GG compartment",
+          "allow group ${local.core_policy_gg_admin_group_name} to manage goldengate-family in compartment ${local.core_policy_gg_compartment} //Allow GG Admin in shared GG compartment",
+          "allow group ${local.core_policy_gg_admin_group_name} to manage load-balancers in compartment ${local.core_policy_gg_compartment} //Allow GG Admin in shared GG compartment",
+          "allow group ${local.core_policy_gg_admin_group_name} to manage logging-family in compartment ${local.core_policy_gg_compartment} //Allow GG Admin in shared GG compartment",
           "allow dynamic-group '${local.default_domain_name}'/'${local.gg_dynamic_group_name}' to use keys in compartment ${local.core_policy_shared_compartment} //Allow GG DG to use keys in shared CE compartment",
           "allow dynamic-group '${local.default_domain_name}'/'${local.gg_dynamic_group_name}' to use vault in compartment ${local.core_policy_shared_compartment} //Allow GG DG to use vault in shared CE compartment",
           "allow dynamic-group '${local.default_domain_name}'/'${local.gg_dynamic_group_name}' to manage object-family in compartment ${local.core_policy_engineer_compartment} //Allow GG DG to manage OSS in main CE compartment",
