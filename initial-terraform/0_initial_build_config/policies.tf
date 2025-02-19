@@ -339,7 +339,8 @@ locals {
           "allow group ${local.core_policy_group_name} to use data-safe-family in compartment ${local.core_policy_shared_compartment}:exacs //Allow CE to use Data Safe in ExaCS Compartment",
           "allow group ${local.core_policy_group_name} to manage dbmgmt-family in compartment ${local.core_policy_shared_compartment}:exacs where ALL { request.permission != 'DBMGMT_PRIVATE_ENDPOINT_DELETE', request.permission != 'DBMGMT_PRIVATE_ENDPOINT_CREATE', request.permission != 'DBMGMT_PRIVATE_ENDPOINT_UPDATE' } //Allow CE to use almost all DBMgmt in ExaCS Compartment",
           "Allow service dpd to read secret-family in compartment ${local.core_policy_engineer_compartment} //Service Permission for Database management",
-          "allow group ${local.core_policy_exacs_admin_group_name} to manage cloud-vmclusters in compartment ${local.core_policy_shared_compartment}:exacs //Allow Admins for VM Cluster",
+          "allow group ${local.core_policy_exacs_admin_group_name} to manage cloud-vmclusters in compartment ${local.core_policy_shared_compartment}:exacs //Allow Admins for ExaCS VM Cluster",
+          "allow group ${local.core_policy_exacs_admin_group_name} to manage exadb-vm-clusters in compartment ${local.core_policy_shared_compartment}:exacs //Allow Admins for ExaScale VM Cluster",
           "allow group ${local.core_policy_exacs_admin_group_name} to manage cloud-exadata-infrastructures in compartment ${local.core_policy_shared_compartment}:exacs //Allow Admins to manage Infra",
           "allow group ${local.core_policy_exacs_admin_group_name} to manage db-homes in compartment ${local.core_policy_shared_compartment}:exacs //Allow Admins to manage DB Homes",
         ]
@@ -471,12 +472,12 @@ locals {
         description : "Permissions for PostGres - please request access to group cloud-engineering-postgres-users"
         compartment_id : "TENANCY-ROOT"
         statements : [
+          "allow group ${local.core_policy_group_name} to use bastions in compartment ${local.core_policy_postgres_compartment} // Postgres Bastion Usage",
+          "allow group ${local.core_policy_group_name} to manage bastion-sessions in compartment ${local.core_policy_postgres_compartment} // Postgres Bastion Usage",
           "allow group ${local.core_policy_postgres_group_name} to manage postgres-db-systems in compartment ${local.core_policy_postgres_compartment} // Postgres Management",
           "allow group ${local.core_policy_postgres_group_name} to manage postgres-backups in compartment ${local.core_policy_postgres_compartment} // Postgres Management",
           "allow group ${local.core_policy_postgres_group_name} to manage postgres-configuration in compartment ${local.core_policy_postgres_compartment} // Postgres Management",
           "allow group ${local.core_policy_postgres_group_name} to manage virtual-network-family in compartment ${local.core_policy_postgres_compartment} // Postgres VCN Management",
-          "allow group ${local.core_policy_postgres_group_name} to use bastions in compartment ${local.core_policy_postgres_compartment} // Postgres Bastion Usage",
-          "allow group ${local.core_policy_postgres_group_name} to manage bastion-sessions in compartment ${local.core_policy_postgres_compartment} // Postgres Bastion Usage",
         ]
       }
     } : {}, #No policy MYSQL
