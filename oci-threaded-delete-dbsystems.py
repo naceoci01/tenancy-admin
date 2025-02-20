@@ -172,6 +172,6 @@ if __name__ == "__main__":
             except ServiceError as ex:
                 logger.error(f"ERROR: {ex.message}")
             except circuitbreaker.CircuitBreakerError as ex:
-                logger.error(f"CB ERROR: {ex.message}")
+                logger.error(f"CB ERROR: {ex}")
 
     logger.info(f"Finished submitting all for parallel execution for {len(db_ocids)} DB Systems")
