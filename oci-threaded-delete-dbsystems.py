@@ -116,9 +116,6 @@ if __name__ == "__main__":
     except ClientError as ex:
         logger.critical(f"Failed to connect to OCI: {ex}")
 
-    # Create any necessary Clients
-    db_client = DatabaseClient(config)
-
     # PHASE 3 - Main Script Execution (threaded)
 
     # 2 examples for getting a list for threading
