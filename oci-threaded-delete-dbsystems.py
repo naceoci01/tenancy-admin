@@ -43,15 +43,19 @@ def work_function_dbsystem(ocid: str):
         db_system_id=f"{ocid}"
     ).data
 
-    logger.info(f"DB System Name: {database.display_name}")
-    logger.info(f"DB OCID: {ocid}")
+    logger.info(f"DB System Name: {database.display_name}. Lifecycle: {database.lifecycle_state}")
+    
+    if database.lifecycle_state != database.LIFECYCLE_STATE_AVAILABLE:
+        logger.info(f"Not deleting {ocid} due to lifecycle other than {database.LIFECYCLE_STATE_AVAILABLE}")
+        return f"No action for {database.display_name} OCID {ocid}"
 
     # Delete it
     try:
+        logger.info(f"Terminating: {database.display_name} / {ocid}")
         database_client.terminate_db_system(
             db_system_id=ocid
         )
-        logger.info(f"Termination: {ocid}")
+        logger.info(f"Terminated: {database.display_name} / {ocid}")
     except ServiceError as ex:
         logger.error(f"Failed to terminate {database.display_name} / {ocid}.  Target Service/Operation: {ex.target_service}/{ex.operation_name} Code: {ex.code}")
         logger.debug(f"Full Exception Detail: {ex}")
