@@ -41,15 +41,15 @@ locals {
           # "allow group '${local.cloud_engineering_domain_name}'/'${var.engineer_group_name}' to read dynamic-groups in TENANCY //Allows Cloud Engineers only to read DG in entire tenancy",
           # "allow group '${local.cloud_engineering_domain_name}'/'${var.engineer_group_name}' to inspect compartments in TENANCY //Allows Cloud Engineers only to list compartments",
           # "allow group '${local.cloud_engineering_domain_name}'/'${var.engineer_group_name}' to read quotas in TENANCY //Allows Cloud Engineers see quotas",
-          # "allow group '${local.cloud_engineering_domain_name}'/'${var.engineer_group_name}' to read resource-availability in tenancy //Allows Cloud Engineers to view service limits tenancy-wide",
+          # "allow group '${local.cloud_engineering_domain_name}'/'${var.engineer_group_name}' to read resource-availability in TENANCY //Allows Cloud Engineers to view service limits tenancy-wide",
     {
       "CE-SERVICES-POLICY" : {
         name : "cloud-engineering-SERVICE-policy"
         description : "Cloud Engineers Service Enablement permissions"
         compartment_id : "TENANCY-ROOT"
         statements : [
-          "allow group ${local.core_policy_group_name} to use loganalytics-resources-family in tenancy //Allows Cloud Engineers to use Logging Analytics",
-          "allow group ${local.core_policy_group_name} to use loganalytics-features-family in tenancy //Allows Cloud Engineers to use Logging Analytics",
+          "allow group ${local.core_policy_group_name} to use loganalytics-resources-family in TENANCY //Allows Cloud Engineers to use Logging Analytics",
+          "allow group ${local.core_policy_group_name} to use loganalytics-features-family in TENANCY //Allows Cloud Engineers to use Logging Analytics",
           "allow group ${local.core_policy_group_name} to manage loganalytics-resources-family in compartment ${local.core_policy_engineer_compartment} //Allows Cloud Engineers to work Logging Analytics",
           "allow group ${local.core_policy_group_name} to manage loganalytics-features-family in compartment ${local.core_policy_engineer_compartment} //Allows Cloud Engineers to work Logging Analytics",
           "allow group ${local.core_policy_group_name} to manage serviceconnectors in compartment ${local.core_policy_engineer_compartment} //Allows Cloud Engineers to use Service Connector Hub",
@@ -65,10 +65,8 @@ locals {
           "allow group ${local.core_policy_group_name} to manage vcns in compartment ${local.core_policy_shared_compartment} where request.operation!='CreateVcn' //Allow CE to use shared bastion",
           "allow group ${local.core_policy_group_name} to use bastion in compartment ${local.core_policy_shared_compartment} //Allow CE to use shared bastion",
           "allow group ${local.core_policy_group_name} to manage bastion-session in compartment ${local.core_policy_shared_compartment} //Allow CE to manage bastion sessions",
-          "allow group ${local.core_policy_group_name} to read work-requests in tenancy //Required tenancy-level for KMS Vaults",
-          "allow group ${local.core_policy_group_name} to use cloud-shell in tenancy //Required tenancy-level for Cloud Shell",
-          "allow group ${local.core_policy_group_name} to use cloud-shell-public-network in tenancy //Required tenancy-level for Cloud Shell",
-          "allow group ${local.core_policy_group_name} to read usage-report in tenancy //Cost Reporting visibility",
+          "allow group ${local.core_policy_group_name} to use cloud-shell in TENANCY //Required tenancy-level for Cloud Shell",
+          "allow group ${local.core_policy_group_name} to use cloud-shell-public-network in TENANCY //Required tenancy-level for Cloud Shell",
         ]
       }
     },
@@ -78,7 +76,6 @@ locals {
         description : "Cloud Engineers Core Service permissions"
         compartment_id : "TENANCY-ROOT"
         statements : [
-          "allow group ${local.core_policy_group_name} to read all-resources in compartment ${local.core_policy_engineer_compartment} //Allow CE to read everything main CE compartment",
           "allow group ${local.core_policy_group_name} to manage instance-family in compartment ${local.core_policy_engineer_compartment} //Allow CE to work with all compute within main CE compartment",
           "allow group ${local.core_policy_group_name} to manage compute-management-family in compartment ${local.core_policy_engineer_compartment} //Allow CE to work with all compute within main CE compartment",
           "allow group ${local.core_policy_group_name} to manage instance-agent-family in compartment ${local.core_policy_engineer_compartment} //Allow CE to work with all compute within main CE compartment",
@@ -98,8 +95,7 @@ locals {
           "allow group ${local.core_policy_group_name} to manage file-family in compartment ${local.core_policy_engineer_compartment} //Allows Cloud Engineers to manage FSS main CE compartment",
           "allow group ${local.core_policy_group_name} to use drgs in compartment ${local.core_policy_shared_compartment} //Allows Cloud Engineers to connect to DRG in shared CE compartment",
           "allow group ${local.core_policy_group_name} to read dns in compartment ${local.core_policy_shared_compartment} //Allows Cloud Engineers to see DNS Views in shared CE compartment",
-          "allow group ${local.core_policy_group_name} to read objectstorage-namespaces in tenancy //Allows Cloud Engineers to read objectstorage namespaces",
-          "allow group ${local.core_policy_group_name} to inspect tenancies in tenancy where request.operation='GetTenancy' //Allows Cloud Engineers to see tenancy and home region details"
+          "allow group ${local.core_policy_group_name} to inspect tenancies in TENANCY where request.operation='GetTenancy' //Allows Cloud Engineers to see tenancy and home region details"
         ]
       }
     },
@@ -116,13 +112,23 @@ locals {
           "allow group ${local.core_policy_group_name} to manage db-homes in compartment ${local.core_policy_engineer_compartment} //Allow CE to work with all Base DB main CE compartment",
           "allow group ${local.core_policy_group_name} to manage db-backups in compartment ${local.core_policy_engineer_compartment} //Allow CE to work with all Base DB main CE compartment",
           "allow group ${local.core_policy_group_name} to manage databases in compartment ${local.core_policy_engineer_compartment} //Allow CE to work with all Base DB main CE compartment",
-          "allow group ${local.core_policy_group_name} to read dbmgmt-family in tenancy //Allow CE to see all DBMgmt resources tenancy-wide",
-          "allow group ${local.core_policy_group_name} to manage dbmgmt-family in compartment ${local.core_policy_engineer_compartment} where ALL { request.permission != 'DBMGMT_PRIVATE_ENDPOINT_DELETE', request.permission != 'DBMGMT_PRIVATE_ENDPOINT_CREATE', request.permission != 'DBMGMT_PRIVATE_ENDPOINT_UPDATE' } //Allow CE to use almost all DBMgmt in CE Compartment",
           "allow group ${local.core_policy_group_name} to manage data-safe-family in compartment ${local.core_policy_engineer_compartment} //Allow CE to use Data Safe in Main CE Compartment",
           "allow group ${local.core_policy_group_name} to manage database-tools-connections in compartment cloud-engineering //Allow CE to work with SQL worksheets in main CE compartment",
           "allow group ${local.core_policy_group_name} to manage database-tools-connections in compartment ${local.core_policy_shared_compartment}:exacs //Allow CE to work with SQL worksheets in ExaCS compartment",
           "allow group ${local.core_policy_group_name} to use database-tools-private-endpoints in compartment ${local.core_policy_shared_compartment}:exacs //Allow CE to work with PE in ExaCS compartment",
           "allow group ${local.core_policy_group_name} to use database-tools-private-endpoints in compartment ${local.core_policy_shared_compartment} //Allow CE to work with PE in Shared compartment",
+        ]
+      }
+    },
+    {
+      "CE-DBMGMT-POLICY" : {
+        name : "cloud-engineering-DBMGMT-policy"
+        description : "Cloud Engineers Database Management permissions"
+        compartment_id : "TENANCY-ROOT"
+        statements : [
+          "allow group ${local.core_policy_group_name} to {DATABASE_SERVICE_USAGE_INSPECT} in TENANCY //Allow CE to read DBMGMT Usage",
+          "allow group ${local.core_policy_group_name} to manage dbmgmt-family in compartment ${local.core_policy_engineer_compartment} where ALL { request.permission != 'DBMGMT_PRIVATE_ENDPOINT_DELETE', request.permission != 'DBMGMT_PRIVATE_ENDPOINT_CREATE', request.permission != 'DBMGMT_PRIVATE_ENDPOINT_UPDATE' } //Allow CE to use almost all DBMgmt in CE Compartment",
+          "allow group ${local.core_policy_group_name} to manage dbmgmt-family in compartment ${local.core_policy_exacs_compartment} where ALL { request.permission != 'DBMGMT_PRIVATE_ENDPOINT_DELETE', request.permission != 'DBMGMT_PRIVATE_ENDPOINT_CREATE', request.permission != 'DBMGMT_PRIVATE_ENDPOINT_UPDATE' } //Allow CE to use almost all DBMgmt in ExaCS Compartment",
           "Allow service dpd to read secret-family in compartment ${local.core_policy_shared_compartment} //Service Permission for Database management",
         ]
       }
@@ -139,7 +145,7 @@ locals {
           "allow group ${local.core_policy_group_name} to manage keys in compartment ${local.core_policy_engineer_compartment} //Allow CE to manage keys in main CE compartment",
           "allow group ${local.core_policy_group_name} to manage secret-family in compartment ${local.core_policy_engineer_compartment} //Allow CE to manage secrets in main CE compartment",
           "allow group ${local.core_policy_group_name} to use key-delegate in compartment ${local.core_policy_shared_compartment} //Allow CE to use key-delegate in shared CE compartment",
-          "allow service keymanagementservice to manage vaults in tenancy //Required tenancy-level for KMS Vaults",
+          "allow service keymanagementservice to manage vaults in TENANCY //Required tenancy-level for KMS Vaults",
           "allow dynamic-group '${local.default_domain_name}'/'${local.certificate_dynamic_group_name}' to use keys in compartment ${local.core_policy_shared_compartment} //Allows certificate Service access to shared vault",
           "allow dynamic-group '${local.default_domain_name}'/'${local.certificate_dynamic_group_name}' to manage objects in compartment ${local.core_policy_shared_compartment} //Allows certificate Service access to shared vault and OSS",
         ]
@@ -151,15 +157,15 @@ locals {
         description : "Cloud Engineers OS Management Hub permissions"
         compartment_id : "TENANCY-ROOT"
         statements : [
-          "allow group ${local.core_policy_group_name} to read osmh-family in tenancy //Allow CE to load OSMH data",
+          "allow group ${local.core_policy_group_name} to read osmh-family in TENANCY //Allow CE to load OSMH data",
           "allow group ${local.core_policy_group_name} to manage osmh-family in compartment ${local.core_policy_engineer_compartment} //Allow CE to operate OSMH",
           "allow group ${local.core_policy_group_name} to manage osmh-scheduled-jobs in compartment ${local.core_policy_engineer_compartment} //Allow CE to run OSMH jobs",
-          "allow dynamic-group '${local.default_domain_name}'/'${local.osmh_dynamic_group_name}' to {OSMH_MANAGED_INSTANCE_ACCESS} in tenancy where request.principal.id = target.managed-instance.id //Required OSMH",
-          "allow dynamic-group '${local.default_domain_name}'/'${local.osmh_dynamic_group_name}' to use metrics in tenancy where target.metrics.namespace = 'oracle_appmgmt' //Required OSMH",
-          "allow dynamic-group '${local.default_domain_name}'/'${local.osmh_dynamic_group_name}' to {MGMT_AGENT_DEPLOY_PLUGIN_CREATE, MGMT_AGENT_INSPECT, MGMT_AGENT_READ} in tenancy where target.metrics.namespace = 'oracle_appmgmt' //Required OSMH",
-          "allow dynamic-group '${local.default_domain_name}'/'${local.osmh_dynamic_group_name}' to {APPMGMT_MONITORED_INSTANCE_READ, APPMGMT_MONITORED_INSTANCE_ACTIVATE} in tenancy where request.instance.id = target.monitored-instance.id //Required OSMH",
-          "allow dynamic-group '${local.default_domain_name}'/'${local.osmh_dynamic_group_name}' to {INSTANCE_READ, INSTANCE_UPDATE} in tenancy where request.instance.id = target.instance.id //Required OSMH",
-          "allow dynamic-group '${local.default_domain_name}'/'${local.osmh_dynamic_group_name}' to {APPMGMT_WORK_REQUEST_READ, INSTANCE_AGENT_PLUGIN_INSPECT} in tenancy //Required OSMH",
+          "allow dynamic-group '${local.default_domain_name}'/'${local.osmh_dynamic_group_name}' to {OSMH_MANAGED_INSTANCE_ACCESS} in TENANCY where request.principal.id = target.managed-instance.id //Required OSMH",
+          "allow dynamic-group '${local.default_domain_name}'/'${local.osmh_dynamic_group_name}' to use metrics in TENANCY where target.metrics.namespace = 'oracle_appmgmt' //Required OSMH",
+          "allow dynamic-group '${local.default_domain_name}'/'${local.osmh_dynamic_group_name}' to {MGMT_AGENT_DEPLOY_PLUGIN_CREATE, MGMT_AGENT_INSPECT, MGMT_AGENT_READ} in TENANCY where target.metrics.namespace = 'oracle_appmgmt' //Required OSMH",
+          "allow dynamic-group '${local.default_domain_name}'/'${local.osmh_dynamic_group_name}' to {APPMGMT_MONITORED_INSTANCE_READ, APPMGMT_MONITORED_INSTANCE_ACTIVATE} in TENANCY where request.instance.id = target.monitored-instance.id //Required OSMH",
+          "allow dynamic-group '${local.default_domain_name}'/'${local.osmh_dynamic_group_name}' to {INSTANCE_READ, INSTANCE_UPDATE} in TENANCY where request.instance.id = target.instance.id //Required OSMH",
+          "allow dynamic-group '${local.default_domain_name}'/'${local.osmh_dynamic_group_name}' to {APPMGMT_WORK_REQUEST_READ, INSTANCE_AGENT_PLUGIN_INSPECT} in TENANCY //Required OSMH",
         ]
       }
     },
@@ -204,10 +210,10 @@ locals {
         description : "Permissions for Autonomous Recovery Service"
         compartment_id : "TENANCY-ROOT"
         statements : [
-          "allow service database to manage recovery-service-family in tenancy",
-          "allow service database to manage tagnamespace in tenancy",
-          "allow service rcs to manage recovery-service-family in tenancy",
-          "allow service rcs to manage virtual-network-family in tenancy",
+          "allow service database to manage recovery-service-family in TENANCY",
+          "allow service database to manage tagnamespace in TENANCY",
+          "allow service rcs to manage recovery-service-family in TENANCY",
+          "allow service rcs to manage virtual-network-family in TENANCY",
           "allow group ${local.core_policy_group_name} to manage recovery-service-family in compartment ${local.core_policy_engineer_compartment} //Allow CE to manage Recovery Subnets in CE Compartment",
           "allow group ${local.core_policy_group_name} to manage recovery-service-family in compartment ${local.core_policy_exacs_compartment} //Allow CE to manage Recovery Subnets in Exacs Compartment",
         ]
@@ -220,11 +226,11 @@ locals {
         compartment_id : "TENANCY-ROOT"
         statements : [
           "allow group ${local.core_policy_group_name} to manage vn-path-analyzer-test in compartment ${local.core_policy_engineer_compartment} //Allow CE to Use Network Path Analyzer",
-          "allow any-user to inspect compartments in tenancy where all { request.principal.type = 'vnpa-service' } //Required VNPA",
-          "allow any-user to read instances in tenancy where all { request.principal.type = 'vnpa-service' } //Required VNPA",
-          "allow any-user to read virtual-network-family in tenancy where all { request.principal.type = 'vnpa-service' } //Required VNPA",
-          "allow any-user to read load-balancers in tenancy where all { request.principal.type = 'vnpa-service' } //Required VNPA",
-          "allow any-user to read network-security-group in tenancy where all { request.principal.type = 'vnpa-service' } //Required VNPA"
+          "allow any-user to inspect compartments in TENANCY where all { request.principal.type = 'vnpa-service' } //Required VNPA",
+          "allow any-user to read instances in TENANCY where all { request.principal.type = 'vnpa-service' } //Required VNPA",
+          "allow any-user to read virtual-network-family in TENANCY where all { request.principal.type = 'vnpa-service' } //Required VNPA",
+          "allow any-user to read load-balancers in TENANCY where all { request.principal.type = 'vnpa-service' } //Required VNPA",
+          "allow any-user to read network-security-group in TENANCY where all { request.principal.type = 'vnpa-service' } //Required VNPA"
         ]
       }
     },
@@ -238,10 +244,10 @@ locals {
         statements : [
           "allow group ${local.core_policy_group_name} to manage repos in compartment ${local.core_policy_engineer_compartment} //Allow CE to manage all Container Repos in main CE compartment",
           "allow group ${local.core_policy_group_name} to manage functions-family in compartment ${local.core_policy_engineer_compartment} //Allow CE to manage Functions in main CE compartment",
-          "allow service faas to use apm-domains in tenancy //Allow FAAS to use APM Tenancy-wide",
-          "allow service faas to read repos in tenancy where request.operation='ListContainerImageSignatures' //Allow FAAS to read repos",
-          "allow service faas to {KEY_READ} in tenancy where request.operation='GetKeyVersion' //Allow FAAS to read keys",
-          "allow service faas to {KEY_VERIFY} in tenancy where request.operation='Verify' //Allow FAAS to verify keys",
+          "allow service faas to use apm-domains in TENANCY //Allow FAAS to use APM Tenancy-wide",
+          "allow service faas to read repos in TENANCY where request.operation='ListContainerImageSignatures' //Allow FAAS to read repos",
+          "allow service faas to {KEY_READ} in TENANCY where request.operation='GetKeyVersion' //Allow FAAS to read keys",
+          "allow service faas to {KEY_VERIFY} in TENANCY where request.operation='Verify' //Allow FAAS to verify keys",
           "allow dynamic-group '${local.default_domain_name}'/'${local.func_dynamic_group_name}' to manage object-family in compartment ${local.core_policy_engineer_compartment} //Allow Functions DG to manage OSS in main CE compartment",
           "allow dynamic-group '${local.default_domain_name}'/'${local.func_dynamic_group_name}' to manage ons-family in compartment ${local.core_policy_engineer_compartment} //Allow Functions DG to manage OSS in main CE compartment",
           "allow dynamic-group '${local.default_domain_name}'/'${local.func_dynamic_group_name}' to manage object-family in compartment ${local.core_policy_engineer_compartment} //Allow Functions DG to manage OSS in main CE compartment",
@@ -270,7 +276,7 @@ locals {
           "allow dynamic-group '${local.default_domain_name}'/'${local.gg_dynamic_group_name}' to use keys in compartment ${local.core_policy_shared_compartment} //Allow GG DG to use keys in shared CE compartment",
           "allow dynamic-group '${local.default_domain_name}'/'${local.gg_dynamic_group_name}' to use vault in compartment ${local.core_policy_shared_compartment} //Allow GG DG to use vault in shared CE compartment",
           "allow dynamic-group '${local.default_domain_name}'/'${local.gg_dynamic_group_name}' to manage object-family in compartment ${local.core_policy_engineer_compartment} //Allow GG DG to manage OSS in main CE compartment",
-          "allow service goldengate to {idcs_user_viewer, domain_resources_viewer} in tenancy //GG Service to see domains",
+          "allow service goldengate to {idcs_user_viewer, domain_resources_viewer} in TENANCY //GG Service to see domains",
         ]
       },
     } : {}, #No policy GG
@@ -306,6 +312,7 @@ locals {
           "allow group '${local.cloud_engineering_domain_name}'/'OIC-Administrators' to manage api-gateway-family in compartment ${local.core_policy_shared_compartment}:OIC //Allow OIC Admins to manage ADB instances in OIC",
           "allow group '${local.cloud_engineering_domain_name}'/'OIC-Administrators' to manage object-family in compartment ${local.core_policy_shared_compartment}:OIC //Allow OIC Admins to manage OSS in OIC",
           "allow group '${local.cloud_engineering_domain_name}'/'OIC-Administrators' to manage virtual-network-family in compartment ${local.core_policy_shared_compartment}:OIC //Allow OIC Admins to manage VCN in OIC",
+          "allow group '${local.cloud_engineering_domain_name}'/'OIC-Administrators' to manage stream-family in compartment ${local.core_policy_shared_compartment}:OIC //Allow OIC Admins to manage Streams in OIC",
           "allow group ${local.core_policy_group_name} to read integration-instance in compartment ${local.core_policy_shared_compartment}:OIC //Allow CE to see Integration Instances OIC",
           "allow group ${local.core_policy_group_name} to read process-automation-instances in compartment ${local.core_policy_shared_compartment}:OIC //Allow CE to see all Process Automation",
           "allow group ${local.core_policy_group_name} to read metrics in compartment ${local.core_policy_shared_compartment}:OIC //Allow CE to read all metrics in OIC",
@@ -324,29 +331,24 @@ locals {
         description : "Permissions for ExaCS"
         compartment_id : "TENANCY-ROOT"
         statements : [
-          "allow group ${local.core_policy_group_name} to read database-family in compartment ${local.core_policy_shared_compartment}:exacs //Allow CE to see all ExaCS Resources",
-          "allow group ${local.core_policy_group_name} to manage autonomous-databases in compartment ${local.core_policy_shared_compartment}:exacs //ADB access for ADB-Dedicated",
-          "allow group ${local.core_policy_group_name} to read virtual-network-family in compartment ${local.core_policy_shared_compartment}:exacs //Allow CE to see all ExaCS VCN Resources",
-          "allow group ${local.core_policy_group_name} to manage databases in compartment ${local.core_policy_shared_compartment}:exacs //Allow CE to manage databases Resources",
-          "allow group ${local.core_policy_group_name} to manage pluggable-databases in compartment ${local.core_policy_shared_compartment}:exacs //Allow CE to manage databases Resources",
-          "allow group ${local.core_policy_group_name} to use db-homes in compartment ${local.core_policy_shared_compartment}:exacs //Allow CE to use database home Resources",
-          "allow group ${local.core_policy_group_name} to use cloud-vmclusters in compartment ${local.core_policy_shared_compartment}:exacs where all { request.permission != 'CLOUD_VM_CLUSTER_UPDATE_SSH_KEY' , request.permission != 'CLOUD_VM_CLUSTER_UPDATE' } //Allow CE to create databases in VM Cluster without Adding SSH Key",
-          "allow group ${local.core_policy_group_name} to manage dbnode-console-connection in compartment ${local.core_policy_shared_compartment}:exacs //Allow CE to create databases in VM Cluster",
-          "allow group ${local.core_policy_group_name} to manage db-backups in compartment ${local.core_policy_shared_compartment}:exacs //Allow CE to manage database backups for ExaCS",
-          "allow group ${local.core_policy_group_name} to read metrics in compartment ${local.core_policy_shared_compartment}:exacs //Allow CE see Metrics for ExaCS",
-          "allow group ${local.core_policy_group_name} to read loganalytics-resources-family in compartment ${local.core_policy_shared_compartment}:exacs //Allow CE see any Logging Analytics for ExaCS",
-          "allow group ${local.core_policy_group_name} to manage vnics in compartment ${local.core_policy_shared_compartment}:exacs //Allow CE to use DBMGMT for ExaCS",
-          "allow group ${local.core_policy_group_name} to use subnets in compartment ${local.core_policy_shared_compartment}:exacs //Allow CE to use DBMGMT for ExaCS",
-          "allow group ${local.core_policy_group_name} to use network-security-groups in compartment ${local.core_policy_shared_compartment}:exacs //Allow CE to use DBMGMT for ExaCS",
-          "allow group ${local.core_policy_group_name} to use bastion in compartment ${local.core_policy_shared_compartment}:exacs //Allow CE to use existing bastion for ExaCS",
-          "allow group ${local.core_policy_group_name} to manage bastion-session in compartment ${local.core_policy_shared_compartment}:exacs //Allow CE to manage bastion sessions for ExaCS",
-          "allow group ${local.core_policy_group_name} to use data-safe-family in compartment ${local.core_policy_shared_compartment}:exacs //Allow CE to use Data Safe in ExaCS Compartment",
-          "allow group ${local.core_policy_group_name} to manage dbmgmt-family in compartment ${local.core_policy_shared_compartment}:exacs where ALL { request.permission != 'DBMGMT_PRIVATE_ENDPOINT_DELETE', request.permission != 'DBMGMT_PRIVATE_ENDPOINT_CREATE', request.permission != 'DBMGMT_PRIVATE_ENDPOINT_UPDATE' } //Allow CE to use almost all DBMgmt in ExaCS Compartment",
-          "Allow service dpd to read secret-family in compartment ${local.core_policy_engineer_compartment} //Service Permission for Database management",
-          "allow group ${local.core_policy_exacs_admin_group_name} to manage cloud-vmclusters in compartment ${local.core_policy_shared_compartment}:exacs //Allow Admins for ExaCS VM Cluster",
-          "allow group ${local.core_policy_exacs_admin_group_name} to manage exadb-vm-clusters in compartment ${local.core_policy_shared_compartment}:exacs //Allow Admins for ExaScale VM Cluster",
-          "allow group ${local.core_policy_exacs_admin_group_name} to manage cloud-exadata-infrastructures in compartment ${local.core_policy_shared_compartment}:exacs //Allow Admins to manage Infra",
-          "allow group ${local.core_policy_exacs_admin_group_name} to manage db-homes in compartment ${local.core_policy_shared_compartment}:exacs //Allow Admins to manage DB Homes",
+          "allow group ${local.core_policy_group_name} to manage autonomous-databases in compartment ${local.core_policy_exacs_compartment} //ADB access for ADB-Dedicated",
+          "allow group ${local.core_policy_group_name} to manage databases in compartment ${local.core_policy_exacs_compartment} //Allow CE to manage databases Resources",
+          "allow group ${local.core_policy_group_name} to manage pluggable-databases in compartment ${local.core_policy_exacs_compartment} //Allow CE to manage databases Resources",
+          "allow group ${local.core_policy_group_name} to use db-homes in compartment ${local.core_policy_exacs_compartment} //Allow CE to use database home Resources",
+          "allow group ${local.core_policy_group_name} to use cloud-vmclusters in compartment ${local.core_policy_exacs_compartment} where all { request.permission != 'CLOUD_VM_CLUSTER_UPDATE_SSH_KEY' , request.permission != 'CLOUD_VM_CLUSTER_UPDATE' } //Allow CE to create databases in VM Cluster without Adding SSH Key",
+          "allow group ${local.core_policy_group_name} to manage dbnode-console-connection in compartment ${local.core_policy_exacs_compartment} //Allow CE to create databases in VM Cluster",
+          "allow group ${local.core_policy_group_name} to manage db-backups in compartment ${local.core_policy_exacs_compartment} //Allow CE to manage database backups for ExaCS",
+          "allow group ${local.core_policy_group_name} to manage vnics in compartment ${local.core_policy_exacs_compartment} //Allow CE to use DBMGMT for ExaCS",
+          "allow group ${local.core_policy_group_name} to use subnets in compartment ${local.core_policy_exacs_compartment} //Allow CE to use DBMGMT for ExaCS",
+          "allow group ${local.core_policy_group_name} to use network-security-groups in compartment ${local.core_policy_exacs_compartment} //Allow CE to use DBMGMT for ExaCS",
+          "allow group ${local.core_policy_group_name} to use bastion in compartment ${local.core_policy_exacs_compartment} //Allow CE to use existing bastion for ExaCS",
+          "allow group ${local.core_policy_group_name} to manage bastion-session in compartment ${local.core_policy_exacs_compartment} //Allow CE to manage bastion sessions for ExaCS",
+          "allow group ${local.core_policy_group_name} to use data-safe-family in compartment ${local.core_policy_exacs_compartment} //Allow CE to use Data Safe in ExaCS Compartment",
+          "allow group ${local.core_policy_exacs_admin_group_name} to manage dbmgmt-family in compartment ${local.core_policy_exacs_compartment} //Allow Admins to use all DBMgmt in ExaCS Compartment",
+          "allow group ${local.core_policy_exacs_admin_group_name} to manage cloud-vmclusters in compartment ${local.core_policy_exacs_compartment} //Allow Admins for ExaCS VM Cluster",
+          "allow group ${local.core_policy_exacs_admin_group_name} to manage exadb-vm-clusters in compartment ${local.core_policy_exacs_compartment} //Allow Admins for ExaScale VM Cluster",
+          "allow group ${local.core_policy_exacs_admin_group_name} to manage cloud-exadata-infrastructures in compartment ${local.core_policy_exacs_compartment} //Allow Admins to manage Infra",
+          "allow group ${local.core_policy_exacs_admin_group_name} to manage db-homes in compartment ${local.core_policy_exacs_compartment} //Allow Admins to manage DB Homes",
         ]
       }
     } : {}, #No policy EXACS
@@ -358,10 +360,20 @@ locals {
         statements : [
           "allow group ${local.core_policy_group_name} to use oda-family in compartment ${local.core_policy_oda_compartment} //Allow CE to Use GenAI Chat",
           "allow group ${local.core_policy_group_name} to use metrics in compartment ${local.core_policy_oda_compartment} //Allow CE to See Metrics for ODA",
-          "allow dynamic-group '${local.default_domain_name}'/'${local.oda_dynamic_group_name}' to manage genai-agent-family in compartment ${local.core_policy_engineer_compartment} //DG Access to AI Agents",
-          "allow dynamic-group '${local.default_domain_name}'/'${local.oda_dynamic_group_name}' to manage object-family in compartment ${local.core_policy_engineer_compartment} //DG Access to OSS",
-          "allow dynamic-group '${local.default_domain_name}'/'${local.oda_dynamic_group_name}' to manage agent-family in compartment ${local.core_policy_engineer_compartment} //DG Access to AI Agents",
+          "allow dynamic-group '${local.default_domain_name}'/'${local.oda_dynamic_group_name}' to manage genai-agent-family in compartment ${local.core_policy_engineer_compartment} //DG Access to AI Agents in CE Compartment",
+          "allow dynamic-group '${local.default_domain_name}'/'${local.oda_dynamic_group_name}' to manage genai-agent-family in compartment ${local.core_policy_oda_compartment} //DG Access to AI Agents in ODA Compartment",
+          "allow dynamic-group '${local.default_domain_name}'/'${local.oda_dynamic_group_name}' to manage object-family in compartment ${local.core_policy_engineer_compartment} //DG Access to OSS in CE Coompartments",
+          "allow dynamic-group '${local.default_domain_name}'/'${local.oda_dynamic_group_name}' to manage object-family in compartment ${local.core_policy_oda_compartment} //DG Access to OSS in ODA compartment",
+          "allow dynamic-group '${local.default_domain_name}'/'${local.oda_dynamic_group_name}' to manage agent-family in compartment ${local.core_policy_engineer_compartment} //DG Access to AI Agents in CE Compartments",
+          "allow dynamic-group '${local.default_domain_name}'/'${local.oda_dynamic_group_name}' to manage agent-family in compartment ${local.core_policy_oda_compartment} //DG Access to AI Agents",
+          "allow dynamic-group '${local.default_domain_name}'/'${local.oda_dynamic_group_name}' to use generative-ai-family in compartment ${local.core_policy_engineer_compartment} //DG Access to Generative AI in CE Compartment",
+          "allow dynamic-group '${local.default_domain_name}'/'${local.oda_dynamic_group_name}' to use generative-ai-family in compartment ${local.core_policy_oda_compartment} //DG Access to Generative AI in ODA Compartment",
+          "allow dynamic-group '${local.default_domain_name}'/'${local.oda_dynamic_group_name}' to use fn-invocation in compartment ${local.core_policy_engineer_compartment} //DG Access CE-written Functions",
+          "allow dynamic-group '${local.default_domain_name}'/'${local.oda_dynamic_group_name}' to use fn-invocation in compartment ${local.core_policy_oda_compartment} //DG Access Functions in ODA Compartment",
         ]
+        # allow dynamic-group 'Default'/'all-oda-instance-DG' to use ai-service-generative-ai-family in compartment cloud-engineering-shared where request.principal.id='ocid1.odainstance.oc1.phx.amaaaaaabv6267ia7f7jvxhchn32t5j2eumknd6jhwnvpasyaedse6p3pfxa'//Allows Production ODA to use GenAI
+        # allow dynamic-group 'Default'/'all-oda-instance-DG' to use generative-ai-family in compartment cloud-engineering-shared where request.principal.id='ocid1.odainstance.oc1.phx.amaaaaaabv6267ia7f7jvxhchn32t5j2eumknd6jhwnvpasyaedse6p3pfxa'//Allows Production ODA to use GenAI
+        # allow dynamic-group 'Default'/'all-oda-instance-DG' to use fn-invocation in compartment cloud-engineering-shared where request.principal.id='ocid1.odainstance.oc1.phx.amaaaaaabv6267ia7f7jvxhchn32t5j2eumknd6jhwnvpasyaedse6p3pfxa'//Allows Production ODA to use Functions
       },
     } : {}, #No policy ODA
     var.create_oac == true ? {
@@ -423,7 +435,7 @@ locals {
         description : "Permissions for Data Science - please request access to group cloud-engineering-datascience-users"
         compartment_id : "TENANCY-ROOT"
         statements : [
-          "allow service datascience to use virtual-network-family in tenancy",
+          "allow service datascience to use virtual-network-family in TENANCY",
           "allow group ${local.core_policy_ds_group_name} to manage virtual-network-family in compartment ${local.core_policy_datascience_compartment} // Allow CE to set up Networking in DS Compartment",
           "allow group ${local.core_policy_ds_group_name} to manage data-science-family in compartment ${local.core_policy_datascience_compartment} // Allow CE to manage Data Science in DS Compartment",
           "allow group ${local.core_policy_ds_group_name} to manage object-family in compartment ${local.core_policy_datascience_compartment} // Allow CE to set up Object Storage in DS Compartment",
@@ -434,8 +446,8 @@ locals {
           "allow dynamic-group '${local.default_domain_name}'/'${local.datascience_dynamic_group_name}' to manage data-science-family in compartment ${local.core_policy_datascience_compartment} //Allows DS DG to use OSS",
           "allow dynamic-group '${local.default_domain_name}'/'${local.datascience_dynamic_group_name}' to manage dataflow-family in compartment ${local.core_policy_datascience_compartment} //Allows DS DG to use OSS",
           "allow dynamic-group '${local.default_domain_name}'/'${local.datascience_dynamic_group_name}' to use logging-family in compartment ${local.core_policy_datascience_compartment} //Allows DS DG to use Logging",
-          "allow dynamic-group '${local.default_domain_name}'/'${local.datascience_dynamic_group_name}' to read compartments in tenancy //Required DG Policy Statement",
-          "allow dynamic-group '${local.default_domain_name}'/'${local.datascience_dynamic_group_name}' to read users in tenancy //Required DG Policy Statement",
+          "allow dynamic-group '${local.default_domain_name}'/'${local.datascience_dynamic_group_name}' to read compartments in TENANCY //Required DG Policy Statement",
+          "allow dynamic-group '${local.default_domain_name}'/'${local.datascience_dynamic_group_name}' to read users in TENANCY //Required DG Policy Statement",
         ]
       },
       "CE-DL-POLICY" : {
