@@ -22,6 +22,7 @@ import argparse   # Argument Parsing
 import logging    # Python Logging
 from concurrent.futures import ThreadPoolExecutor, Future
 from concurrent import futures
+import circuitbreaker
 
 global total
 total = 0
@@ -100,6 +101,8 @@ if __name__ == "__main__":
             database_client = DatabaseClient(config=config_ip, signer=signer, retry_strategy=retry.DEFAULT_RETRY_STRATEGY)
             search_client = ResourceSearchClient(config=config_ip, signer=signer)
 
+            # Could use composite operations
+            # disable_database_management_and_wait_for_state
         # Connect to OCI with DEFAULT or defined profile
         else:
             # Use a profile (must be defined)
@@ -168,4 +171,7 @@ if __name__ == "__main__":
                 logger.info(f"Result: {future.result()}")
             except ServiceError as ex:
                 logger.error(f"ERROR: {ex.message}")
+            except circuitbreaker.CircuitBreakerError as ex:
+                logger.error(f"CB ERROR: {ex.message}")
+
     logger.info(f"Finished submitting all for parallel execution for {len(db_ocids)} DB Systems")
