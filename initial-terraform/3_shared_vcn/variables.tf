@@ -13,11 +13,17 @@ variable "private_key_password" { default = "" }
 variable "compartment_ocid" {}
 variable "vcn_name" {}
 variable "vcn_cidr_block" {}
-variable "subnet_names" {}
-variable "subnet_types" {}
-variable "subnet_cidr_blocks" {}
+variable "subnet_names" {
+  type = list(string)
+}
+variable "subnet_types" {
+  type = list(string)
+}
+variable "subnet_cidr_blocks" {
+  type = list(string)
+}
 variable "is_attach_drg" {}
 variable "drg_ocid" {
-    default = ""
+  default = ""
 }
 # variable "network_configuration" {}
