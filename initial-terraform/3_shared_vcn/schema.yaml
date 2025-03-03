@@ -11,8 +11,9 @@ variableGroups:
     variables:
       - compartment_ocid
       - vcn_name
-      - vcn_cidr_blocks
+      - vcn_cidr_block
       - subnet_names
+      - subnet_types
       - subnet_cidr_blocks
 
   - title: "DRG"
@@ -44,7 +45,7 @@ variables:
     title: Base name of VCN
     description: The name, to which everything will append.  IE cloud-engineering-shared
     required: true
-    default: "cloud-engineering-shared-"
+    default: "myvcn"
 
   vcn_cidr_block:
     type: string
@@ -58,21 +59,21 @@ variables:
     title: Subnet Names
     description: Subnet names (appended to base)
     required: true
-    default: [web,app]
+    default: ["web","app"]
     
   subnet_types:
     type: array
     title: Subnet Types
     description: Subnet types (determines routing)
     required: true
-    default: [public,private]
+    default: ["public","private"]
     
   subnet_cidr_blocks:
     type: array
     title: VCN CIDR Block
     description: CIDR Block, ie 10.0.0.0/24
     required: true
-    default: [172.17.99.0/25,172.17.99.128/25]
+    default: ["172.17.99.0/25","172.17.99.128/25"]
   
   is_attach_drg:
     type: boolean
