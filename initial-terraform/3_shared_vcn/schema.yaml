@@ -57,6 +57,8 @@ variables:
   subnet_names:
     type: array
     title: Subnet Names
+    items:
+      type: string
     description: Subnet names (appended to base)
     required: true
     default: ["web","app"]
@@ -64,6 +66,8 @@ variables:
   subnet_types:
     type: array
     title: Subnet Types
+    items:
+      type: string
     description: Subnet types (determines routing)
     required: true
     default: ["public","private"]
@@ -71,6 +75,8 @@ variables:
   subnet_cidr_blocks:
     type: array
     title: VCN CIDR Block
+    items:
+      type: string
     description: CIDR Block, ie 10.0.0.0/24
     required: true
     default: ["172.17.99.0/25","172.17.99.128/25"]
