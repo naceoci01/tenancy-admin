@@ -32,7 +32,7 @@ locals {
             is_ipv6enabled                   = false
             is_oracle_gua_allocation_enabled = false
             cidr_blocks                      = [var.cidr_block],
-            dns_label                        = "${var.base_name}-shared-vcn"
+            dns_label                        = "${var.base_name}sharedvcn"
             is_create_igw                    = false
             is_attach_drg                    = var.is_attach_drg
             block_nat_traffic                = false

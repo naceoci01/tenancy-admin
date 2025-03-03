@@ -1,10 +1,8 @@
 # Title shown in Application Information tab.
 title: Shared VCN
 # Sub Title shown in Application Information tab.
-description: Create admin compartment inside the tenancy.
-informationalText: Only for Admin compartment at the moment
-schemaVersion: 1.1.0
-version: "20190304"
+description: Creates a basic VCN
+informationalText: In development as of 3/3/2025
 
 locale: "en"
 variableGroups:
@@ -41,7 +39,7 @@ variables:
   base_name:
     type: string
     title: Base name of VCN
-    description: The name, to which everything will append.  IE cloud-engineering-shared-
+    description: The name, to which everything will append.  IE cloud-engineering-shared
     required: true
     default: "cloud-engineering-shared-"
 
