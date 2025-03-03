@@ -62,3 +62,4 @@ variables:
     description: Valid DRG OCID
     required: false
     visible: is_attach_drg
+    default: null
