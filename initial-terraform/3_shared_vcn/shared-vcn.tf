@@ -28,11 +28,11 @@ locals {
 
         vcns = {
           VCN-KEY = {
-            display_name                     = "${var.base_name}-shared-vcn"
+            display_name                     = "${var.vcn_name}-vcn"
             is_ipv6enabled                   = false
             is_oracle_gua_allocation_enabled = false
-            cidr_blocks                      = [var.cidr_block],
-            dns_label                        = "${var.base_name}sharedvcn"
+            cidr_blocks                      = [var.vcn_cidr_block],
+            dns_label                        = "${var.vcn_name}"
             is_create_igw                    = false
             is_attach_drg                    = var.is_attach_drg
             block_nat_traffic                = false
@@ -72,50 +72,56 @@ locals {
               ]
             }
 
-            # drg_attachments = {
-            #     ATT = {
-            #         display_name = "${var.base_name}-shared-vcn-drgattachment"
-            #         drg_route_table_id = var.drg_ocid
-            #     }
 
-            # } # DRG
+            subnets = {
+              for i, s in var.subnet_names : "KEY-${s}" => {
+                cidr_block                 = var.subnet_cidr_blocks[index(var.subnet_names, s)]
+                dhcp_options_key           = "default_dhcp_options"
+                display_name               = "subnet-${s}-${var.subnet_types[index(var.subnet_names, s)]}"
+                dns_label                  = "${s}"
+                ipv6cidr_blocks            = []
+                prohibit_internet_ingress  = var.subnet_types[index(var.subnet_names, s)] == "private" ? true : false
+                prohibit_public_ip_on_vnic = var.subnet_types[index(var.subnet_names, s)] == "private" ? true : false
+                route_table_key            = var.subnet_types[index(var.subnet_names, s)] == "private" ? "PRIVATE-SUBNET-ROUTE-TABLE" : "PUBLIC-SUBNET-ROUTE-TABLE"
+              }
+            } # Subnets
 
-            # subnets = {
-            #   PUBLIC-LB-SUBNET-KEY = {
-            #     cidr_block                 = "10.0.3.0/24"
-            #     dhcp_options_key           = "default_dhcp_options"
-            #     display_name               = "sub-public-lb"
-            #     dns_label                  = "publiclb"
-            #     ipv6cidr_blocks            = []
-            #     prohibit_internet_ingress  = false
-            #     prohibit_public_ip_on_vnic = false
-            #     route_table_key            = "RT-01-KEY"
-            #     security_list_keys         = ["SECLIST-LB-KEY"]
-            #   }
-            #   PRIVATE-APP-SUBNET-KEY = {
-            #     cidr_block                 = "10.0.2.0/24"
-            #     dhcp_options_key           = "default_dhcp_options"
-            #     display_name               = "sub-private-app"
-            #     dns_label                  = "privateapp"
-            #     ipv6cidr_blocks            = []
-            #     prohibit_internet_ingress  = true
-            #     prohibit_public_ip_on_vnic = true
-            #     route_table_key            = "RT-02-KEY"
-            #     security_list_keys         = ["SECLIST-APP-KEY"]
-            #   }
-            #   PRIVATE-DB-SUBNET-KEY = {
-            #     cidr_block                 = "10.0.1.0/24"
-            #     dhcp_options_key           = "default_dhcp_options"
-            #     display_name               = "sub-private-db"
-            #     dns_label                  = "privatedb"
-            #     ipv6cidr_blocks            = []
-            #     prohibit_internet_ingress  = true
-            #     prohibit_public_ip_on_vnic = true
-            #     route_table_id             = null
-            #     route_table_key            = "RT-02-KEY"
-            #     security_list_keys         = ["default_security_list"]
-            #   }
-            # } # Subnets
+            route_tables = {
+              PUBLIC-SUBNET-ROUTE-TABLE = {
+                display_name = "public-subnet-rtable"
+                route_rules = {
+                  RULE-1 = {
+                    network_entity_key = "IGW-KEY"
+                    description        = "To Internet Gateway."
+                    destination        = "0.0.0.0/0"
+                    destination_type   = "CIDR_BLOCK"
+                  }
+                  RULE-2 = {
+                    network_entity_key = "SGW-KEY"
+                    description        = "To Service Gateway."
+                    destination        = "objectstorage"
+                    destination_type   = "SERVICE_CIDR_BLOCK"
+                  }
+                }
+              },
+              PRIVATE-SUBNET-ROUTE-TABLE = {
+                display_name = "private-subnet-rtable"
+                route_rules = {
+                  RULE-1 = {
+                    network_entity_key = "NATGW-KEY"
+                    description        = "To NAT Gateway."
+                    destination        = "0.0.0.0/0"
+                    destination_type   = "CIDR_BLOCK"
+                  }
+                  RULE-2 = {
+                    network_entity_key = "SGW-KEY"
+                    description        = "To Service Gateway."
+                    destination        = "all-services"
+                    destination_type   = "SERVICE_CIDR_BLOCK"
+                  }
+                }
+              }
+            } # Route Tables
 
             network_security_groups = {
 
