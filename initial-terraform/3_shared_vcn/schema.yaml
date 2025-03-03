@@ -3,6 +3,7 @@ title: Shared VCN
 # Sub Title shown in Application Information tab.
 description: Creates a basic VCN
 informationalText: In development as of 3/3/2025
+schemaVersion: 1.1.0
 
 locale: "en"
 variableGroups:
