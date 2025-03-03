@@ -12,7 +12,7 @@ variable "private_key_password" { default = "" }
 # Required Inputs
 variable "compartment_ocid" {}
 variable "base_name" {}
-variable "cidr_blocks" {}
+variable "cidr_block" {}
 variable "is_attach_drg" {}
 variable "drg_ocid" {
     nullable = true

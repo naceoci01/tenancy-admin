@@ -18,7 +18,7 @@ variableGroups:
     variables:
       - is_attach_drg
       - drg_ocid
-      
+
   - title: "Hidden Variables" 
     visible: false
     variables:
@@ -45,12 +45,12 @@ variables:
     required: true
     default: "cloud-engineering-shared-"
 
-  cidr_blocks:
-    type: enum
-    title: VCN CIDR Block(s)
-    description: CIDR Blocks, ie 10.0.0.0/24
+  cidr_block:
+    type: string
+    title: VCN CIDR Block
+    description: CIDR Block, ie 10.0.0.0/24
     required: true
-    default: ["172.17.99.0/24"]
+    default: "172.17.99.0/24"
   
   is_attach_drg:
     type: boolean
@@ -61,3 +61,4 @@ variables:
     type: string
     description: Valid DRG OCID
     required: false
+    visible: is_attach_drg
