@@ -1,0 +1,63 @@
+# Title shown in Application Information tab.
+title: Shared VCN
+# Sub Title shown in Application Information tab.
+description: Create admin compartment inside the tenancy.
+informationalText: Only for Admin compartment at the moment
+schemaVersion: 1.1.0
+version: "20190304"
+
+locale: "en"
+variableGroups:
+  - title: "Basic Information" 
+    variables:
+      - compartment_ocid
+      - base_name
+      - cidr_blocks
+
+  - title: "DRG"
+    variables:
+      - is_attach_drg
+      - drg_ocid
+      
+  - title: "Hidden Variables" 
+    visible: false
+    variables:
+      - tenancy_ocid
+      - user_ocid
+      - fingerprint
+      - private_key_path
+      - region
+      - private_key_password
+
+variables:
+  # string field
+  compartment_ocid:
+    type: oci:identity:compartment:id
+    title: Compartment OCID
+    # description used as the tooltip if present
+    description: Compartment where this VCN will get created
+    required: true
+
+  base_name:
+    type: string
+    title: Base name of VCN
+    description: The name, to which everything will append.  IE cloud-engineering-shared-
+    required: true
+    default: "cloud-engineering-shared-"
+
+  cidr_blocks:
+    type: enum
+    title: VCN CIDR Block(s)
+    description: CIDR Blocks, ie 10.0.0.0/24
+    required: true
+    default: ["172.17.99.0/24"]
+  
+  is_attach_drg:
+    type: boolean
+    title: Attach to DRG?
+    description: Whether to attach to DRG
+
+  drg_ocid:
+    type: string
+    description: Valid DRG OCID
+    required: false
