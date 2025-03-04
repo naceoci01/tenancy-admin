@@ -12,10 +12,29 @@ variableGroups:
     variables:
       - home_region
       - domain_id
-      - engineer_group_name
-  - title: "Compartment Configuration"
+  - title: "Main Configuration"
     variables:
       - engineer_compartment_base_name
+      - engineer_group_name
+  - title: "PaaS / AI Configuration"
+    variables:
+      - create_func
+      - create_oic
+      - create_oac
+      - engineer_oac_group_name
+      - create_ds
+      - engineer_datascience_group_name
+      - create_oda
+      - create_ai
+  - title: "Data Services Configuration"
+    variables:
+      - create_mysql
+      - engineer_mysql_group_name
+      - create_exa
+      - engineer_exacs_group_name
+      - create_postgres
+      - engineer_postgres_group_name
+      - create_gg
   - title: "Hidden Variables" 
     visible: false
     variables:
@@ -40,13 +59,85 @@ variables:
     default: cloud-engineering
     required: true
 
-  domain_id:
+  ce_domain_id:
     title: Identity Domain OCID
     type: string
-    description: Already created Identity Domain.
+    description: Already created Identity Domain for cloud engineers.
+
+  default_domain_id:
+    title: Identity Domain OCID
+    type: string
+    description: Default Identity Domain for tenancy.
 
   engineer_group_name:
     title: Name of IAM group for engineers
     type: string
     description: Change as necessary
     default: cloud-engineering-domain-users
+
+  engineer_datascience_group_name:
+    title: Name of IAM group for Data Science engineers
+    type: string
+    description: Change as necessary
+    default: cloud-engineering-datascience-users
+    visible: create_ds
+
+  engineer_oac_group_name:
+    title: Name of IAM group for Oracle Analytics Admins
+    type: string
+    description: Users in this group have full admin over OAC Instances and within
+    default: cloud-engineering-oac-admins
+    visible: create_oac
+
+  engineer_mysql_group_name:
+    title: Name of IAM group for MySQL Heatwave Admins
+    type: string
+    description: Users in this group have full admin over MySQL and VCNs in MySQL compartment
+    default: cloud-engineering-mysql-admins
+    visible: create_mysql
+
+  engineer_postgres_group_name:
+    title: Name of IAM group for Postgres Users
+    type: string
+    description: Users in this group have the ability to create and use Postgres
+    default: cloud-engineering-postgres-users
+    required: false
+    visible: create_postgres
+
+  engineer_exacs_group_name:
+    title: Name of IAM group for ExaCS Admins
+    type: string
+    description: Users in this group have the ability to create destry ExaCS Infa and VM Clusters
+    default: cloud-engineering-exacs-admins
+    visible: create_exa
+
+  create_oic:
+    title: Create the OIC Policy and compartment
+    type: boolean
+  create_exa:
+    title: Create the ExaCS Policy and compartment
+    type: boolean
+  create_oda:
+    title: Create the ODA Policy and compartment
+    type: boolean
+  create_mysql:
+    title: Create the MySQL Policy and compartment
+    type: boolean
+  create_oac:
+    title: Create the OAC Policy and compartment
+    type: boolean
+  create_ds:
+    title: Create the Data Science Policy and compartment
+    type: boolean
+  create_ai:
+    title: Create the AI and GenAI Policy
+    type: boolean
+  create_gg:
+    title: Create the GoldenGate Policy and compartment
+    type: boolean
+  create_func:
+    title: Create the OCI Functions Policy
+    type: boolean
+  create_postgres:
+    title: Create the Postgres Compartment and Policy
+    type: boolean

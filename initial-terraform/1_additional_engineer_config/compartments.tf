@@ -8,7 +8,9 @@ locals {
     engineer_compartment = { for cmp in data.oci_identity_domains_group.ce-group.members[*].name: "CMP-${cmp}" => {
         name : split("@", cmp)[0],
         description : "${cmp} compartment",
-        defined_tags : {"OracleInternalReserved.OwnerEmail"= "${cmp}"}
+        defined_tags : {
+            "Oracle-Tags.AllowCompartmentCreation"="true"
+        }
     }}
 
     # Place any created compartments in the defined top compartment

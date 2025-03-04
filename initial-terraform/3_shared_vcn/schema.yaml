@@ -1,0 +1,91 @@
+# Title shown in Application Information tab.
+title: Shared VCN
+# Sub Title shown in Application Information tab.
+description: Creates a basic VCN
+informationalText: In development as of 3/3/2025
+schemaVersion: 1.1.0
+
+locale: "en"
+variableGroups:
+  - title: "Basic Information" 
+    variables:
+      - compartment_ocid
+      - vcn_name
+      - vcn_cidr_block
+      - subnet_names
+      - subnet_types
+      - subnet_cidr_blocks
+
+  - title: "DRG"
+    variables:
+      - is_attach_drg
+      - drg_ocid
+
+  - title: "Hidden Variables" 
+    visible: false
+    variables:
+      - tenancy_ocid
+      - user_ocid
+      - fingerprint
+      - private_key_path
+      - region
+      - private_key_password
+
+variables:
+  # string field
+  compartment_ocid:
+    type: oci:identity:compartment:id
+    title: Compartment OCID
+    # description used as the tooltip if present
+    description: Compartment where this VCN will get created
+    required: true
+
+  vcn_name:
+    type: string
+    title: Base name of VCN
+    description: The name, to which everything will append.  IE cloud-engineering-shared
+    required: true
+    default: "myvcn"
+
+  vcn_cidr_block:
+    type: string
+    title: VCN CIDR Block
+    description: CIDR Block, ie 10.0.0.0/24
+    required: true
+    default: "172.17.99.0/24"
+
+  subnet_names:
+    type: array
+    title: Subnet Names
+    items:
+      type: string
+    description: Subnet names (appended to base)
+    required: true
+    
+  subnet_types:
+    type: array
+    title: Subnet Types
+    items:
+      type: string
+    description: Subnet types (determines routing)
+    required: true
+    
+  subnet_cidr_blocks:
+    type: array
+    title: VCN CIDR Block
+    items:
+      type: string
+    description: CIDR Block, ie 10.0.0.0/24
+    required: true
+  
+  is_attach_drg:
+    type: boolean
+    title: Attach to DRG?
+    description: Whether to attach to DRG
+
+  drg_ocid:
+    type: string
+    description: Valid DRG OCID
+    required: false
+    visible: is_attach_drg
+    default: null

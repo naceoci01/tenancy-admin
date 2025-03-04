@@ -8,7 +8,7 @@ locals {
             description = "Top level compartment for all cloud engineers",
         },
         SPECIAL-CMP = {
-            name = "xx-${var.engineer_compartment_base_name}-projects", 
+            name = "${var.engineer_compartment_base_name}-specialprojects", 
             description = "Special project compartments", 
         },
         SHARED-CMP = {
@@ -26,6 +26,18 @@ locals {
                 EXACS-CMP = {
                     name = "ExaCS",
                     description = "Oracle Exadata Cloud Service"
+                },
+                MYSQL-CMP = {
+                    name = "MySQL",
+                    description = "Shared Heatwave"
+                },
+                POSTGRES-CMP = {
+                    name = "Postgres",
+                    description = "Shared Postgres"
+                },
+                DS-CMP = {
+                    name = "DataScience",
+                    description = "Shared Data Science"
                 },
             }
         }

@@ -2,8 +2,12 @@
 # Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
 
 # Get Identity Domain Data 
+data "oci_identity_domain" "default_domain" {
+  domain_id = var.default_domain_id
+}
+
 data "oci_identity_domain" "ce_domain" {
-  domain_id = var.domain_id
+  domain_id = var.ce_domain_id
 }
 
 locals {
