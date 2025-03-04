@@ -36,12 +36,17 @@ locals {
         ]
       }
     },
-          # "allow group '${local.cloud_engineering_domain_name}'/'${var.engineer_group_name}' to read policies in TENANCY //Allows Cloud Engineers only to read policies in entire tenancy",
-          # "allow group '${local.cloud_engineering_domain_name}'/'${var.engineer_group_name}' to read domains in TENANCY //Allows Cloud Engineers only to read domains in entire tenancy",
-          # "allow group '${local.cloud_engineering_domain_name}'/'${var.engineer_group_name}' to read dynamic-groups in TENANCY //Allows Cloud Engineers only to read DG in entire tenancy",
-          # "allow group '${local.cloud_engineering_domain_name}'/'${var.engineer_group_name}' to inspect compartments in TENANCY //Allows Cloud Engineers only to list compartments",
-          # "allow group '${local.cloud_engineering_domain_name}'/'${var.engineer_group_name}' to read quotas in TENANCY //Allows Cloud Engineers see quotas",
-          # "allow group '${local.cloud_engineering_domain_name}'/'${var.engineer_group_name}' to read resource-availability in TENANCY //Allows Cloud Engineers to view service limits tenancy-wide",
+    {
+      "CE-COST-POLICY" : {
+        name : "cloud-engineering-COST-policy"
+        description : "Cloud Engineers Cost Policies"
+        compartment_id : "TENANCY-ROOT"
+        statements : [
+          "define tenancy usage-report as ocid1.tenancy.oc1..aaaaaaaamhmra7tjzxzaronywihwj4ibgnifs27nxr5nvemeemmwtrtatr2q",
+          "endorse group ${local.core_policy_group_name} to read objects in tenancy usage-report",
+        ]
+      }
+    },
     {
       "CE-SERVICES-POLICY" : {
         name : "cloud-engineering-SERVICE-policy"
@@ -65,6 +70,7 @@ locals {
           "allow group ${local.core_policy_group_name} to manage vcns in compartment ${local.core_policy_shared_compartment} where request.operation!='CreateVcn' //Allow CE to use shared bastion",
           "allow group ${local.core_policy_group_name} to use bastion in compartment ${local.core_policy_shared_compartment} //Allow CE to use shared bastion",
           "allow group ${local.core_policy_group_name} to manage bastion-session in compartment ${local.core_policy_shared_compartment} //Allow CE to manage bastion sessions",
+          "allow group ${local.core_policy_group_name} to manage operator-control-family in compartment ${local.core_policy_shared_compartment} //Allow CE to manage Operator Access Control (demo)",
           "allow group ${local.core_policy_group_name} to use cloud-shell in TENANCY //Required tenancy-level for Cloud Shell",
           "allow group ${local.core_policy_group_name} to use cloud-shell-public-network in TENANCY //Required tenancy-level for Cloud Shell",
         ]
@@ -428,8 +434,15 @@ locals {
           "allow group ${local.core_policy_group_name} to manage ai-service-language-family in compartment ${local.core_policy_engineer_compartment} //Allow CE to manage Language",
           "allow group ${local.core_policy_group_name} to manage ai-service-document-family in compartment ${local.core_policy_engineer_compartment} //Allow CE to manage Document Understanding",
         ]
-      }
-    } : {}, #No policy AI
+      },
+      "CE-OPENSEARCH-POLICY" : {
+        name : "cloud-engineering-OPENSEARCH-policy"
+        description : "Permissions for AI Services"
+        compartment_id : "TENANCY-ROOT"
+        statements : [
+          "allow dynamic-group '${default_domain_name}'/'all-functions-DG' to manage objects in compartment ${local.core_policy_shared_compartment}:OpenSearch //For Functions",
+        ]
+      }    } : {}, #No policy AI
     var.create_ds == true ? {
       "CE-DS-POLICY" : {
         name : "cloud-engineering-DATASCIENCE-policy"
