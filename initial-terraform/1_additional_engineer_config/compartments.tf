@@ -9,7 +9,6 @@ locals {
         name : split("@", cmp)[0],
         description : "${cmp} compartment",
         defined_tags : {
-            "OracleInternalReserved.OwnerEmail"= "${cmp}",
             "Oracle-Tags.AllowCompartmentCreation"="true"
         }
     }}
