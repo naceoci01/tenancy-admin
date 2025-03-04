@@ -437,10 +437,10 @@ locals {
       },
       "CE-OPENSEARCH-POLICY" : {
         name : "cloud-engineering-OPENSEARCH-policy"
-        description : "Permissions for AI Services"
+        description : "Permissions for OpenSearch"
         compartment_id : "TENANCY-ROOT"
         statements : [
-          "allow dynamic-group '${default_domain_name}'/'all-functions-DG' to manage objects in compartment ${local.core_policy_shared_compartment}:OpenSearch //For Functions",
+          "allow dynamic-group '${local.default_domain_name}'/'all-functions-DG' to manage objects in compartment ${local.core_policy_shared_compartment}:OpenSearch //For Functions",
         ]
       }    } : {}, #No policy AI
     var.create_ds == true ? {
