@@ -93,20 +93,22 @@ variable "create_gg" {
     description = "Whether to enable GoldenGate"
 }
 
+variable "create_postgres" {
+    type = bool
+    description = "Whether to enable Postgres"
+}
+
+variable "create_opensearch" {
+    type = bool
+    description = "Whether to enable OpenSearch"
+}
+
 variable "create_func" {
     type = bool
     description = "Whether to enable OCI Functions"
 }
 
-
-# variable "rpc_peer_ocid" {
-#     description = "OCID of RPC Peering Connection (optional)"
-#     default = null
-# }
-# variable "rpc_peer_attachment_name" {
-#     description = "Name of the attachment"
-# }
-# variable "rpc_peer_region" {
-#     description = "OCID of RPC Peering Connection (optional)"
-#     default = null
-# }
+variable "create_di" {
+    type = bool
+    description = "Whether to enable OCI Data Integration"
+}

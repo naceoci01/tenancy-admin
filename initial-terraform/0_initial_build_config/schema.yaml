@@ -26,6 +26,8 @@ variableGroups:
       - engineer_datascience_group_name
       - create_oda
       - create_ai
+      - create_opensearch
+      - create_di
   - title: "Data Services Configuration"
     variables:
       - create_mysql
@@ -140,4 +142,10 @@ variables:
     type: boolean
   create_postgres:
     title: Create the Postgres Compartment and Policy
+    type: boolean
+  create_opensearch:
+    title: Create the OpenSearch Compartment
+    type: boolean
+  create_di:
+    title: Create the Data Integration Compartment
     type: boolean

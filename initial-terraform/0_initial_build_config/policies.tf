@@ -5,19 +5,20 @@ locals {
   core_policy_group_name              = "'${data.oci_identity_domain.ce_domain.display_name}'/'${var.engineer_group_name}'"
   core_policy_ds_group_name           = "'${data.oci_identity_domain.ce_domain.display_name}'/'${var.engineer_datascience_group_name}'"
   core_policy_mysql_group_name        = "'${data.oci_identity_domain.ce_domain.display_name}'/'${var.engineer_mysql_group_name}'"
-  core_policy_postgres_group_name        = "'${data.oci_identity_domain.ce_domain.display_name}'/'${var.engineer_postgres_group_name}'"
+  core_policy_postgres_group_name     = "'${data.oci_identity_domain.ce_domain.display_name}'/'${var.engineer_postgres_group_name}'"
   core_policy_oac_group_name          = "'${data.oci_identity_domain.ce_domain.display_name}'/'${var.engineer_oac_group_name}'"
   core_policy_exacs_admin_group_name  = "'${data.oci_identity_domain.ce_domain.display_name}'/'${var.engineer_exacs_group_name}'"
   core_policy_gg_admin_group_name     = "'${data.oci_identity_domain.ce_domain.display_name}'/'GGS_Administrator'"
+  core_policy_oic_admin_group_name    = "'${data.oci_identity_domain.ce_domain.display_name}'/'OIC-Administrators'"
   core_policy_engineer_compartment    = module.cislz_compartments.compartments.CLOUD-ENG.name
   core_policy_shared_compartment      = module.cislz_compartments.compartments.SHARED-CMP.name
   core_policy_datascience_compartment = "${local.core_policy_shared_compartment}:DataScience"
   core_policy_mysql_compartment       = "${local.core_policy_shared_compartment}:MySQL"
-  core_policy_postgres_compartment       = "${local.core_policy_shared_compartment}:Postgres"
+  core_policy_postgres_compartment    = "${local.core_policy_shared_compartment}:Postgres"
   core_policy_oac_compartment         = "${local.core_policy_shared_compartment}:OAC"
   core_policy_exacs_compartment       = "${local.core_policy_shared_compartment}:ExaCS"
   core_policy_oda_compartment         = "${local.core_policy_shared_compartment}:ODA"
-  core_policy_gg_compartment         = "${local.core_policy_shared_compartment}:GoldenGate"
+  core_policy_gg_compartment          = "${local.core_policy_shared_compartment}:GoldenGate"
   core_policy_engineer_ocid           = module.cislz_compartments.compartments.CLOUD-ENG.id
   default_domain_name                 = "Default"
 
@@ -273,8 +274,6 @@ locals {
           "allow group ${local.core_policy_group_name} to manage goldengate-connection-assignments in compartment ${local.core_policy_gg_compartment} //Allow CE to manage GoldenGate assignments in shared GG compartment",
           "allow group ${local.core_policy_group_name} to manage vcns in compartment ${local.core_policy_gg_compartment} where request.permission='VCN_UPDATE' //Allow CE to add private views to shared VCN, for DNS resolution",
           "allow group ${local.core_policy_group_name} to use goldengate-deployments in compartment ${local.core_policy_gg_compartment} //Allow CE to use all GoldenGate deployments in shared GG compartment",
-          "allow group ${local.core_policy_group_name} to read logging-family in compartment ${local.core_policy_gg_compartment} //Allow CE to view all GoldenGate logs in shared GG compartment",
-          "allow group ${local.core_policy_group_name} to read load-balancers in compartment ${local.core_policy_gg_compartment} //Allow CE to view all LB in shared GG compartment",
           "allow group ${local.core_policy_group_name} to use ons-topics in compartment ${local.core_policy_gg_compartment} //Allow CE to view ONS Topics in shared GG compartment",
           "allow group ${local.core_policy_group_name} to manage ons-subscriptions in compartment ${local.core_policy_gg_compartment} //Allow CE to Subscribe to Notifications in shared GG compartment",
           "allow group ${local.core_policy_gg_admin_group_name} to manage goldengate-family in compartment ${local.core_policy_gg_compartment} //Allow GG Admin in shared GG compartment",
@@ -310,25 +309,16 @@ locals {
         description : "Permissions for Oracle Integration"
         compartment_id : "TENANCY-ROOT"
         statements : [
-          "allow group '${local.cloud_engineering_domain_name}'/'OIC-Administrators' to manage integration-instance in compartment ${local.core_policy_shared_compartment}:OIC //Allow OIC Admins to manage all OIC",
-          "allow group '${local.cloud_engineering_domain_name}'/'OIC-Administrators' to manage process-automation-instances in compartment ${local.core_policy_shared_compartment}:OIC //Allow OIC Admins to manage all Process Automation",
-          "allow group '${local.cloud_engineering_domain_name}'/'OIC-Administrators' to read metrics in compartment ${local.core_policy_shared_compartment}:OIC //Allow OIC Admins to read all metrics in OIC",
-          "allow group '${local.cloud_engineering_domain_name}'/'OIC-Administrators' to manage logging-family in compartment ${local.core_policy_shared_compartment}:OIC //Allow OIC Admins to set up Logging in OIC",
-          "allow group '${local.cloud_engineering_domain_name}'/'OIC-Administrators' to manage visualbuilder-instance in compartment ${local.core_policy_shared_compartment}:OIC //Allow OIC Admins to manage VBCS",
-          "allow group '${local.cloud_engineering_domain_name}'/'OIC-Administrators' to manage autonomous-database-family in compartment ${local.core_policy_shared_compartment}:OIC //Allow OIC Admins to manage ADB instances in OIC",
-          "allow group '${local.cloud_engineering_domain_name}'/'OIC-Administrators' to manage api-gateway-family in compartment ${local.core_policy_shared_compartment}:OIC //Allow OIC Admins to manage ADB instances in OIC",
-          "allow group '${local.cloud_engineering_domain_name}'/'OIC-Administrators' to manage object-family in compartment ${local.core_policy_shared_compartment}:OIC //Allow OIC Admins to manage OSS in OIC",
-          "allow group '${local.cloud_engineering_domain_name}'/'OIC-Administrators' to manage virtual-network-family in compartment ${local.core_policy_shared_compartment}:OIC //Allow OIC Admins to manage VCN in OIC",
-          "allow group '${local.cloud_engineering_domain_name}'/'OIC-Administrators' to manage stream-family in compartment ${local.core_policy_shared_compartment}:OIC //Allow OIC Admins to manage Streams in OIC",
-          "allow group ${local.core_policy_group_name} to read integration-instance in compartment ${local.core_policy_shared_compartment}:OIC //Allow CE to see Integration Instances OIC",
-          "allow group ${local.core_policy_group_name} to read process-automation-instances in compartment ${local.core_policy_shared_compartment}:OIC //Allow CE to see all Process Automation",
-          "allow group ${local.core_policy_group_name} to read metrics in compartment ${local.core_policy_shared_compartment}:OIC //Allow CE to read all metrics in OIC",
-          "allow group ${local.core_policy_group_name} to read visualbuilder-instance in compartment ${local.core_policy_shared_compartment}:OIC //Allow CE to see VBCS",
-          "allow group ${local.core_policy_group_name} to read autonomous-database-family in compartment ${local.core_policy_shared_compartment}:OIC //Allow CE to see ADB instances in OIC",
-          "allow group ${local.core_policy_group_name} to read api-gateway-family in compartment ${local.core_policy_shared_compartment}:OIC //Allow CE to see APIGW in OIC",
-          "allow group ${local.core_policy_group_name} to read logging-family in compartment ${local.core_policy_shared_compartment}:OIC //Allow CE to see Logging in OIC",
-          "allow group ${local.core_policy_group_name} to read object-family in compartment ${local.core_policy_shared_compartment}:OIC //Allow CE to see OSS in OIC",
-          "allow group ${local.core_policy_group_name} to read virtual-network-family in compartment ${local.core_policy_shared_compartment}:OIC //Allow CE to see VCN in OIC",
+          "allow group ${local.core_policy_oic_admin_group_name} to manage integration-instance in compartment ${local.core_policy_shared_compartment}:OIC //Allow OIC Admins to manage all OIC",
+          "allow group ${local.core_policy_oic_admin_group_name} to manage process-automation-instances in compartment ${local.core_policy_shared_compartment}:OIC //Allow OIC Admins to manage all Process Automation",
+          "allow group ${local.core_policy_oic_admin_group_name} to read metrics in compartment ${local.core_policy_shared_compartment}:OIC //Allow OIC Admins to read all metrics in OIC",
+          "allow group ${local.core_policy_oic_admin_group_name} to manage logging-family in compartment ${local.core_policy_shared_compartment}:OIC //Allow OIC Admins to set up Logging in OIC",
+          "allow group ${local.core_policy_oic_admin_group_name} to manage visualbuilder-instance in compartment ${local.core_policy_shared_compartment}:OIC //Allow OIC Admins to manage VBCS",
+          "allow group ${local.core_policy_oic_admin_group_name} to manage autonomous-database-family in compartment ${local.core_policy_shared_compartment}:OIC //Allow OIC Admins to manage ADB instances in OIC",
+          "allow group ${local.core_policy_oic_admin_group_name} to manage api-gateway-family in compartment ${local.core_policy_shared_compartment}:OIC //Allow OIC Admins to manage ADB instances in OIC",
+          "allow group ${local.core_policy_oic_admin_group_name} to manage object-family in compartment ${local.core_policy_shared_compartment}:OIC //Allow OIC Admins to manage OSS in OIC",
+          "allow group ${local.core_policy_oic_admin_group_name} to manage virtual-network-family in compartment ${local.core_policy_shared_compartment}:OIC //Allow OIC Admins to manage VCN in OIC",
+          "allow group ${local.core_policy_oic_admin_group_name} to manage stream-family in compartment ${local.core_policy_shared_compartment}:OIC //Allow OIC Admins to manage Streams in OIC",
         ]
       },
     } : {}, #No policy OIC
@@ -378,9 +368,6 @@ locals {
           "allow dynamic-group '${local.default_domain_name}'/'${local.oda_dynamic_group_name}' to use fn-invocation in compartment ${local.core_policy_engineer_compartment} //DG Access CE-written Functions",
           "allow dynamic-group '${local.default_domain_name}'/'${local.oda_dynamic_group_name}' to use fn-invocation in compartment ${local.core_policy_oda_compartment} //DG Access Functions in ODA Compartment",
         ]
-        # allow dynamic-group 'Default'/'all-oda-instance-DG' to use ai-service-generative-ai-family in compartment cloud-engineering-shared where request.principal.id='ocid1.odainstance.oc1.phx.amaaaaaabv6267ia7f7jvxhchn32t5j2eumknd6jhwnvpasyaedse6p3pfxa'//Allows Production ODA to use GenAI
-        # allow dynamic-group 'Default'/'all-oda-instance-DG' to use generative-ai-family in compartment cloud-engineering-shared where request.principal.id='ocid1.odainstance.oc1.phx.amaaaaaabv6267ia7f7jvxhchn32t5j2eumknd6jhwnvpasyaedse6p3pfxa'//Allows Production ODA to use GenAI
-        # allow dynamic-group 'Default'/'all-oda-instance-DG' to use fn-invocation in compartment cloud-engineering-shared where request.principal.id='ocid1.odainstance.oc1.phx.amaaaaaabv6267ia7f7jvxhchn32t5j2eumknd6jhwnvpasyaedse6p3pfxa'//Allows Production ODA to use Functions
       },
     } : {}, #No policy ODA
     var.create_oac == true ? {
@@ -390,7 +377,6 @@ locals {
         compartment_id : "TENANCY-ROOT"
         statements : [
           "allow group ${local.core_policy_group_name} to use analytics-instances in compartment ${local.core_policy_oac_compartment} // Allow CE to see and stop/start existing OAC in Shared OAC Compartment",
-          "allow group ${local.core_policy_group_name} to read analytics-instance-work-requests in compartment ${local.core_policy_oac_compartment} // Allow CE to see OAC Work Requests in Shared OAC Compartment",
           "allow group ${local.core_policy_oac_group_name} to manage analytics-instances in compartment ${local.core_policy_oac_compartment} // Allow OAC Admin CE to use create OAC in Shared OAC Compartment",
           "allow group ${local.core_policy_oac_group_name} to manage analytics-instance-work-requests in compartment ${local.core_policy_oac_compartment} // Allow CE to use existing OAC in Shared OAC Compartment",
           "allow dynamic-group '${local.default_domain_name}'/'${local.oac_dynamic_group_name}' to manage objects in compartment ${local.core_policy_oac_compartment} //Allows OAC DG to manage OSS objects",
@@ -435,6 +421,8 @@ locals {
           "allow group ${local.core_policy_group_name} to manage ai-service-document-family in compartment ${local.core_policy_engineer_compartment} //Allow CE to manage Document Understanding",
         ]
       },
+    } : {}, #No policy AI
+    var.create_opensearch == true ? {
       "CE-OPENSEARCH-POLICY" : {
         name : "cloud-engineering-OPENSEARCH-policy"
         description : "Permissions for OpenSearch"
@@ -442,7 +430,8 @@ locals {
         statements : [
           "allow dynamic-group '${local.default_domain_name}'/'all-functions-DG' to manage objects in compartment ${local.core_policy_shared_compartment}:OpenSearch //For Functions",
         ]
-      }    } : {}, #No policy AI
+      }
+    } : {}, #No policy Open Search
     var.create_ds == true ? {
       "CE-DS-POLICY" : {
         name : "cloud-engineering-DATASCIENCE-policy"
@@ -497,6 +486,8 @@ locals {
           "allow dynamic-group '${local.default_domain_name}'/'${local.mysql_dynamic_group_name}' to use generative-ai-text-embedding in compartment ${local.core_policy_mysql_compartment} //Allows MySQL DB Systems to use GenAI",
         ]
       },
+    } : {}, #No policy MYSQL
+    var.create_postgres == true ? {
       "CE-POSTGRES-POLICY" : {
         name : "cloud-engineering-POSTGRES-policy"
         description : "Permissions for PostGres - please request access to group cloud-engineering-postgres-users"
@@ -510,7 +501,7 @@ locals {
           "allow group ${local.core_policy_postgres_group_name} to manage virtual-network-family in compartment ${local.core_policy_postgres_compartment} // Postgres VCN Management",
         ]
       }
-    } : {}, #No policy MYSQL
+    } : {}, #No policy Postgres
   )
 
   # Merge all policies
