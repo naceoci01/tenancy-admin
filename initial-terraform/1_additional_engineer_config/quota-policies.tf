@@ -5,10 +5,11 @@ locals {
     comp_names = data.oci_identity_compartments.engineer-comps.compartments[*].name
     db_quota_statements = concat(
         [
-            "zero database quota in compartment ${data.oci_identity_compartment.cloud-eng-comp.name}"
-        ],
-        [
-            "zero nosql quota in compartment ${data.oci_identity_compartment.cloud-eng-comp.name}"
+            "zero database quota in compartment ${data.oci_identity_compartment.cloud-eng-comp.name}",
+            "zero nosql quota in compartment ${data.oci_identity_compartment.cloud-eng-comp.name}",
+            "set database quota ex-cdb-count to 1000 in compartment ${data.oci_identity_compartment.cloud-eng-comp.name}",
+            "set database quota ex-non-cdb-count to 1000 in compartment ${data.oci_identity_compartment.cloud-eng-comp.name}",
+            "set database quota ex-pdb-count to 1000 in compartment ${data.oci_identity_compartment.cloud-eng-comp.name}"
         ],
         [
             for comp in local.comp_names: "set database quota /*-total-storage-tb/ to 1 in compartment ${data.oci_identity_compartment.cloud-eng-comp.name}:${comp}"
