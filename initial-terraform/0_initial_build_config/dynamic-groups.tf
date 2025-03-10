@@ -29,6 +29,8 @@ locals {
   oda_dynamic_group_name          = "all-oda-instance-DG"
   mysql_dynamic_group_key         = "MYSQL-DYN-GROUP"
   mysql_dynamic_group_name        = "all-mysql-dbsystems-DG"
+  exacs_dynamic_group_key         = "EXACS-DYN-GROUP"
+  exacs_dynamic_group_name        = "all-exacs-DG"
 
   # Dynamic Groups
   all_dynamic_groups = merge(
@@ -133,6 +135,15 @@ locals {
         name               = local.mysql_dynamic_group_name
         description        = "Defines all MySQL DB Systems for Lakehouse access"
         matching_rule      = "resource.type = 'mysqldbsystem'"
+      }
+    } : {},
+    var.create_exa == true ?
+    {
+      (local.exacs_dynamic_group_key) = {
+        identity_domain_id = var.default_domain_id
+        name               = local.exacs_dynamic_group_name
+        description        = "Defines all ExaCS via compartment ocid"
+        matching_rule      = "resource.compartment.id = '${module.cislz_compartments.compartments.EXACS-CMP.id}'"
       }
     } : {},
 

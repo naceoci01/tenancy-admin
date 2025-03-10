@@ -10,6 +10,7 @@ locals {
   core_policy_exacs_admin_group_name  = "'${data.oci_identity_domain.ce_domain.display_name}'/'${var.engineer_exacs_group_name}'"
   core_policy_gg_admin_group_name     = "'${data.oci_identity_domain.ce_domain.display_name}'/'GGS_Administrator'"
   core_policy_oic_admin_group_name    = "'${data.oci_identity_domain.ce_domain.display_name}'/'OIC-Administrators'"
+  core_policy_fw_admin_group_name     = "'${data.oci_identity_domain.ce_domain.display_name}'/'Firewall-Administrators'"
   core_policy_engineer_compartment    = module.cislz_compartments.compartments.CLOUD-ENG.name
   core_policy_shared_compartment      = module.cislz_compartments.compartments.SHARED-CMP.name
   core_policy_datascience_compartment = "${local.core_policy_shared_compartment}:DataScience"
@@ -19,6 +20,7 @@ locals {
   core_policy_exacs_compartment       = "${local.core_policy_shared_compartment}:ExaCS"
   core_policy_oda_compartment         = "${local.core_policy_shared_compartment}:ODA"
   core_policy_gg_compartment          = "${local.core_policy_shared_compartment}:GoldenGate"
+  core_policy_fw_compartment          = "${local.core_policy_shared_compartment}:Firewall"
   core_policy_engineer_ocid           = module.cislz_compartments.compartments.CLOUD-ENG.id
   default_domain_name                 = "Default"
 
@@ -103,6 +105,17 @@ locals {
           "allow group ${local.core_policy_group_name} to use drgs in compartment ${local.core_policy_shared_compartment} //Allows Cloud Engineers to connect to DRG in shared CE compartment",
           "allow group ${local.core_policy_group_name} to read dns in compartment ${local.core_policy_shared_compartment} //Allows Cloud Engineers to see DNS Views in shared CE compartment",
           "allow group ${local.core_policy_group_name} to inspect tenancies in TENANCY where request.operation='GetTenancy' //Allows Cloud Engineers to see tenancy and home region details"
+        ]
+      }
+    },
+    {
+      "CE-FIREWALL-POLICY" : {
+        name : "cloud-engineering-FIREWALL-policy"
+        description : "Cloud Engineers Network Firewall permissions"
+        compartment_id : "TENANCY-ROOT"
+        statements : [
+          "allow group ${local.core_policy_fw_admin_group_name} to manage virtual-network-family in compartment ${local.core_policy_fw_compartment} //Allow CE to work with VCN in Firewall compartment",
+          "allow group ${local.core_policy_fw_admin_group_name} to manage network-firewall-family in compartment ${local.core_policy_fw_compartment} //Allow CE to work with OCI FW in Firewall compartment",
         ]
       }
     },
@@ -346,6 +359,7 @@ locals {
           "allow group ${local.core_policy_exacs_admin_group_name} to manage exadb-vm-clusters in compartment ${local.core_policy_exacs_compartment} //Allow Admins for ExaScale VM Cluster",
           "allow group ${local.core_policy_exacs_admin_group_name} to manage cloud-exadata-infrastructures in compartment ${local.core_policy_exacs_compartment} //Allow Admins to manage Infra",
           "allow group ${local.core_policy_exacs_admin_group_name} to manage db-homes in compartment ${local.core_policy_exacs_compartment} //Allow Admins to manage DB Homes",
+          "allow dynamic-group '${local.default_domain_name}'/'${local.exacs_dynamic_group_name}' to manage keys in compartment ${local.core_policy_shared_compartment} //Allows DG for ExaCS to work with customer-managed keys",
         ]
       }
     } : {}, #No policy EXACS
