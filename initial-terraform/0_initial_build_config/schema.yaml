@@ -18,8 +18,8 @@ variableGroups:
       - engineer_group_name
   - title: "PaaS / AI Configuration"
     variables:
-      - create_func
       - create_oic
+      - engineer_oic_group_name
       - create_oac
       - engineer_oac_group_name
       - create_ds
@@ -37,6 +37,11 @@ variableGroups:
       - create_postgres
       - engineer_postgres_group_name
       - create_gg
+  - title: "Other Services"
+    variables:
+      - create_func
+      - create_firewall
+      - engineer_firewall_group_name
   - title: "Hidden Variables" 
     visible: false
     variables:
@@ -109,9 +114,23 @@ variables:
   engineer_exacs_group_name:
     title: Name of IAM group for ExaCS Admins
     type: string
-    description: Users in this group have the ability to create destry ExaCS Infa and VM Clusters
+    description: Users in this group have the ability to create and destroy ExaCS Infa and VM Clusters
     default: cloud-engineering-exacs-admins
     visible: create_exa
+
+  engineer_firewall_group_name:
+    title: Name of IAM group for Firewall Admins
+    type: string
+    description: Users in this group have the ability to create destroy Network Firewall in shared compartment
+    default: cloud-engineering-firewall-admins
+    visible: create_firewall
+
+  engineer_oic_group_name:
+    title: Name of IAM group for OIC Admins
+    type: string
+    description: Users in this group have the ability to manage OIC in shared compartment
+    default: cloud-engineering-oic-admins
+    visible: create_oic
 
   create_oic:
     title: Create the OIC Policy and compartment
@@ -148,4 +167,7 @@ variables:
     type: boolean
   create_di:
     title: Create the Data Integration Compartment
+    type: boolean
+  create_firewall:
+    title: Create the Network Firewall Compartment
     type: boolean

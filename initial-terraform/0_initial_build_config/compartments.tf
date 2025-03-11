@@ -50,9 +50,17 @@ locals {
       description = "Shared Data Integration"
     }
   } : {}
+  firewall_comp = var.create_firewall ? {
+    FW-CMP = {
+      name        = "Firewall",
+      description = "Shared Network Firewall"
+    }
+  } : {}
 
 
-  children = merge(local.oac_comp, local.oic_comp, local.exacs_comp, local.pg_comp, local.ds_comp, local.mysql_comp, local.opensearch_comp)
+  children = merge(local.oac_comp, local.oic_comp, local.exacs_comp,
+    local.pg_comp, local.ds_comp, local.mysql_comp,
+    local.opensearch_comp, local.firewall_comp)
 
   all_comp = {
     CLOUD-ENG = {

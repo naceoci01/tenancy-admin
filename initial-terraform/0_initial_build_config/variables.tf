@@ -53,6 +53,16 @@ variable "engineer_compartment_base_name" {
     default = "cloud-engineering"
 }
 
+variable "engineer_firewall_group_name" { 
+    description = "Name of group for Firewall Admins"
+    default = "cloud-engineering-firewall-admins"
+}
+
+variable "engineer_oic_group_name" { 
+    description = "Name of group for OIC Admins"
+    default = "cloud-engineering-oic-admins"
+}
+
 variable "create_oic" {
     type = bool
     description = "Whether to enable Oracle Integration"
@@ -111,4 +121,9 @@ variable "create_func" {
 variable "create_di" {
     type = bool
     description = "Whether to enable OCI Data Integration"
+}
+
+variable "create_firewall" {
+    type = bool
+    description = "Whether to enable OCI Network Firewall"
 }
