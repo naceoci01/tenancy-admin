@@ -514,6 +514,7 @@ locals {
           "allow group ${local.core_policy_fw_admin_group_name} to manage virtual-network-family in compartment ${local.core_policy_fw_compartment} //Allow CE to work with VCN in Firewall compartment",
           "allow group ${local.core_policy_fw_admin_group_name} to manage network-firewall-family in compartment ${local.core_policy_fw_compartment} //Allow CE to work with OCI FW in Firewall compartment",
           "allow group ${local.core_policy_group_name} to manage instance-family in compartment ${local.core_policy_fw_compartment} //Allow CE to create instances in Firewall compartment",
+          "allow group ${local.core_policy_group_name} to use vnics in compartment ${local.core_policy_fw_compartment} //Allow CE to create instances with VNIC in Firewall compartment",
         ]
       }
     } : {}, #No policy FW
