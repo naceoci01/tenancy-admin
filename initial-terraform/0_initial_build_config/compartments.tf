@@ -14,6 +14,12 @@ locals {
       description = "Oracle Integration Cloud"
     }
   } : {}
+  oda_comp = var.create_oda ? {
+    ODA-CMP = {
+      name        = "ODA",
+      description = "Oracle Digital Assistant"
+    }
+  } : {}
   mysql_comp = var.create_mysql ? {
     MYSQL-CMP = {
       name        = "MySQL",
@@ -45,7 +51,7 @@ locals {
     }
   } : {}
   di_comp = var.create_opensearch ? {
-    OS-CMP = {
+    DI-CMP = {
       name        = "DataIntegration",
       description = "Shared Data Integration"
     }
@@ -56,11 +62,17 @@ locals {
       description = "Shared Network Firewall"
     }
   } : {}
+  gg_comp = var.create_gg ? {
+    GG-CMP = {
+      name        = "GoldenGate",
+      description = "Shared GoldenGate"
+    }
+  } : {}
 
 
   children = merge(local.oac_comp, local.oic_comp, local.exacs_comp,
     local.pg_comp, local.ds_comp, local.mysql_comp,
-    local.opensearch_comp, local.firewall_comp)
+    local.opensearch_comp, local.firewall_comp, local.gg_comp, local.oda_comp)
 
   all_comp = {
     CLOUD-ENG = {

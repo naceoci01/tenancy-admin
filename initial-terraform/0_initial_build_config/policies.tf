@@ -13,14 +13,14 @@ locals {
   core_policy_fw_admin_group_name     = "'${data.oci_identity_domain.ce_domain.display_name}'/'${var.engineer_firewall_group_name}'"
   core_policy_engineer_compartment    = module.cislz_compartments.compartments.CLOUD-ENG.name
   core_policy_shared_compartment      = module.cislz_compartments.compartments.SHARED-CMP.name
-  core_policy_datascience_compartment = "${local.core_policy_shared_compartment}:DataScience"
-  core_policy_mysql_compartment       = "${local.core_policy_shared_compartment}:MySQL"
-  core_policy_postgres_compartment    = "${local.core_policy_shared_compartment}:Postgres"
-  core_policy_oac_compartment         = "${local.core_policy_shared_compartment}:OAC"
-  core_policy_exacs_compartment       = "${local.core_policy_shared_compartment}:ExaCS"
-  core_policy_oda_compartment         = "${local.core_policy_shared_compartment}:ODA"
-  core_policy_gg_compartment          = "${local.core_policy_shared_compartment}:GoldenGate"
-  core_policy_fw_compartment          = module.cislz_compartments.compartments.FW-CMP.name
+  core_policy_datascience_compartment = "${local.core_policy_shared_compartment}:${module.cislz_compartments.compartments.DS-CMP.name}"
+  core_policy_mysql_compartment       = "${local.core_policy_shared_compartment}:${module.cislz_compartments.compartments.MYSQL-CMP.name}"
+  core_policy_postgres_compartment    = "${local.core_policy_shared_compartment}:${module.cislz_compartments.compartments.POSTGRES-CMP.name}"
+  core_policy_oac_compartment         = "${local.core_policy_shared_compartment}:${module.cislz_compartments.compartments.OAC-CMP.name}"
+  core_policy_exacs_compartment       = "${local.core_policy_shared_compartment}:${module.cislz_compartments.compartments.EXACS-CMP.name}"
+  core_policy_oda_compartment         = "${local.core_policy_shared_compartment}:${module.cislz_compartments.compartments.ODA-CMP.name}"
+  core_policy_gg_compartment          = "${local.core_policy_shared_compartment}:${module.cislz_compartments.compartments.GG-CMP.name}"
+  core_policy_fw_compartment          = "${local.core_policy_shared_compartment}:${module.cislz_compartments.compartments.FW-CMP.name}"
   core_policy_engineer_ocid           = module.cislz_compartments.compartments.CLOUD-ENG.id
   default_domain_name                 = "Default"
 
