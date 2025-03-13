@@ -52,7 +52,7 @@ variableGroups:
       - private_key_path
       - region
       - private_key_password
-
+      - compartmentId
 variables:
   # string field
   engineer_compartment_base_name:
