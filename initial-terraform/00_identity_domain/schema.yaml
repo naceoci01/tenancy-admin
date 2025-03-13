@@ -10,7 +10,40 @@ locale: "en"
 variableGroups:
   - title: "Identity Domain Configuration"
     variables:
-      - domain_name
+      - ce_domain_name
+      - ce_domain_description
+      - default_domain_ocid
+      - engineer_group_name
+  - title: "Compartment Configuration"
+    variables:
+      - engineer_compartment_base_name
+  - title: "PaaS / AI Configuration"
+    variables:
+      - create_oic
+      - engineer_oic_group_name
+      - create_oac
+      - engineer_oac_group_name
+      - create_ds
+      - engineer_datascience_group_name
+      - create_oda
+      - create_ai
+      - create_opensearch
+      - create_di
+  - title: "Data Services Configuration"
+    variables:
+      - create_mysql
+      - engineer_mysql_group_name
+      - create_exa
+      - engineer_exacs_group_name
+      - create_postgres
+      - engineer_postgres_group_name
+      - create_gg
+  - title: "Other Services"
+    variables:
+      - create_func
+      - create_firewall
+      - engineer_firewall_group_name
+
   - title: "Hidden Variables" 
     visible: false
     variables:
@@ -23,8 +56,121 @@ variableGroups:
 
 variables:
   # string field
-  domain_name:
+  ce_domain_name:
     title: Identity Domain Name
     type: string
     description: Do not update this unless you know it is different from the default.
 
+  ce_domain_desc:
+    title: Identity Domain Description
+    type: string
+    description: This Identity Domain is for all users of the tenancy that are not Default Domain users
+
+  default_domain_ocid:
+    title: Default Identity Domain
+    type: oci:identity:domains:id
+
+# Groups
+  engineer_group_name:
+    title: Name of IAM group for engineers
+    type: string
+    description: Change as necessary
+    default: cloud-engineering-domain-users
+
+  engineer_datascience_group_name:
+    title: Name of IAM group for Data Science engineers
+    type: string
+    description: Change as necessary
+    default: cloud-engineering-datascience-users
+    visible: create_ds
+
+  engineer_oac_group_name:
+    title: Name of IAM group for Oracle Analytics Admins
+    type: string
+    description: Users in this group have full admin over OAC Instances and within
+    default: cloud-engineering-oac-admins
+    visible: create_oac
+
+  engineer_mysql_group_name:
+    title: Name of IAM group for MySQL Heatwave Admins
+    type: string
+    description: Users in this group have full admin over MySQL and VCNs in MySQL compartment
+    default: cloud-engineering-mysql-admins
+    visible: create_mysql
+
+  engineer_postgres_group_name:
+    title: Name of IAM group for Postgres Users
+    type: string
+    description: Users in this group have the ability to create and use Postgres
+    default: cloud-engineering-postgres-users
+    required: false
+    visible: create_postgres
+
+  engineer_exacs_group_name:
+    title: Name of IAM group for ExaCS Admins
+    type: string
+    description: Users in this group have the ability to create and destroy ExaCS Infa and VM Clusters
+    default: cloud-engineering-exacs-admins
+    visible: create_exa
+
+  engineer_firewall_group_name:
+    title: Name of IAM group for Firewall Admins
+    type: string
+    description: Users in this group have the ability to create destroy Network Firewall in shared compartment
+    default: cloud-engineering-firewall-admins
+    visible: create_firewall
+
+  engineer_oic_group_name:
+    title: Name of IAM group for OIC Admins
+    type: string
+    description: Users in this group have the ability to manage OIC in shared compartment
+    default: cloud-engineering-oic-admins
+    visible: create_oic
+
+  engineer_oic_group_desc:
+    title: Description of IAM group for OIC Admins
+    type: string
+    description: Description of OIC group
+    default: Users in OIC Group
+    visible: create_oic
+
+# Booleans
+  create_oic:
+    title: Create the OIC Policy and compartment
+    type: boolean
+  create_exa:
+    title: Create the ExaCS Policy and compartment
+    type: boolean
+  create_oda:
+    title: Create the ODA Policy and compartment
+    type: boolean
+  create_mysql:
+    title: Create the MySQL Policy and compartment
+    type: boolean
+  create_oac:
+    title: Create the OAC Policy and compartment
+    type: boolean
+  create_ds:
+    title: Create the Data Science Policy and compartment
+    type: boolean
+  create_ai:
+    title: Create the AI and GenAI Policy
+    type: boolean
+  create_gg:
+    title: Create the GoldenGate Policy and compartment
+    type: boolean
+  create_func:
+    title: Create the OCI Functions Policy
+    type: boolean
+  create_postgres:
+    title: Create the Postgres Compartment and Policy
+    type: boolean
+  create_opensearch:
+    title: Create the OpenSearch Compartment
+    type: boolean
+  create_di:
+    title: Create the Data Integration Compartment
+    type: boolean
+  create_firewall:
+    title: Create the Network Firewall Compartment
+    type: boolean

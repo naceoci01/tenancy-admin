@@ -3,11 +3,11 @@
 
 # Get Identity Domain Data 
 data "oci_identity_domain" "default_domain" {
-  domain_id = var.default_domain_id
+  domain_id = var.default_domain_ocid
 }
 
 data "oci_identity_domain" "ce_domain" {
-  domain_id = var.ce_domain_id
+  domain_id = var.ce_domain_ocid
 }
 
 locals {
@@ -15,11 +15,11 @@ locals {
     cloud_engineering_domain_name = data.oci_identity_domain.ce_domain.display_name
 }
 
-module "cislz_compartments" {
-  source = "github.com/oracle-quickstart/terraform-oci-cis-landing-zone-iam/compartments"
-  tenancy_ocid = var.tenancy_ocid
-  compartments_configuration = local.compartments_configuration
-}
+# module "cislz_compartments" {
+#   source = "github.com/oracle-quickstart/terraform-oci-cis-landing-zone-iam/compartments"
+#   tenancy_ocid = var.tenancy_ocid
+#   compartments_configuration = local.compartments_configuration
+# }
 
 module "cislz_policies" {
   source       = "github.com/oracle-quickstart/terraform-oci-cis-landing-zone-iam/policies"
@@ -35,12 +35,12 @@ module "cislz_identity_domains" {
   identity_domain_dynamic_groups_configuration  = local.identity_domain_dynamic_groups_configuration
 }
 
-# See vaults.tf for vaults_configuration
-module "cislz_vaults" {
-  source = "github.com/oracle-quickstart/terraform-oci-cis-landing-zone-security/vaults"
-  providers = {
-    oci = oci
-    oci.home = oci.home
-  }
-  vaults_configuration = local.vaults_configuration
-}
+# # See vaults.tf for vaults_configuration
+# module "cislz_vaults" {
+#   source = "github.com/oracle-quickstart/terraform-oci-cis-landing-zone-security/vaults"
+#   providers = {
+#     oci = oci
+#     oci.home = oci.home
+#   }
+#   vaults_configuration = local.vaults_configuration
+# }

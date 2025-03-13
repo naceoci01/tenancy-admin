@@ -36,7 +36,7 @@ locals {
   all_dynamic_groups = merge(
     {
       (local.osmh_dynamic_group_key) = {
-        identity_domain_id = var.default_domain_id
+        identity_domain_id = var.default_domain_ocid
         name               = local.osmh_dynamic_group_name
         description        = "Allows any instance to be an OSMH instance"
         matching_rule      = "ANY {ALL {resource.type='managementagent', resource.compartment.id != 'xxxx'}, instance.compartment.id != 'xxxx'}"
@@ -44,7 +44,7 @@ locals {
     },
     {
       (local.adb_dynamic_group_key) = {
-        identity_domain_id = var.default_domain_id
+        identity_domain_id = var.default_domain_ocid
         name               = local.adb_dynamic_group_name
         description        = "Allows any instance to be an ADB instance - Resource Principal"
         matching_rule      = "resource.type='autonomousdatabase'"
@@ -52,7 +52,7 @@ locals {
     },
     {
       (local.stackmon_dynamic_group_key) = {
-        identity_domain_id = var.default_domain_id
+        identity_domain_id = var.default_domain_ocid
         name               = local.stackmon_dynamic_group_name
         description        = "Allows any Stackmon instance to be part of this DG"
         matching_rule      = "ANY {ALL {resource.type='managementagent', resource.compartment.id !='xxxx'}, ALL {instance.compartment.id != 'xxxx'} }"
@@ -60,7 +60,7 @@ locals {
     },
     {
       (local.certificate_dynamic_group_key) = {
-        identity_domain_id = var.default_domain_id
+        identity_domain_id = var.default_domain_ocid
         name               = local.certificate_dynamic_group_name
         description        = "For use by Certificates Service - creating a CA"
         matching_rule      = "resource.type='certificateauthority'"
@@ -68,7 +68,7 @@ locals {
     },
     {
       (local.func_dynamic_group_key) = {
-        identity_domain_id = var.default_domain_id
+        identity_domain_id = var.default_domain_ocid
         name               = local.func_dynamic_group_name
         description        = "Defines all OCI Functions"
         matching_rule      = "resource.type = 'fnfunc'"
@@ -79,7 +79,7 @@ locals {
     var.create_oac == true ?
     {
       (local.oac_dynamic_group_key) = {
-        identity_domain_id = var.default_domain_id
+        identity_domain_id = var.default_domain_ocid
         name               = local.oac_dynamic_group_name
         description        = "Defines all OAC Instances"
         matching_rule      = "resource.type='xxxx'"
@@ -89,7 +89,7 @@ locals {
     var.create_oda == true ?
     {
       (local.oda_dynamic_group_key) = {
-        identity_domain_id = var.default_domain_id
+        identity_domain_id = var.default_domain_ocid
         name               = local.oda_dynamic_group_name
         description        = "Defines all ODA Instances"
         matching_rule      = "resource.type='odainstance'"
@@ -98,13 +98,13 @@ locals {
     var.create_ds == true ?
     {
       (local.datascience_dynamic_group_key) = {
-        identity_domain_id = var.default_domain_id
+        identity_domain_id = var.default_domain_ocid
         name               = local.datascience_dynamic_group_name
         description        = "Defines all OCI Data Science"
         matching_rule      = "Any {resource.type='datasciencenotebooksession',resource.type='dataflow-family',resource.type='datasciencemodeldeployment',resource.type='datasciencejobrun'}"
       },
       (local.datalabeling_dynamic_group_key) = {
-        identity_domain_id = var.default_domain_id
+        identity_domain_id = var.default_domain_ocid
         name               = local.datalabeling_dynamic_group_name
         description        = "Defines all OCI Data Labeling"
         matching_rule      = "resource.type='datalabelingdataset'"
@@ -113,7 +113,7 @@ locals {
     var.create_ai == true ?
     {
       (local.genai_agent_dynamic_group_key) = {
-        identity_domain_id = var.default_domain_id
+        identity_domain_id = var.default_domain_ocid
         name               = local.genai_agent_group_name
         description        = "Defines all OCI GenaAI Agents or Ingestion Jobs"
         matching_rule      = "ANY {resource.type = 'genaiagent', resource.type='genaiagentdataingestionjob'}"
@@ -122,7 +122,7 @@ locals {
     var.create_gg == true ?
     {
       (local.gg_dynamic_group_key) = {
-        identity_domain_id = var.default_domain_id
+        identity_domain_id = var.default_domain_ocid
         name               = local.gg_dynamic_group_name
         description        = "Defines all GoldenGate Deployments"
         matching_rule      = "resource.type = 'goldengatedeployment'"
@@ -131,7 +131,7 @@ locals {
     var.create_mysql == true ?
     {
       (local.mysql_dynamic_group_key) = {
-        identity_domain_id = var.default_domain_id
+        identity_domain_id = var.default_domain_ocid
         name               = local.mysql_dynamic_group_name
         description        = "Defines all MySQL DB Systems for Lakehouse access"
         matching_rule      = "resource.type = 'mysqldbsystem'"
@@ -140,7 +140,7 @@ locals {
     var.create_exa == true ?
     {
       (local.exacs_dynamic_group_key) = {
-        identity_domain_id = var.default_domain_id
+        identity_domain_id = var.default_domain_ocid
         name               = local.exacs_dynamic_group_name
         description        = "Defines all ExaCS via compartment ocid"
         matching_rule      = "resource.compartment.id = '${module.cislz_compartments.compartments.EXACS-CMP.id}'"

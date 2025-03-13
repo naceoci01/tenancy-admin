@@ -8,6 +8,12 @@ module "cislz_identity_domains" {
   # identity_domain_dynamic_groups_configuration  = local.identity_domain_dynamic_groups_configuration
 }
 
+module "cislz_compartments" {
+  source = "github.com/oracle-quickstart/terraform-oci-cis-landing-zone-iam/compartments"
+  tenancy_ocid = var.tenancy_ocid
+  compartments_configuration = local.compartments_configuration
+}
+
 output "identity-domain-existing" {
   description = "The identity domain groups."
   value       = module.cislz_identity_domains

@@ -13,8 +13,8 @@ locals {
     identity_domains : {
       (local.cloud_engineering_domain_key) : {
         # compartment_id = "TENANCY-ROOT"
-        description                      = "${var.domain_name} Identity Domain"
-        display_name                     = var.domain_name
+        description                      = "${var.ce_domain_name} Identity Domain"
+        display_name                     = var.ce_domain_name
         license_type                     = "oracle-apps"
         admin_email                      = "orasenatdpltintegration01_us@oracle.com"
         admin_first_name                 = "Integration01"

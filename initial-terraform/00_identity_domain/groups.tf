@@ -4,40 +4,36 @@ locals {
 
   # Keys
   cloud_engineering_group_key         = "CLOUD-ENGINEERS-GROUP"
-  cloud_engineering_group_description = "Group for all users that are Cloud Engineers (CE) in group ${var.domain_name}-users"
-  oic_admin_group_key         = "OCI-ADMIN-GROUP"
-  oic_admin_group_name        = "OIC-Administrators"
-  oic_admin_group_description = "Group for use with OIC Administration"
-  exacs_admin_group_key         = "EXACS-ADMIN-GROUP"
-  exacs_admin_group_name        = "ExaCS-Administrators"
-  exacs_admin_group_description = "Group for use with ExaCS Administration"
+  cloud_engineering_group_description = "Group for all users that are Cloud Engineers (CE) in group ${var.ce_domain_name}-users"
+  oic_admin_group_key                 = "OIC-ADMIN-GROUP"
+  exacs_admin_group_key               = "EXACS-ADMIN-GROUP"
 
   cloud_engineers_group = {
     (local.cloud_engineering_group_key) = {
       identity_domain_id = module.cislz_identity_domains.identity_domains.CLOUD-ENGINEERS-DOMAIN.id
-      name               = "${var.domain_name}-users"
+      name               = "${var.ce_domain_name}-users"
       description        = local.cloud_engineering_group_description
     }
   }
 
-  oic_admins_group = {
+  oic_group = var.create_oic ? {
     (local.oic_admin_group_key) = {
       identity_domain_id = module.cislz_identity_domains.identity_domains.CLOUD-ENGINEERS-DOMAIN.id
-      name               = local.oic_admin_group_name
-      description        = local.oic_admin_group_description
+      name               = var.engineer_oic_group_name
+      description        = var.engineer_oic_group_desc
     }
-  }
+  } : {}
 
-  exacs_admins_group = {
-    (local.oic_admin_group_key) = {
+  exacs_group = var.create_exa ? {
+    (local.exacs_admin_group_key) = {
       identity_domain_id = module.cislz_identity_domains.identity_domains.CLOUD-ENGINEERS-DOMAIN.id
-      name               = local.exacs_admin_group_name
-      description        = local.exacs_admin_group_description
+      name               = var.engineer_exacs_group_name
+      description        = var.engineer_exacs_group_desc
     }
-  }
+  } : {}
 
   # Merge all groups
   identity_domain_groups_configuration = {
-    groups : merge(local.cloud_engineers_group, local.oic_admins_group)
+    groups : merge(local.cloud_engineers_group, local.oic_group, local.exacs_group)
   }
 }

@@ -1,0 +1,25 @@
+# Create the Cloud Engineering group
+# Use variable    (engineer_group_name)
+# Use variable    (domain_id)
+
+locals {
+
+    # Keys
+    cloud_engineering_group_key = "CLOUD-ENGINEERS-GROUP2"
+    cloud_engineering_group_description = "Group for all users that are Cloud Engineers (CE) in group ${var.engineer_group_name}"
+
+    # Groups
+    cloud_engineers_group = {
+        (local.cloud_engineering_group_key) = {
+            identity_domain_id        = var.ce_domain_id
+            name                      = "test-group"
+            description               = local.cloud_engineering_group_description
+        }
+    }
+
+    # Merge all groups
+    identity_domain_groups_configuration = {
+        groups: merge(local.cloud_engineers_group)
+    }
+        
+}

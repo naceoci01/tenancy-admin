@@ -11,7 +11,8 @@ variableGroups:
   - title: "Identity Domain Configuration"
     variables:
       - home_region
-      - domain_id
+      - default_domain_ocid
+      - ce_domain_ocid
   - title: "Main Configuration"
     variables:
       - engineer_compartment_base_name
@@ -66,19 +67,19 @@ variables:
     default: cloud-engineering
     required: true
 
-  ce_domain_id:
-    title: Identity Domain OCID
-    type: string
+  ce_domain_ocid:
+    title: Identity Domain OCID for Default
+    type: oci:identity:domains:id
     description: Already created Identity Domain for cloud engineers.
 
-  default_domain_id:
-    title: Identity Domain OCID
-    type: string
+  default_domain_ocid:
+    title: Identity Domain OCID for non-default
+    type: oci:identity:domains:id
     description: Default Identity Domain for tenancy.
 
   engineer_group_name:
     title: Name of IAM group for engineers
-    type: string
+    type: oci:identity:groups:id
     description: Change as necessary
     default: cloud-engineering-domain-users
 
