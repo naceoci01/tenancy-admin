@@ -10,14 +10,20 @@ variable "private_key_path" { default = "" }
 variable "private_key_password" { default = "" }
 variable "home_region" {description = "Your tenancy home region"}
 
+# Resource Manager
+variable compartmentId {
+    default = var.tenancy_ocid
+}
+
 # Required Inputs
-variable "default_domain_id" {
+variable "default_domain_ocid" {
     description = "OCID of Default Identity domain"
 }
 
-variable "ce_domain_id" {
+variable "ce_domain_ocid" {
     description = "OCID of Cloud Engineers Identity domain (nondefault)"
 }
+
 variable "engineer_group_name" {
     description = "Name of shared engineer group"
     default = "cloud-engineering-domain-users"
