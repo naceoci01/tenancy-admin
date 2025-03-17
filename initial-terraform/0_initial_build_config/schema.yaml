@@ -13,6 +13,7 @@ variableGroups:
       - home_region
       - default_domain_ocid
       - ce_domain_ocid
+      - compartmentId
   - title: "Main Configuration"
     variables:
       - engineer_compartment_base_name
@@ -52,7 +53,6 @@ variableGroups:
       - private_key_path
       - region
       - private_key_password
-      - compartmentId
 variables:
 
   compartmentId:
