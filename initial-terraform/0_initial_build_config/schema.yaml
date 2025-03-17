@@ -83,11 +83,9 @@ variables:
 
   engineer_group_name:
     title: Name of IAM group for engineers
-    type: oci:identity:groups:id
+    type: string
     description: Change as necessary
     default: cloud-engineering-domain-users
-    dependsOn:
-      compartmentId: compartment_ocid
 
   engineer_datascience_group_name:
     title: Name of IAM group for Data Science engineers
