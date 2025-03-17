@@ -10,10 +10,10 @@ variable "private_key_path" { default = "" }
 variable "private_key_password" { default = "" }
 variable "home_region" {description = "Your tenancy home region"}
 
-# Resource Manager
-variable compartmentId {
-    description = "OCID of tenancy"
-}
+# # Resource Manager
+# variable compartmentId {
+#     description = "OCID of tenancy"
+# }
 
 # Required Inputs
 variable "default_domain_ocid" {

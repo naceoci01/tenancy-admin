@@ -13,7 +13,6 @@ variableGroups:
       - home_region
       - default_domain_ocid
       - ce_domain_ocid
-      - compartmentId
   - title: "Main Configuration"
     variables:
       - engineer_compartment_base_name
@@ -54,11 +53,6 @@ variableGroups:
       - region
       - private_key_password
 variables:
-
-  compartmentId:
-    type: oci:identity:compartment:id
-    required: true
-    title: Tenancy Root
     
   # string field
   engineer_compartment_base_name:
@@ -77,11 +71,15 @@ variables:
     title: Identity Domain OCID for Default
     type: oci:identity:domains:id
     description: Already created Identity Domain for cloud engineers.
+    dependsOn:
+      compartmentId: compartment_ocid
 
   default_domain_ocid:
     title: Identity Domain OCID for non-default
     type: oci:identity:domains:id
     description: Default Identity Domain for tenancy.
+    dependsOn:
+      compartmentId: compartment_ocid
 
   engineer_group_name:
     title: Name of IAM group for engineers
