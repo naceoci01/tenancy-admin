@@ -15,11 +15,11 @@ locals {
     cloud_engineering_domain_name = data.oci_identity_domain.ce_domain.display_name
 }
 
-# module "cislz_compartments" {
-#   source = "github.com/oracle-quickstart/terraform-oci-cis-landing-zone-iam/compartments"
-#   tenancy_ocid = var.tenancy_ocid
-#   compartments_configuration = local.compartments_configuration
-# }
+module "cislz_compartments" {
+  source = "github.com/oracle-quickstart/terraform-oci-cis-landing-zone-iam/compartments"
+  tenancy_ocid = var.tenancy_ocid
+  compartments_configuration = local.compartments_configuration
+}
 
 module "cislz_policies" {
   source       = "github.com/oracle-quickstart/terraform-oci-cis-landing-zone-iam/policies"

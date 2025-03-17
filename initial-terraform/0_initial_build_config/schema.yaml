@@ -54,6 +54,12 @@ variableGroups:
       - private_key_password
       - compartmentId
 variables:
+
+  compartmentId:
+    type: oci:identity:compartment:id
+    required: true
+    title: Tenancy Root
+    
   # string field
   engineer_compartment_base_name:
     type: string

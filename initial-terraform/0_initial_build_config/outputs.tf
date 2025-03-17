@@ -22,6 +22,6 @@ output "quota-policies" {
   value = oci_limits_quota.global-super-restrict.statements
 }
 
-output "vault" {
-  value = module.cislz_vaults.vaults
-}
+# output "vault" {
+#   value = module.cislz_vaults.vaults
+# }

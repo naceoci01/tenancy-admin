@@ -12,7 +12,7 @@ variable "home_region" {description = "Your tenancy home region"}
 
 # Resource Manager
 variable compartmentId {
-    default = var.tenancy_ocid
+    description = "OCID of tenancy"
 }
 
 # Required Inputs
