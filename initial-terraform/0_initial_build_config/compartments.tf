@@ -40,7 +40,7 @@ locals {
   } : {}
   ds_comp = var.create_ds ? {
     DS-CMP = {
-      name        = "DataScienceIntegration",
+      name        = "DataScience",
       description = "Shared Data Science"
     }
   } : {}
