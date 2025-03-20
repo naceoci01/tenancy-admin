@@ -40,7 +40,7 @@ locals {
   } : {}
   ds_comp = var.create_ds ? {
     DS-CMP = {
-      name        = "DataScience",
+      name        = "DataScienceIntegration",
       description = "Shared Data Science"
     }
   } : {}
@@ -50,7 +50,7 @@ locals {
       description = "Shared OpenSearch"
     }
   } : {}
-  di_comp = var.create_opensearch ? {
+  di_comp = var.create_di ? {
     DI-CMP = {
       name        = "DataIntegration",
       description = "Shared Data Integration"
@@ -71,7 +71,7 @@ locals {
 
 
   children = merge(local.oac_comp, local.oic_comp, local.exacs_comp,
-    local.pg_comp, local.ds_comp, local.mysql_comp,
+    local.pg_comp, local.ds_comp, local.mysql_comp, local.di_comp,
     local.opensearch_comp, local.firewall_comp, local.gg_comp, local.oda_comp)
 
   all_comp = {
