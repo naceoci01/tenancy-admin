@@ -24,13 +24,14 @@ variable "ce_domain_ocid" {
     description = "OCID of Cloud Engineers Identity domain (nondefault)"
 }
 
+# Groups
 variable "engineer_group_name" {
     description = "Name of shared engineer group"
     default = "cloud-engineering-domain-users"
 }
 
 variable "engineer_datascience_group_name" {
-    description = "Name of group for Data Science Users"
+    description = "Name of group for Data Science and Integration Users"
     default = "cloud-engineering-datascience-users"
 }
 
@@ -69,6 +70,12 @@ variable "engineer_oic_group_name" {
     default = "cloud-engineering-oic-admins"
 }
 
+variable "engineer_di_group_name" { 
+    description = "Name of group for Data Integration Users"
+    default = "cloud-engineering-data-integration-users"
+}
+
+# Booleans
 variable "create_oic" {
     type = bool
     description = "Whether to enable Oracle Integration"

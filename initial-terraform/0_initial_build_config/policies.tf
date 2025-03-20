@@ -11,6 +11,8 @@ locals {
   core_policy_gg_admin_group_name     = "'${data.oci_identity_domain.ce_domain.display_name}'/'GGS_Administrator'"
   core_policy_oic_admin_group_name    = "'${data.oci_identity_domain.ce_domain.display_name}'/'${var.engineer_oic_group_name}'"
   core_policy_fw_admin_group_name     = "'${data.oci_identity_domain.ce_domain.display_name}'/'${var.engineer_firewall_group_name}'"
+  core_policy_di_user_group_name      = "'${data.oci_identity_domain.ce_domain.display_name}'/'${var.engineer_di_group_name}'"
+  
   core_policy_engineer_compartment    = module.cislz_compartments.compartments.CLOUD-ENG.name
   core_policy_shared_compartment      = module.cislz_compartments.compartments.SHARED-CMP.name
   core_policy_datascience_compartment = "${local.core_policy_shared_compartment}:${module.cislz_compartments.compartments.DS-CMP.name}"
@@ -21,6 +23,7 @@ locals {
   core_policy_oda_compartment         = "${local.core_policy_shared_compartment}:${module.cislz_compartments.compartments.ODA-CMP.name}"
   core_policy_gg_compartment          = "${local.core_policy_shared_compartment}:${module.cislz_compartments.compartments.GG-CMP.name}"
   core_policy_fw_compartment          = "${local.core_policy_shared_compartment}:${module.cislz_compartments.compartments.FW-CMP.name}"
+  core_policy_di_compartment          = "${local.core_policy_shared_compartment}:${module.cislz_compartments.compartments.DI-CMP.name}"
   core_policy_engineer_ocid           = module.cislz_compartments.compartments.CLOUD-ENG.id
   default_domain_name                 = "Default"
 
@@ -469,6 +472,25 @@ locals {
         ]
       },
     } : {}, #No policy DS DL
+    var.create_di == true ? {
+      "CE-DI-POLICY" : {
+        name : "cloud-engineering-DATAINTEGRATION-policy"
+        description : "Permissions for Data Integration - please request access to group cloud-engineering-data-integration-users"
+        compartment_id : "TENANCY-ROOT"
+        statements : [
+          "allow service dataintegration to use virtual-network-family in compartment ${local.core_policy_engineer_compartment} // Allow DI Workspace to use a VCN in CE Compartment",
+          "allow service dataintegration to use virtual-network-family in compartment ${local.core_policy_di_compartment} // Allow DI Workspace to use a VCN in Shared DI Compartment",
+          "allow group ${local.core_policy_di_user_group_name} to manage dis-workspaces in compartment ${local.core_policy_di_compartment} // DIS Workspaces in Shared Compartment",
+          "allow group ${local.core_policy_di_user_group_name} to manage dis-work-requests in compartment ${local.core_policy_di_compartment} // DIS Workspaces in Shared Compartment",
+          "allow any-user to use buckets in compartment ${local.core_policy_engineer_compartment} where request.principal.type='disworkspace' // DIS Workspace RP to access CE Buckets",
+          "allow any-user to use buckets in compartment ${local.core_policy_di_compartment} where request.principal.type='disworkspace' // DIS Workspace RP to access Shared Buckets",
+          "allow any-user to manage objects in compartment ${local.core_policy_engineer_compartment} where request.principal.type='disworkspace' // DIS Workspace RP to access CE Buckets",
+          "allow any-user to manage objects in compartment ${local.core_policy_di_compartment} where request.principal.type='disworkspace' // DIS Workspace RP to access Shared Buckets",
+          "allow any-user {PAR_MANAGE} in compartment ${local.core_policy_engineer_compartment} where request.principal.type='disworkspace' // ADB PAR Manage by DIS Workspace",
+          "allow any-user {PAR_MANAGE} in compartment ${local.core_policy_di_compartment} where request.principal.type='disworkspace' // ADB PAR Manage by DIS Workspace",
+        ]
+      },
+    } : {}, #No policy DI
     var.create_mysql == true ? {
       "CE-MYSQL-POLICY" : {
         name : "cloud-engineering-MYSQL-policy"

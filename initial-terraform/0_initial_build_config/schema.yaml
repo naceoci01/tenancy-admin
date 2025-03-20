@@ -29,6 +29,7 @@ variableGroups:
       - create_ai
       - create_opensearch
       - create_di
+      - engineer_di_group_name
   - title: "Data Services Configuration"
     variables:
       - create_mysql
@@ -68,14 +69,14 @@ variables:
     required: true
 
   ce_domain_ocid:
-    title: Identity Domain OCID for Default
+    title: Identity Domain OCID for non Default
     type: oci:identity:domains:id
     description: Already created Identity Domain for cloud engineers.
     dependsOn:
       compartmentId: compartment_ocid
 
   default_domain_ocid:
-    title: Identity Domain OCID for non-default
+    title: Identity Domain OCID for default
     type: oci:identity:domains:id
     description: Default Identity Domain for tenancy.
     dependsOn:
@@ -84,20 +85,20 @@ variables:
   engineer_group_name:
     title: Name of IAM group for engineers
     type: string
-    description: Change as necessary
+    description: This is the group that was already created for cloud engineers during the 00 stack
     default: cloud-engineering-domain-users
 
   engineer_datascience_group_name:
     title: Name of IAM group for Data Science engineers
     type: string
-    description: Change as necessary
+    description: This is the group that was already created for DS engineers during the 00 stack
     default: cloud-engineering-datascience-users
     visible: create_ds
 
   engineer_oac_group_name:
     title: Name of IAM group for Oracle Analytics Admins
     type: string
-    description: Users in this group have full admin over OAC Instances and within
+    description: This is the group that was already created for OAC Admins during the 00 stack
     default: cloud-engineering-oac-admins
     visible: create_oac
 
@@ -136,6 +137,13 @@ variables:
     description: Users in this group have the ability to manage OIC in shared compartment
     default: cloud-engineering-oic-admins
     visible: create_oic
+
+  engineer_di_group_name:
+    title: Name of IAM group for Data Integration
+    type: string
+    description: Users in this group have the ability to work with Data Integration shared compartment
+    default: cloud-engineering-data-integration-users
+    visible: create_di
 
   create_oic:
     title: Create the OIC Policy and compartment
