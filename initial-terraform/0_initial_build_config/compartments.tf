@@ -53,7 +53,7 @@ locals {
   di_comp = var.create_di ? {
     DI-CMP = {
       name        = "DataIntegration",
-      description = "Shared Data Integration"
+      description = "Shared Data Integration and Data Flow"
     }
   } : {}
   firewall_comp = var.create_firewall ? {

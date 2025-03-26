@@ -50,6 +50,7 @@ locals {
         statements : [
           "define tenancy usage-report as ocid1.tenancy.oc1..aaaaaaaamhmra7tjzxzaronywihwj4ibgnifs27nxr5nvemeemmwtrtatr2q",
           "endorse group ${local.core_policy_group_name} to read objects in tenancy usage-report",
+          "allow group ${local.core_policy_group_name} to manage usage-report in tenancy //Allow CE to save cost reports",
         ]
       }
     },
@@ -325,6 +326,7 @@ locals {
           "allow group ${local.core_policy_oic_admin_group_name} to manage object-family in compartment ${local.core_policy_shared_compartment}:OIC //Allow OIC Admins to manage OSS in OIC",
           "allow group ${local.core_policy_oic_admin_group_name} to manage virtual-network-family in compartment ${local.core_policy_shared_compartment}:OIC //Allow OIC Admins to manage VCN in OIC",
           "allow group ${local.core_policy_oic_admin_group_name} to manage stream-family in compartment ${local.core_policy_shared_compartment}:OIC //Allow OIC Admins to manage Streams in OIC",
+          "allow group ${local.core_policy_oic_admin_group_name} to manage cloudevents-rules in compartment ${local.core_policy_shared_compartment}:OIC //Allow OIC Admins to manage Event Rules in OIC",
         ]
       },
     } : {}, #No policy OIC
@@ -343,6 +345,7 @@ locals {
           "allow group ${local.core_policy_group_name} to manage db-backups in compartment ${local.core_policy_exacs_compartment} //Allow CE to manage database backups for ExaCS",
           "allow group ${local.core_policy_group_name} to manage vnics in compartment ${local.core_policy_exacs_compartment} //Allow CE to use DBMGMT for ExaCS",
           "allow group ${local.core_policy_group_name} to use subnets in compartment ${local.core_policy_exacs_compartment} //Allow CE to use DBMGMT for ExaCS",
+          "allow group ${local.core_policy_exacs_admin_group_name} to manage cloudevents-rules in compartment ${local.core_policy_exacs_compartment} //Allows Cloud Engineers to use Event Rules for ExaCS",
           "allow group ${local.core_policy_group_name} to use network-security-groups in compartment ${local.core_policy_exacs_compartment} //Allow CE to use DBMGMT for ExaCS",
           "allow group ${local.core_policy_group_name} to use bastion in compartment ${local.core_policy_exacs_compartment} //Allow CE to use existing bastion for ExaCS",
           "allow group ${local.core_policy_group_name} to manage bastion-session in compartment ${local.core_policy_exacs_compartment} //Allow CE to manage bastion sessions for ExaCS",
@@ -488,6 +491,10 @@ locals {
           "allow any-user to manage objects in compartment ${local.core_policy_di_compartment} where request.principal.type='disworkspace' // DIS Workspace RP to access Shared Buckets",
           "allow any-user {PAR_MANAGE} in compartment ${local.core_policy_engineer_compartment} where request.principal.type='disworkspace' // ADB PAR Manage by DIS Workspace",
           "allow any-user {PAR_MANAGE} in compartment ${local.core_policy_di_compartment} where request.principal.type='disworkspace' // ADB PAR Manage by DIS Workspace",
+          "allow any-user to read secret-bundles in compartment ${local.core_policy_shared_compartment} where request.principal.type = 'disworkspace' // DIS Workspace read Shared Vault",
+          "allow any-user to manage dataflow-application in compartment ${local.core_policy_di_compartment} where request.principal.type = 'disworkspace' // DIS Workspace publish Data Flow",
+          "allow any-user to read dataflow-private-endpoint in compartment ${local.core_policy_di_compartment} where request.principal.type = 'disworkspace' // DIS Workspace Read Data Flow Endpoint",
+          "allow group ${local.core_policy_di_user_group_name} to manage dataflow-run in compartment ${local.core_policy_di_compartment} // Data Integration Users kick off Data Flow run"
         ]
       },
     } : {}, #No policy DI
