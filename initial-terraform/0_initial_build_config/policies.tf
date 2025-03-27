@@ -495,7 +495,9 @@ locals {
           "allow any-user to read secret-bundles in compartment ${local.core_policy_shared_compartment} where request.principal.type = 'disworkspace' // DIS Workspace read Shared Vault",
           "allow any-user to manage dataflow-application in compartment ${local.core_policy_di_compartment} where request.principal.type = 'disworkspace' // DIS Workspace publish Data Flow",
           "allow any-user to read dataflow-private-endpoint in compartment ${local.core_policy_di_compartment} where request.principal.type = 'disworkspace' // DIS Workspace Read Data Flow Endpoint",
-          "allow group ${local.core_policy_di_user_group_name} to manage dataflow-run in compartment ${local.core_policy_di_compartment} // Data Integration Users kick off Data Flow run"
+          "allow group ${local.core_policy_di_user_group_name} to manage dataflow-application in compartment ${local.core_policy_di_compartment} // Data Integration Users can create DF applications",
+          "allow group ${local.core_policy_di_user_group_name} to manage dataflow-run in compartment ${local.core_policy_di_compartment} // Data Integration Users to manage Data Flow run",
+          "allow group ${local.core_policy_di_user_group_name} to use dataflow-pool in compartment ${local.core_policy_di_compartment} // Data Integration Users to use Data Flow pool",
         ]
       },
     } : {}, #No policy DI
