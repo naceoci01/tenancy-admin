@@ -1,5 +1,5 @@
 # Title shown in Application Information tab.
-title: Cloud Engineering Main
+title: Cloud Engineering Identity Domain
 # Sub Title shown in Application Information tab.
 description: Create Identity Domain in a tenancy (Basic)
 informationalText: Groups and Dynamic Groups will be located inside of the non-default Identity Domain.
@@ -14,10 +14,8 @@ variableGroups:
       - ce_domain_description
       - default_domain_ocid
       - engineer_group_name
-  - title: "Compartment Configuration"
-    variables:
-      - engineer_compartment_base_name
-  - title: "PaaS / AI Configuration"
+  - title: "Groups"
+    description: Whether to create each of the following groups.  Note - groups are not working at the moment
     variables:
       - create_oic
       - engineer_oic_group_name
@@ -25,12 +23,6 @@ variableGroups:
       - engineer_oac_group_name
       - create_ds
       - engineer_datascience_group_name
-      - create_oda
-      - create_ai
-      - create_opensearch
-      - create_di
-  - title: "Data Services Configuration"
-    variables:
       - create_mysql
       - engineer_mysql_group_name
       - create_exa
@@ -38,12 +30,6 @@ variableGroups:
       - create_postgres
       - engineer_postgres_group_name
       - create_gg
-  - title: "Other Services"
-    variables:
-      - create_func
-      - create_firewall
-      - engineer_firewall_group_name
-
   - title: "Hidden Variables" 
     visible: false
     variables:
@@ -169,7 +155,7 @@ variables:
     title: Create the OpenSearch Compartment
     type: boolean
   create_di:
-    title: Create the Data Integration Compartment
+    title: Create the Data Integration and Data Flow Compartment, Dynamic Groups, and Policy
     type: boolean
   create_firewall:
     title: Create the Network Firewall Compartment

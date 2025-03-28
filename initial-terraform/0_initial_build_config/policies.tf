@@ -498,6 +498,15 @@ locals {
           "allow group ${local.core_policy_di_user_group_name} to manage dataflow-application in compartment ${local.core_policy_di_compartment} // Data Integration Users can create DF applications",
           "allow group ${local.core_policy_di_user_group_name} to manage dataflow-run in compartment ${local.core_policy_di_compartment} // Data Integration Users to manage Data Flow run",
           "allow group ${local.core_policy_di_user_group_name} to use dataflow-pool in compartment ${local.core_policy_di_compartment} // Data Integration Users to use Data Flow pool",
+          # Add Data Flow RP-based "all-in-one" 
+          "ALLOW ANY-USER TO {STREAM_INSPECT, STREAM_READ, STREAM_CONSUME} IN compartment ${local.core_policy_di_compartment} WHERE ALL {request.principal.type='dataflowrun'} //Data Flow Run use streams in DI compartment",
+          "ALLOW ANY-USER TO MANAGE OBJECTS IN compartment ${local.core_policy_di_compartment} WHERE ALL {request.principal.type='dataflowrun'} //Data Flow Run use OSS in DI compartment",
+          "ALLOW ANY-USER TO {STREAM_INSPECT, STREAM_READ, STREAM_CONSUME} IN compartment ${local.core_policy_engineer_compartment} WHERE ALL {request.principal.type='dataflowrun'} //Data Flow Run use streams in CE compartment",
+          "ALLOW ANY-USER TO MANAGE OBJECTS IN compartment ${local.core_policy_engineer_compartment} WHERE ALL {request.principal.type='dataflowrun'} //Data Flow Run use OSS in CE compartment",
+          # Data Catalog - all except manage
+          "allow group ${local.core_policy_di_user_group_name} to manage data-catalog-family in compartment ${local.core_policy_di_compartment} where all {request.operation != 'CreateCatalog', request.operation != 'DeleteCatalog', request.operation != 'ChangeCatalogCompartment', request.operation != 'CreateMetastore', request.operation != 'DeleteMetastore', request.operation != 'ChangeMetastoreCompartment'} //Allow DI Engineers to manage data catalogs but not delete or create",
+          "allow dynamic-group '${local.default_domain_name}'/'${local.data_catalog_dynamic_group_name}' to manage object-family in compartment ${local.core_policy_di_compartment} //Allow Catalog and Metastore access to object storage in DI Compartment",
+          "allow dynamic-group '${local.default_domain_name}'/'${local.data_catalog_dynamic_group_name}' to manage object-family in compartment ${local.core_policy_engineer_compartment} //Allow Catalog and Metastore access to object storage in CE Compartment",
         ]
       },
     } : {}, #No policy DI

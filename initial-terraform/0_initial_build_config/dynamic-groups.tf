@@ -31,6 +31,8 @@ locals {
   mysql_dynamic_group_name        = "all-mysql-dbsystems-DG"
   exacs_dynamic_group_key         = "EXACS-DYN-GROUP"
   exacs_dynamic_group_name        = "all-exacs-DG"
+  data_catalog_dynamic_group_key         = "DATACATALOG-DYN-GROUP"
+  data_catalog_dynamic_group_name        = "all-data-catalog-DG"
 
   # Dynamic Groups
   all_dynamic_groups = merge(
@@ -144,6 +146,15 @@ locals {
         name               = local.exacs_dynamic_group_name
         description        = "Defines all ExaCS via compartment ocid"
         matching_rule      = "resource.compartment.id = '${module.cislz_compartments.compartments.EXACS-CMP.id}'"
+      }
+    } : {},
+    var.create_di == true ?
+    {
+      (local.data_catalog_dynamic_group_key) = {
+        identity_domain_id = var.default_domain_ocid
+        name               = local.data_catalog_dynamic_group_name
+        description        = "Defines all Data Catalog via resource type"
+        matching_rule      = "any {resource.type='datacatalog', resource.type='datacatalogprivateendpoint', resource.type='datacatalogmetastore'}"
       }
     } : {},
 
