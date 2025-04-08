@@ -193,3 +193,6 @@ variables:
   create_firewall:
     title: Create the Network Firewall Compartment
     type: boolean
+  create_idl:
+    title: Create the Intelligent Data Lake Compartment and Policies
+    type: boolean
