@@ -12,6 +12,7 @@ locals {
   core_policy_oic_admin_group_name    = "'${data.oci_identity_domain.ce_domain.display_name}'/'${var.engineer_oic_group_name}'"
   core_policy_fw_admin_group_name     = "'${data.oci_identity_domain.ce_domain.display_name}'/'${var.engineer_firewall_group_name}'"
   core_policy_di_user_group_name      = "'${data.oci_identity_domain.ce_domain.display_name}'/'${var.engineer_di_group_name}'"
+  core_policy_idl_user_group_name     = "'${data.oci_identity_domain.ce_domain.display_name}'/'${var.engineer_idl_group_name}'"
   
   core_policy_engineer_compartment    = module.cislz_compartments.compartments.CLOUD-ENG.name
   core_policy_shared_compartment      = module.cislz_compartments.compartments.SHARED-CMP.name
@@ -24,6 +25,7 @@ locals {
   core_policy_gg_compartment          = "${local.core_policy_shared_compartment}:${module.cislz_compartments.compartments.GG-CMP.name}"
   core_policy_fw_compartment          = "${local.core_policy_shared_compartment}:${module.cislz_compartments.compartments.FW-CMP.name}"
   core_policy_di_compartment          = "${local.core_policy_shared_compartment}:${module.cislz_compartments.compartments.DI-CMP.name}"
+  core_policy_idl_compartment         = "${local.core_policy_shared_compartment}:${module.cislz_compartments.compartments.IDL-CMP.name}"
   core_policy_engineer_ocid           = module.cislz_compartments.compartments.CLOUD-ENG.id
   default_domain_name                 = "Default"
 
@@ -475,7 +477,7 @@ locals {
           "allow dynamic-group '${local.default_domain_name}'/'${local.datalabeling_dynamic_group_name}' to manage objects in compartment ${local.core_policy_engineer_compartment} //Allows DL DG to manage OSS objects",
         ]
       },
-    } : {}, #No policy DS DL
+    } : {}, #No policy Data Science Data Labelling
     var.create_di == true ? {
       "CE-DI-POLICY" : {
         name : "cloud-engineering-DATAINTEGRATION-policy"
@@ -484,6 +486,7 @@ locals {
         statements : [
           "allow service dataintegration to use virtual-network-family in compartment ${local.core_policy_engineer_compartment} // Allow DI Workspace to use a VCN in CE Compartment",
           "allow service dataintegration to use virtual-network-family in compartment ${local.core_policy_di_compartment} // Allow DI Workspace to use a VCN in Shared DI Compartment",
+          "allow service dataintegration to use virtual-network-family in compartment ${local.core_policy_shared_compartment} // Allow DI Workspace to use a VCN in Shared Compartment",
           "allow group ${local.core_policy_di_user_group_name} to manage dis-workspaces in compartment ${local.core_policy_di_compartment} // DIS Workspaces in Shared Compartment",
           "allow group ${local.core_policy_di_user_group_name} to manage dis-work-requests in compartment ${local.core_policy_di_compartment} // DIS Workspaces in Shared Compartment",
           "allow any-user to use buckets in compartment ${local.core_policy_engineer_compartment} where request.principal.type='disworkspace' // DIS Workspace RP to access CE Buckets",
@@ -495,6 +498,8 @@ locals {
           "allow any-user to read secret-bundles in compartment ${local.core_policy_shared_compartment} where request.principal.type = 'disworkspace' // DIS Workspace read Shared Vault",
           "allow any-user to manage dataflow-application in compartment ${local.core_policy_di_compartment} where request.principal.type = 'disworkspace' // DIS Workspace publish Data Flow",
           "allow any-user to read dataflow-private-endpoint in compartment ${local.core_policy_di_compartment} where request.principal.type = 'disworkspace' // DIS Workspace Read Data Flow Endpoint",
+          "allow any-user to inspect compartments in tenancy where request.principal.type='disworkspace' //DIS Workspace inspect compartments",
+          "allow any-user to read secret-bundles in compartment cloud-engineering where request.principal.type = 'disworkspace' // DIS Workspace read Shared Vault with secret in CE",
           "allow group ${local.core_policy_di_user_group_name} to manage dataflow-application in compartment ${local.core_policy_di_compartment} // Data Integration Users can create DF applications",
           "allow group ${local.core_policy_di_user_group_name} to manage dataflow-run in compartment ${local.core_policy_di_compartment} // Data Integration Users to manage Data Flow run",
           "allow group ${local.core_policy_di_user_group_name} to use dataflow-pool in compartment ${local.core_policy_di_compartment} // Data Integration Users to use Data Flow pool",
@@ -560,7 +565,31 @@ locals {
         ]
       }
     } : {}, #No policy FW
-
+    var.create_idl == true ? {
+      "CE-DATALAKE-POLICY" : {
+        name : "cloud-engineering-DATALAKE-policy"
+        description : "Cloud Engineers Intelligent Data Lake permissions"
+        compartment_id : "TENANCY-ROOT"
+        statements : [
+          "allow group ${local.core_policy_group_name} to use datalakes in compartment ${local.core_policy_idl_compartment} //Allow CE to use existing Data Lakes in shared compartment",
+          "allow any-user to {AUTHENTICATION_INSPECT, GROUP_MEMBERSHIP_INSPECT, DYNAMIC_GROUP_INSPECT, GROUP_INSPECT, USER_INSPECT, USER_READ,  DOMAIN_INSPECT, DOMAIN_READ} IN TENANCY where all {request.principal.type='datalake'} //Allow IDL to do basic IAM introspection",
+          "allow any-user to manage log-groups in compartment ${local.core_policy_idl_compartment} where ALL { request.principal.type='datalake'} //Allow IDL to manage logs in shared compartment",
+          "allow any-user to read log-content in compartment ${local.core_policy_idl_compartment} where ALL { request.principal.type='datalake'} //Allow IDL to manage logs in shared compartment",
+          "allow any-user to use metrics in compartment ${local.core_policy_idl_compartment} where ALL { request.principal.type='datalake', target.metrics.namespace='oracle_datalake'} //Allow IDL to use metrics in shared compartment",
+          "allow any-user to {TAG_NAMESPACE_CREATE, TAG_NAMESPACE_INSPECT, TAG_NAMESPACE_READ} in TENANCY where ALL { request.principal.type='datalake'} //Allow IDL to work with necessary tags in tenancy",
+          "allow any-user to manage tag-namespaces in TENANCY where all { request.principal.type = 'datalake', target.tag-namespace.name = 'datalake-managed-resources' } //Allow IDL to work with its own tag namespace",
+          "allow any-user to manage buckets in TENANCY where all { request.principal.type='datelake', any { request.permission = 'BUCKET_CREATE, OBJECTSTORAGE_NAMESPACE_READ, BUCKET_UPDATE, BUCKET_READ', request.permission = 'BUCKET_UPDATE', request.permission = 'BUCKET_INSPECT', request.permission = 'BUCKET_READ' }} //IDL OSS Permissions",
+          "allow any-user to manage bucket in TENANCY where all { request.principal.id=target.bucket.tag.datalake-managed-resources.governingdatalakeId, any {request.permission='BUCKET_DELETE', request.permission='PAR_MANAGE', request.permission='RETENTION_RULE_LOCK', request.permission='RETENTION_RULE_MANAGE'} } //IDL OSS Permissions",
+          "allow any-user to read objectstorage-namespaces in TENANCY where all { request.principal.type='datalake', any {request.permission = 'OBJECTSTORAGE_NAMESPACE_READ'}} //IDL OSS Permissions",
+          "allow any-user to manage objects in TENANCY where all { request.principal.id=target.resourcebucket.tag.datalake-managed-resources.governingdatalakeId } //IDL OSS Permissions",
+          "allow any-user to manage vnics in compartment ${local.core_policy_idl_compartment} where all { request.principal.type='datalake'} //Allow IDL to work with its own VCN",
+          "allow any-user to use subnets in compartment ${local.core_policy_idl_compartment} where all { request.principal.type='datalake'} //Allow IDL to work with its own VCN",
+          "allow any-user to use network-security-groups in compartment ${local.core_policy_idl_compartment} where all { request.principal.type='datalake'} //Allow IDL to work with its own VCN",
+          "allow service objectstorage-${var.region} to manage object-family in compartment ${local.core_policy_idl_compartment} //OSS Permission"
+        ]
+      }
+    } : {}, #No policy for Intelligent Data Lake
+    # End of policies block
   )
 
   # Merge all policies

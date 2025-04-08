@@ -68,11 +68,17 @@ locals {
       description = "Shared GoldenGate"
     }
   } : {}
-
+  idl_comp = var.create_idl ? {
+    IDL-CMP = {
+      name        = "IntelligentDataLake",
+      description = "Shared Intelligent Data Lake"
+    }
+  } : {}
 
   children = merge(local.oac_comp, local.oic_comp, local.exacs_comp,
     local.pg_comp, local.ds_comp, local.mysql_comp, local.di_comp,
-    local.opensearch_comp, local.firewall_comp, local.gg_comp, local.oda_comp)
+    local.opensearch_comp, local.firewall_comp, local.gg_comp,
+    local.oda_comp, local.idl_comp)
 
   all_comp = {
     CLOUD-ENG = {

@@ -39,6 +39,8 @@ variableGroups:
       - create_postgres
       - engineer_postgres_group_name
       - create_gg
+      - create_idl
+      - engineer_idl_group_name
   - title: "Other Services"
     variables:
       - create_func
@@ -139,11 +141,18 @@ variables:
     visible: create_oic
 
   engineer_di_group_name:
-    title: Name of IAM group for Data Integration
+    title: Name of IAM group for Data Integration Users
     type: string
     description: Users in this group have the ability to work with Data Integration shared compartment
     default: cloud-engineering-data-integration-users
     visible: create_di
+
+  engineer_idl_group_name:
+    title: Name of IAM group for Data Lake Users
+    type: string
+    description: Users in this group have the ability to work with Intelligent Data Lake shared compartment
+    default: cloud-engineering-datalake-users
+    visible: create_idl
 
   create_oic:
     title: Create the OIC Policy and compartment

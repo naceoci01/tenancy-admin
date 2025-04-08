@@ -75,6 +75,11 @@ variable "engineer_di_group_name" {
     default = "cloud-engineering-data-integration-users"
 }
 
+variable "engineer_idl_group_name" { 
+    description = "Name of group for Intelligent Data Lake Users"
+    default = "cloud-engineering-datalake-users"
+}
+
 # Booleans
 variable "create_oic" {
     type = bool
@@ -134,6 +139,11 @@ variable "create_func" {
 variable "create_di" {
     type = bool
     description = "Whether to enable OCI Data Integration"
+}
+
+variable "create_idl" {
+    type = bool
+    description = "Whether to enable OCI Intelligent Data Lake"
 }
 
 variable "create_firewall" {
