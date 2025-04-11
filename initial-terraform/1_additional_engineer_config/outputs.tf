@@ -45,3 +45,7 @@ output "quota-policy-STORAGE" {
 output "quota-policy-NETWORK" {
   value = oci_limits_quota.engineer-network.statements
 }
+
+output "quota-policy-OKE" {
+  value = oci_limits_quota.engineer-oke.statements
+}

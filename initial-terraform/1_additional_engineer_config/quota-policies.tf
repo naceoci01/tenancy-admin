@@ -56,10 +56,12 @@ locals {
         ],
         [
             for comp in local.comp_names: "set compute-core quota standard-a1-core-count to 8 in compartment ${data.oci_identity_compartment.cloud-eng-comp.name}:${comp}"
-        ],
+        ]
+    )
+    oke_quota_statements = concat(
         [
             for comp in local.comp_names: "set container-engine quota virtual-node-count to 3 in compartment ${data.oci_identity_compartment.cloud-eng-comp.name}:${comp}"
-        ],
+        ]
     )
     compute_mem_quota_statements = concat(
         [
@@ -68,9 +70,6 @@ locals {
         ],
         [
             for comp in local.comp_names: "set compute-memory quota standard-e5-memory-count to 120 in compartment ${data.oci_identity_compartment.cloud-eng-comp.name}:${comp}"
-        ],
-        [
-            for comp in local.comp_names: "set compute-memory quota standard2-memory-count to 120 in compartment ${data.oci_identity_compartment.cloud-eng-comp.name}:${comp}"
         ],
         [
             for comp in local.comp_names: "set compute-memory quota standard3-memory-count to 120 in compartment ${data.oci_identity_compartment.cloud-eng-comp.name}:${comp}"
@@ -141,6 +140,15 @@ resource "oci_limits_quota" "engineer-compute-memory" {
     description = "Engineer quota (Compute Memory)"
     name = "cloud-engineering-COMPUTE-MEMORY-quota"
     statements = local.compute_mem_quota_statements 
+    depends_on = [ module.cislz_compartments ]
+}
+
+resource "oci_limits_quota" "engineer-oke" {
+    #Required
+    compartment_id = var.tenancy_ocid
+    description = "Engineer quota (OKE)"
+    name = "cloud-engineering-OKE-quota"
+    statements = local.oke_quota_statements 
     depends_on = [ module.cislz_compartments ]
 }
 
