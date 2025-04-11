@@ -22,12 +22,20 @@ output "CE-compartments" {
   value = data.oci_identity_compartments.engineer-comps.compartments[*].name
 }
 
-output "quota-policy-COMPUTE" {
-  value = oci_limits_quota.engineer-compute.statements
+output "quota-policy-COMPUTE-CORE" {
+  value = oci_limits_quota.engineer-compute-core.statements
+}
+
+output "quota-policy-COMPUTE-MEMORY" {
+  value = oci_limits_quota.engineer-compute-memory.statements
 }
 
 output "quota-policy-DATABASE" {
   value = oci_limits_quota.engineer-database.statements
+}
+
+output "quota-policy-NOSQL" {
+  value = oci_limits_quota.engineer-nosql.statements
 }
 
 output "quota-policy-STORAGE" {
