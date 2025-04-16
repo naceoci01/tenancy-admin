@@ -585,7 +585,11 @@ locals {
           "allow any-user to manage vnics in compartment ${local.core_policy_idl_compartment} where all { request.principal.type='datalake'} //Allow IDL to work with its own VCN",
           "allow any-user to use subnets in compartment ${local.core_policy_idl_compartment} where all { request.principal.type='datalake'} //Allow IDL to work with its own VCN",
           "allow any-user to use network-security-groups in compartment ${local.core_policy_idl_compartment} where all { request.principal.type='datalake'} //Allow IDL to work with its own VCN",
-          "allow service objectstorage-${var.region} to manage object-family in compartment ${local.core_policy_idl_compartment} //OSS Permission"
+          "allow any-user to manage vnics in compartment ${local.core_policy_engineer_compartment} where all { request.principal.type='datalake'} //Allow IDL to work CE VCN",
+          "allow any-user to use subnets in compartment ${local.core_policy_engineer_compartment} where all { request.principal.type='datalake'} //Allow IDL to work with CE VCN",
+          "allow any-user to use network-security-groups in compartment ${local.core_policy_engineer_compartment} where all { request.principal.type='datalake'} //Allow IDL to work with CE VCN",
+          "allow service objectstorage-${var.region} to manage object-family in compartment ${local.core_policy_idl_compartment} //OSS Permission",
+          "allow service objectstorage-us-ashburn-1 to manage object-family in compartment ${local.core_policy_idl_compartment} //OSS Permission"
         ]
       }
     } : {}, #No policy for Intelligent Data Lake
