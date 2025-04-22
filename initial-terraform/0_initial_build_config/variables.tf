@@ -17,11 +17,11 @@ variable "home_region" {description = "Your tenancy home region"}
 
 # Required Inputs
 variable "default_domain_ocid" {
-    description = "OCID of Default Identity domain"
+    description = "OCID of Default Identity Domain"
 }
 
 variable "ce_domain_ocid" {
-    description = "OCID of Cloud Engineers Identity domain (nondefault)"
+    description = "OCID of Cloud Engineers Identity Domain (nondefault)"
 }
 
 # Groups
