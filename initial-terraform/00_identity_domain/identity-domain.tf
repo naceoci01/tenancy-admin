@@ -26,6 +26,7 @@ locals {
         is_primary_email_required        = false
         is_notification_bypassed         = false
         allow_signing_cert_public_access = true
+        # license_type                     = "free"
       }
     }
 
