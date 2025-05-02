@@ -81,7 +81,7 @@ locals {
 
     storage_quota_statements = concat(
         [
-            "zero block-storage quota in compartment ${data.oci_identity_compartment.cloud-eng-comp.name}",
+            "zero block-storage quota total-storage-gb in compartment ${data.oci_identity_compartment.cloud-eng-comp.name}",
             "zero filesystem quota in compartment ${data.oci_identity_compartment.cloud-eng-comp.name}"
         ],
         [
