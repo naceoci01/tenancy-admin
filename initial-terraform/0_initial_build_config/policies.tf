@@ -84,7 +84,7 @@ locals {
           "allow group ${local.core_policy_group_name} to use agcs-instance in compartment ${local.core_policy_shared_compartment} //Allow CE to use Organization Governance in Shared comp",
           "allow group ${local.core_policy_group_name} to use cloud-shell in TENANCY //Required tenancy-level for Cloud Shell",
           "allow group ${local.core_policy_group_name} to use cloud-shell-public-network in TENANCY //Required tenancy-level for Cloud Shell",
-          "allow group ${local.core_policy_group_name} to manage bastion-session in compartment ${local.core_policy_engineer_compartment} //Engineers using Bastion Sessions",
+          "allow group ${local.core_policy_group_name} to manage vss-family in compartment ${local.core_policy_engineer_compartment} //Allow Cloud Engineers to control Vulnerability Scanning in CE Main compartment",
         ]
       }
     },
