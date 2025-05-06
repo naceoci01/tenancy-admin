@@ -84,6 +84,7 @@ locals {
           "allow group ${local.core_policy_group_name} to use agcs-instance in compartment ${local.core_policy_shared_compartment} //Allow CE to use Organization Governance in Shared comp",
           "allow group ${local.core_policy_group_name} to use cloud-shell in TENANCY //Required tenancy-level for Cloud Shell",
           "allow group ${local.core_policy_group_name} to use cloud-shell-public-network in TENANCY //Required tenancy-level for Cloud Shell",
+          "allow group ${local.core_policy_group_name} to manage bastion-session in compartment ${local.core_policy_engineer_compartment} //Engineers using Bastion Sessions",
         ]
       }
     },
@@ -434,9 +435,13 @@ locals {
           "allow group ${local.core_policy_group_name} to read generative-ai-work-request in compartment ${local.core_policy_engineer_compartment} //Allow CE to read GenAI Work requests",
           "allow any-user to use generative-ai-family in compartment ${local.core_policy_engineer_compartment} where any { request.principal.type = 'autonomousdatabase' } //Allow any ADB to use GenAI",
           "allow group ${local.core_policy_group_name} to manage genai-agent-family in compartment ${local.core_policy_engineer_compartment} //Allow CE to manage GenAI Agents",
+          "allow dynamic-group '${local.default_domain_name}'/'${local.genai_agent_group_name}' to inspect buckets in compartment ${local.core_policy_engineer_compartment} //DG Access to object storage",
+          "allow dynamic-group '${local.default_domain_name}'/'${local.genai_agent_group_name}' to {BUCKET_INSPECT, BUCKET_READ, OBJECT_INSPECT, OBJECT_READ, OBJECT_CREATE, OBJECT_OVERWRITE, PAR_MANAGE} in compartment ${local.core_policy_engineer_compartment} //Automation - is this required",
           "allow dynamic-group '${local.default_domain_name}'/'${local.genai_agent_group_name}' to read objects in compartment ${local.core_policy_engineer_compartment} //DG Access to object storage",
           "allow dynamic-group '${local.default_domain_name}'/'${local.genai_agent_group_name}' to read database-tools-family in compartment ${local.core_policy_engineer_compartment} //DG Access to DB Tools",
           "allow dynamic-group '${local.default_domain_name}'/'${local.genai_agent_group_name}' to read secret-bundle in compartment ${local.core_policy_shared_compartment} //DG access to Vault secrets",
+          "allow dynamic-group '${local.default_domain_name}'/'${local.genai_agent_group_name}' to read database-tools-connections in compartment ${local.core_policy_shared_compartment} //Automation - is this required",
+          "allow dynamic-group '${local.default_domain_name}'/'${local.genai_agent_group_name}' to read secret-family in compartment ${local.core_policy_shared_compartment} //Automation - is this required",
         ]
       },
       "CE-AI-POLICY" : {
