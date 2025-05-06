@@ -88,6 +88,20 @@ locals {
       }
     },
     {
+      "CE-VSS-POLICY" : {
+        name : "cloud-engineering-VSS-policy"
+        description : "Vulnerability Scanning Service permissions"
+        compartment_id : "TENANCY-ROOT"
+        statements : [
+          "allow service vulnerability-scanning-service to read compartments in tenancy //VSS to read compartments",
+          "allow service vulnerability-scanning-service to read repos in tenancy //VSS Read OCIR Repos",
+          "allow service vulnerability-scanning-service to manage instances in tenancy //VSS Instances",
+          "allow service vulnerability-scanning-service to read vnics in tenancy //VSS VNICs",
+          "allow service vulnerability-scanning-service to read vnic-attachments in tenancy //VSS VNICs",
+        ]
+      }
+    },
+    {
       "CE-CORE-POLICY" : {
         name : "cloud-engineering-CORE-policy"
         description : "Cloud Engineers Core Service permissions"
