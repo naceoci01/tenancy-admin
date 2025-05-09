@@ -31,6 +31,8 @@ locals {
   mysql_dynamic_group_name        = "all-mysql-dbsystems-DG"
   exacs_dynamic_group_key         = "EXACS-DYN-GROUP"
   exacs_dynamic_group_name        = "all-exacs-DG"
+  resource_dynamic_group_key         = "RESOURCE-DYN-GROUP"
+  resource_dynamic_group_name        = "all-resourceschedules-DG"
   data_catalog_dynamic_group_key         = "DATACATALOG-DYN-GROUP"
   data_catalog_dynamic_group_name        = "all-data-catalog-DG"
 
@@ -74,6 +76,14 @@ locals {
         name               = local.func_dynamic_group_name
         description        = "Defines all OCI Functions"
         matching_rule      = "resource.type = 'fnfunc'"
+      }
+    },
+    {
+      (local.resource_dynamic_group_key) = {
+        identity_domain_id = var.default_domain_ocid
+        name               = local.resource_dynamic_group_name
+        description        = "Defines all OCI Resource Schedules"
+        matching_rule      = "resource.type = 'resourceschedule'"
       }
     },
 

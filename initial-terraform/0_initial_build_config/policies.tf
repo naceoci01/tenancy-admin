@@ -84,7 +84,8 @@ locals {
           "allow group ${local.core_policy_group_name} to use agcs-instance in compartment ${local.core_policy_shared_compartment} //Allow CE to use Organization Governance in Shared comp",
           "allow group ${local.core_policy_group_name} to use cloud-shell in TENANCY //Required tenancy-level for Cloud Shell",
           "allow group ${local.core_policy_group_name} to use cloud-shell-public-network in TENANCY //Required tenancy-level for Cloud Shell",
-          "allow group ${local.core_policy_group_name} to manage vss-family in compartment ${local.core_policy_engineer_compartment} //Allow Cloud Engineers to control Vulnerability Scanning in CE Main compartment",
+          "allow group ${local.core_policy_group_name} to manage resource-schedule-family in compartment ${local.core_policy_engineer_compartment} //Allow Cloud Engineers to control Vulnerability Scanning in CE Main compartment",
+          "allow dynamic-group '${local.default_domain_name}'/'${local.resource_dynamic_group_name}' to manage functions-family in compartment ${local.core_policy_engineer_compartment} //Allow Dynamic Group for Resource Scheduler to manipulate Functions in CE Main compartment",
         ]
       }
     },
@@ -94,6 +95,7 @@ locals {
         description : "Vulnerability Scanning Service permissions"
         compartment_id : "TENANCY-ROOT"
         statements : [
+          "allow group ${local.core_policy_group_name} to manage vss-family in compartment ${local.core_policy_engineer_compartment} //Allow Cloud Engineers to control Vulnerability Scanning in CE Main compartment",
           "allow service vulnerability-scanning-service to read compartments in tenancy //VSS to read compartments",
           "allow service vulnerability-scanning-service to read repos in tenancy //VSS Read OCIR Repos",
           "allow service vulnerability-scanning-service to manage instances in tenancy //VSS Instances",
