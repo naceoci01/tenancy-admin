@@ -88,11 +88,14 @@ locals {
             for comp in local.comp_names: "set block-storage quota total-storage-gb to 4096 in compartment ${data.oci_identity_compartment.cloud-eng-comp.name}:${comp}"
         ],
         [
-            for comp in local.comp_names: "set filesystem quota file-system-count to 1 in compartment ${data.oci_identity_compartment.cloud-eng-comp.name}:${comp}"
+            for comp in local.comp_names: "set filesystem quota file-system-count to 2 in compartment ${data.oci_identity_compartment.cloud-eng-comp.name}:${comp}"
         ],
         [
             for comp in local.comp_names: "set filesystem quota mount-target-count to 1 in compartment ${data.oci_identity_compartment.cloud-eng-comp.name}:${comp}"
-        ]       
+        ],      
+        [
+            for comp in local.comp_names: "set filesystem quota replication-count to 1 in compartment ${data.oci_identity_compartment.cloud-eng-comp.name}:${comp}"
+        ]     
     )
     network_quota_statements = concat(
         [
