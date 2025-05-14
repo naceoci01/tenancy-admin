@@ -41,6 +41,8 @@ locals {
           "allow group ${local.core_policy_group_name} to manage compartments in compartment ${local.core_policy_engineer_compartment} where target.resource.compartment.tag.Oracle-Tags.AllowCompartmentCreation = 'true' //Allows Cloud Engineers manage compartments within main CE Compartment, but not main CE",
           "allow group ${local.core_policy_group_name} to manage tickets in TENANCY //Allows Cloud Engineers manipulate tickets",
           "allow group ${local.core_policy_group_name} to read all-resources in TENANCY //CE can read ALL - showoci",
+          "allow group ${local.core_policy_group_name} to manage tag-defaults in compartment cloud-engineering //Allow Cloud Engineers to set compartment tag defaults",
+          "allow group ${local.core_policy_group_name} to manage tag-namespaces in compartment cloud-engineering //Allow Cloud Engineers to manage tag namespaces in the CE Compartments",
         ]
       }
     },
@@ -288,6 +290,7 @@ locals {
           "allow dynamic-group '${local.default_domain_name}'/'${local.func_dynamic_group_name}' to manage object-family in compartment ${local.core_policy_engineer_compartment} //Allow Functions DG to manage OSS in main CE compartment",
           "allow dynamic-group '${local.default_domain_name}'/'${local.func_dynamic_group_name}' to use secret-family in compartment ${local.core_policy_engineer_compartment} //Allow Functions DG use keys OSS in main CE compartment",
           "allow dynamic-group '${local.default_domain_name}'/'${local.func_dynamic_group_name}' to use secret-family in compartment ${local.core_policy_shared_compartment} //Allow Functions DG to use keys in shared CE compartment",
+          "allow dynamic-group '${local.default_domain_name}'/'${local.func_dynamic_group_name}' to read all-resources in TENANCY //Allow Functions DG to READ everything in tenancy"
         ]
       },
     } : {}, #No policy Functions
