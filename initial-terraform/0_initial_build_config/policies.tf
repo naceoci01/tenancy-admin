@@ -78,7 +78,7 @@ locals {
           "allow group ${local.core_policy_group_name} to manage cloud-guard-family in compartment ${local.core_policy_engineer_compartment} //Allows Cloud Engineers to use Cloud Guard",
           "allow group ${local.core_policy_group_name} to manage orm-family in compartment ${local.core_policy_engineer_compartment} //Allows Cloud Engineers to use ORM Stacks",
           "allow group ${local.core_policy_group_name} to use marketplace-listings in compartment ${local.core_policy_engineer_compartment} //Allows Cloud Engineers to use ORM Stacks (Marketplace)",
-          "allow group ${local.core_policy_group_name} to manage waas-family in compartment ${local.core_policy_engineer_compartment} //Allows Cloud Engineers to use Web App Firewall (WAF)",
+          "allow group ${local.core_policy_group_name} to manage waf-family in compartment ${local.core_policy_engineer_compartment} //Allows Cloud Engineers to use Web App Firewall (WAF)",
           "allow group ${local.core_policy_group_name} to manage disaster-recovery-family in compartment ${local.core_policy_engineer_compartment} //Allows Cloud Engineers to use Full Stack DR Service",
           "allow group ${local.core_policy_group_name} to manage vcns in compartment ${local.core_policy_shared_compartment} where request.operation!='CreateVcn' //Allow CE to use shared bastion",
           "allow group ${local.core_policy_group_name} to use bastion in compartment ${local.core_policy_shared_compartment} //Allow CE to use shared bastion",
