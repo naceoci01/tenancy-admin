@@ -31,6 +31,8 @@ locals {
   mysql_dynamic_group_name        = "all-mysql-dbsystems-DG"
   exacs_dynamic_group_key         = "EXACS-DYN-GROUP"
   exacs_dynamic_group_name        = "all-exacs-DG"
+  database_dynamic_group_key         = "DB-DYN-GROUP"
+  database_dynamic_group_name        = "all-databases-DG"
   resource_dynamic_group_key         = "RESOURCE-DYN-GROUP"
   resource_dynamic_group_name        = "all-resourceschedules-DG"
   data_catalog_dynamic_group_key         = "DATACATALOG-DYN-GROUP"
@@ -84,6 +86,14 @@ locals {
         name               = local.resource_dynamic_group_name
         description        = "Defines all OCI Resource Schedules"
         matching_rule      = "resource.type = 'resourceschedule'"
+      }
+    },
+    {
+      (local.database_dynamic_group_key) = {
+        identity_domain_id = var.default_domain_ocid
+        name               = local.database_dynamic_group_name
+        description        = "Defines all OCI Databases"
+        matching_rule      = "ANY {resource.type = 'database', {resource.type = 'dbsystem'}"
       }
     },
 

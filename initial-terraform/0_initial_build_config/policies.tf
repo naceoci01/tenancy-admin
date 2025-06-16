@@ -77,6 +77,7 @@ locals {
           "allow group ${local.core_policy_group_name} to manage cloudevents-rules in compartment ${local.core_policy_engineer_compartment} //Allows Cloud Engineers to use Event Rules",
           "allow group ${local.core_policy_group_name} to manage cloud-guard-family in compartment ${local.core_policy_engineer_compartment} //Allows Cloud Engineers to use Cloud Guard",
           "allow group ${local.core_policy_group_name} to manage orm-family in compartment ${local.core_policy_engineer_compartment} //Allows Cloud Engineers to use ORM Stacks",
+          "allow group ${local.core_policy_group_name} to manage waas-family in compartment ${local.core_policy_engineer_compartment} //Allows Cloud Engineers to use Web App Firewall (WAF)",
           "allow group ${local.core_policy_group_name} to manage disaster-recovery-family in compartment ${local.core_policy_engineer_compartment} //Allows Cloud Engineers to use Full Stack DR Service",
           "allow group ${local.core_policy_group_name} to manage vcns in compartment ${local.core_policy_shared_compartment} where request.operation!='CreateVcn' //Allow CE to use shared bastion",
           "allow group ${local.core_policy_group_name} to use bastion in compartment ${local.core_policy_shared_compartment} //Allow CE to use shared bastion",
@@ -103,6 +104,21 @@ locals {
           "allow service vulnerability-scanning-service to manage instances in tenancy //VSS Instances",
           "allow service vulnerability-scanning-service to read vnics in tenancy //VSS VNICs",
           "allow service vulnerability-scanning-service to read vnic-attachments in tenancy //VSS VNICs",
+        ]
+      }
+    },
+    {
+      "CE-VPNA-POLICY" : {
+        name : "cloud-engineering-VPNA-policy"
+        description : "Network Path Analyzer Service permissions"
+        compartment_id : "TENANCY-ROOT"
+        statements : [
+          "allow group ${local.core_policy_group_name} to manage vn-path-analyzer-test in compartment ${local.core_policy_engineer_compartment} //Allow Cloud Engineers to control Virtual Network Path Analyzer in CE Main compartment",
+          "allow any-user to inspect compartments in TENANCY where all { request.principal.type = 'vnpa-service' }",
+          "allow any-user to read instances in TENANCY where all { request.principal.type = 'vnpa-service' }",
+          "allow any-user to read virtual-network-family in TENANCY where all { request.principal.type = 'vnpa-service' }",
+          "allow any-user to read load-balancers in TENANCY where all { request.principal.type = 'vnpa-service' }",
+          "allow any-user to read network-security-group in TENANCY where all { request.principal.type = 'vnpa-service' }",
         ]
       }
     },
@@ -153,6 +169,9 @@ locals {
           "allow group ${local.core_policy_group_name} to manage database-tools-connections in compartment ${local.core_policy_shared_compartment}:exacs //Allow CE to work with SQL worksheets in ExaCS compartment",
           "allow group ${local.core_policy_group_name} to use database-tools-private-endpoints in compartment ${local.core_policy_shared_compartment}:exacs //Allow CE to work with PE in ExaCS compartment",
           "allow group ${local.core_policy_group_name} to use database-tools-private-endpoints in compartment ${local.core_policy_shared_compartment} //Allow CE to work with PE in Shared compartment",
+
+          "allow dynamic-group '${local.default_domain_name}'/'${local.database_dynamic_group_name}' to use vaults in compartment ${local.core_policy_shared_compartment} // For DB Systems to read vaults for Customer KMS",
+          "allow dynamic-group '${local.default_domain_name}'/'${local.database_dynamic_group_name}' to use keys in compartment ${local.core_policy_shared_compartment} // For DB Systems to use keys for Customer KMS"
         ]
       }
     },
@@ -380,6 +399,9 @@ locals {
           "allow group ${local.core_policy_exacs_admin_group_name} to manage db-homes in compartment ${local.core_policy_exacs_compartment} //Allow Admins to manage DB Homes",
           "allow dynamic-group '${local.default_domain_name}'/'${local.exacs_dynamic_group_name}' to manage keys in compartment ${local.core_policy_shared_compartment} //Allows DG for ExaCS to work with customer-managed keys",
           "allow dynamic-group '${local.default_domain_name}'/'${local.exacs_dynamic_group_name}' to read vaults in tenancy //Allows DG for ExaCS to work with vaults",
+          "allow dynamic-group 'Default'/'all-exacs-DG' to use secret-family in compartment cloud-engineering-shared // Used for OKV managed keys",
+          "allow dynamic-group 'Default'/'all-exacs-DG' to use keystores in compartment cloud-engineering-shared // used for OKC managed keys",
+          "allow service database to read secret-family in compartment cloud-engineering-shared // Service level access to keys"
         ]
       }
     } : {}, #No policy EXACS
@@ -391,6 +413,7 @@ locals {
         statements : [
           "allow group ${local.core_policy_group_name} to use oda-family in compartment ${local.core_policy_oda_compartment} //Allow CE to Use GenAI Chat",
           "allow group ${local.core_policy_group_name} to use metrics in compartment ${local.core_policy_oda_compartment} //Allow CE to See Metrics for ODA",
+          "allow group ${local.core_policy_group_name} to manage oda-private-endpoints in compartment ${local.core_policy_engineer_compartment} //Allow CE to Manage PE for ODA",
           "allow dynamic-group '${local.default_domain_name}'/'${local.oda_dynamic_group_name}' to manage genai-agent-family in compartment ${local.core_policy_engineer_compartment} //DG Access to AI Agents in CE Compartment",
           "allow dynamic-group '${local.default_domain_name}'/'${local.oda_dynamic_group_name}' to manage genai-agent-family in compartment ${local.core_policy_oda_compartment} //DG Access to AI Agents in ODA Compartment",
           "allow dynamic-group '${local.default_domain_name}'/'${local.oda_dynamic_group_name}' to manage object-family in compartment ${local.core_policy_engineer_compartment} //DG Access to OSS in CE Coompartments",
