@@ -93,7 +93,7 @@ locals {
         identity_domain_id = var.default_domain_ocid
         name               = local.database_dynamic_group_name
         description        = "Defines all OCI Databases"
-        matching_rule      = "ANY {resource.type = 'database', {resource.type = 'dbsystem'}"
+        matching_rule      = "ANY {resource.type = 'database', resource.type = 'dbsystem'}"
       }
     },
 
