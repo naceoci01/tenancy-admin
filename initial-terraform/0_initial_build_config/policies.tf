@@ -115,6 +115,7 @@ locals {
         compartment_id : "TENANCY-ROOT"
         statements : [
           "allow group ${local.core_policy_group_name} to manage vn-path-analyzer-test in compartment ${local.core_policy_engineer_compartment} //Allow Cloud Engineers to control Virtual Network Path Analyzer in CE Main compartment",
+          "allow group ${local.core_policy_group_name} to manage vn-path-analyzer-test in compartment ${local.core_policy_shared_compartment} //Allow Cloud Engineers to control Virtual Network Path Analyzer in Shared compartment",
           "allow any-user to inspect compartments in TENANCY where all { request.principal.type = 'vnpa-service' }",
           "allow any-user to read instances in TENANCY where all { request.principal.type = 'vnpa-service' }",
           "allow any-user to read virtual-network-family in TENANCY where all { request.principal.type = 'vnpa-service' }",
@@ -273,21 +274,6 @@ locals {
           "allow service rcs to manage virtual-network-family in TENANCY",
           "allow group ${local.core_policy_group_name} to manage recovery-service-family in compartment ${local.core_policy_engineer_compartment} //Allow CE to manage Recovery Subnets in CE Compartment",
           "allow group ${local.core_policy_group_name} to manage recovery-service-family in compartment ${local.core_policy_exacs_compartment} //Allow CE to manage Recovery Subnets in Exacs Compartment",
-        ]
-      }
-    },
-    {
-      "CE-VNPA-POLICY" : {
-        name : "cloud-engineering-VNPA-policy"
-        description : "Permissions for Network Path Analyzer"
-        compartment_id : "TENANCY-ROOT"
-        statements : [
-          "allow group ${local.core_policy_group_name} to manage vn-path-analyzer-test in compartment ${local.core_policy_engineer_compartment} //Allow CE to Use Network Path Analyzer",
-          "allow any-user to inspect compartments in TENANCY where all { request.principal.type = 'vnpa-service' } //Required VNPA",
-          "allow any-user to read instances in TENANCY where all { request.principal.type = 'vnpa-service' } //Required VNPA",
-          "allow any-user to read virtual-network-family in TENANCY where all { request.principal.type = 'vnpa-service' } //Required VNPA",
-          "allow any-user to read load-balancers in TENANCY where all { request.principal.type = 'vnpa-service' } //Required VNPA",
-          "allow any-user to read network-security-group in TENANCY where all { request.principal.type = 'vnpa-service' } //Required VNPA"
         ]
       }
     },
