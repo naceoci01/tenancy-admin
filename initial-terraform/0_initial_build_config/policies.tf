@@ -468,7 +468,7 @@ locals {
         statements : [
           "allow group ${local.core_policy_group_name} to manage ai-service-vision-family in compartment ${local.core_policy_engineer_compartment} //Allow CE to manage Vision, including custom projects",
           "allow group ${local.core_policy_group_name} to manage ai-service-speech-family in compartment ${local.core_policy_engineer_compartment} //Allow CE to manage Speech",
-          "allow group ${local.core_policy_group_name} to manage ai-service-language-family in compartment ${local.core_policy_engineer_compartment} //Allow CE to manage Language",
+          "allow group ${local.core_policy_group_name} to manage ai-service-language-family in compartment ${local.core_policy_engineer_compartment} where ALL {request.permission != 'AI_SERVICE_LANGUAGE_ENDPOINT_CREATE', request.permission != 'AI_SERVICE_LANGUAGE_MODEL_CREATE'}//Allow CE to manage Language (no endpoint)",
           "allow group ${local.core_policy_group_name} to manage ai-service-document-family in compartment ${local.core_policy_engineer_compartment} //Allow CE to manage Document Understanding",
         ]
       },
@@ -502,6 +502,11 @@ locals {
           "allow dynamic-group '${local.default_domain_name}'/'${local.datascience_dynamic_group_name}' to use logging-family in compartment ${local.core_policy_datascience_compartment} //Allows DS DG to use Logging",
           "allow dynamic-group '${local.default_domain_name}'/'${local.datascience_dynamic_group_name}' to read compartments in TENANCY //Required DG Policy Statement",
           "allow dynamic-group '${local.default_domain_name}'/'${local.datascience_dynamic_group_name}' to read users in TENANCY //Required DG Policy Statement",
+          "allow dynamic-group '${local.default_domain_name}'/'${local.datascience_dynamic_group_name}' to read repos in TENANCY //Allows Data Science to Read and Pull Containers",
+          "allow any-user to read objects in compartment ${local.core_policy_datascience_compartment} where request.principal.type='datasciencemodeldeployment' } //Give DS Model Deployment Access to a Published Conda Bucket",
+          "allow any-user to use log-content in compartment ${local.core_policy_datascience_compartment} where ALL {request.principal.type = 'datasciencemodeldeployment'} //Give Model Deployment Access to the Logging Service",
+          "allow any-user to read objects in compartment ${local.core_policy_datascience_compartment} where request.principal.type='datasciencemodeldeployment' //Give Model Deployment Access to Object Storage Bucket in DS",
+          "allow any-user to read objects in compartment ${local.core_policy_engineer_compartment} where request.principal.type='datasciencemodeldeployment' //Give Model Deployment Access to Object Storage Bucket in CE Main",
         ]
       },
       "CE-DL-POLICY" : {
