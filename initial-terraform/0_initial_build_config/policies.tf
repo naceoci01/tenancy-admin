@@ -503,7 +503,7 @@ locals {
           "allow dynamic-group '${local.default_domain_name}'/'${local.datascience_dynamic_group_name}' to read compartments in TENANCY //Required DG Policy Statement",
           "allow dynamic-group '${local.default_domain_name}'/'${local.datascience_dynamic_group_name}' to read users in TENANCY //Required DG Policy Statement",
           "allow dynamic-group '${local.default_domain_name}'/'${local.datascience_dynamic_group_name}' to read repos in TENANCY //Allows Data Science to Read and Pull Containers",
-          "allow any-user to read objects in compartment ${local.core_policy_datascience_compartment} where request.principal.type='datasciencemodeldeployment' } //Give DS Model Deployment Access to a Published Conda Bucket",
+          "allow any-user to read objects in compartment ${local.core_policy_datascience_compartment} where request.principal.type='datasciencemodeldeployment' //Give DS Model Deployment Access to a Published Conda Bucket",
           "allow any-user to use log-content in compartment ${local.core_policy_datascience_compartment} where ALL {request.principal.type = 'datasciencemodeldeployment'} //Give Model Deployment Access to the Logging Service",
           "allow any-user to read objects in compartment ${local.core_policy_datascience_compartment} where request.principal.type='datasciencemodeldeployment' //Give Model Deployment Access to Object Storage Bucket in DS",
           "allow any-user to read objects in compartment ${local.core_policy_engineer_compartment} where request.principal.type='datasciencemodeldeployment' //Give Model Deployment Access to Object Storage Bucket in CE Main",
