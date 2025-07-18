@@ -172,7 +172,6 @@ locals {
           "allow group ${local.core_policy_group_name} to manage database-tools-connections in compartment ${local.core_policy_shared_compartment}:exacs //Allow CE to work with SQL worksheets in ExaCS compartment",
           "allow group ${local.core_policy_group_name} to use database-tools-private-endpoints in compartment ${local.core_policy_shared_compartment}:exacs //Allow CE to work with PE in ExaCS compartment",
           "allow group ${local.core_policy_group_name} to use database-tools-private-endpoints in compartment ${local.core_policy_shared_compartment} //Allow CE to work with PE in Shared compartment",
-
           "allow dynamic-group '${local.default_domain_name}'/'${local.database_dynamic_group_name}' to use vaults in compartment ${local.core_policy_shared_compartment} // For DB Systems to read vaults for Customer KMS",
           "allow dynamic-group '${local.default_domain_name}'/'${local.database_dynamic_group_name}' to use keys in compartment ${local.core_policy_shared_compartment} // For DB Systems to use keys for Customer KMS"
         ]
@@ -367,6 +366,7 @@ locals {
         compartment_id : "TENANCY-ROOT"
         statements : [
           "allow group ${local.core_policy_group_name} to manage autonomous-databases in compartment ${local.core_policy_exacs_compartment} //ADB access for ADB-Dedicated",
+          "allow group ${local.core_policy_group_name} to manage autonomous-database-family in compartment ${local.core_policy_exacs_compartment} //Allow CE to work with all Autonomous in ExaCS compartment",
           "allow group ${local.core_policy_group_name} to manage databases in compartment ${local.core_policy_exacs_compartment} //Allow CE to manage databases Resources",
           "allow group ${local.core_policy_group_name} to manage pluggable-databases in compartment ${local.core_policy_exacs_compartment} //Allow CE to manage databases Resources",
           "allow group ${local.core_policy_group_name} to use db-homes in compartment ${local.core_policy_exacs_compartment} //Allow CE to use database home Resources",
@@ -376,6 +376,8 @@ locals {
           "allow group ${local.core_policy_group_name} to manage vnics in compartment ${local.core_policy_exacs_compartment} //Allow CE to use DBMGMT for ExaCS",
           "allow group ${local.core_policy_group_name} to use subnets in compartment ${local.core_policy_exacs_compartment} //Allow CE to use DBMGMT for ExaCS",
           "allow group ${local.core_policy_exacs_admin_group_name} to manage cloudevents-rules in compartment ${local.core_policy_exacs_compartment} //Allows Cloud Engineers to use Event Rules for ExaCS",
+          "allow group ${local.core_policy_exacs_admin_group_name} to manage leaf-certificate-family in compartment ${local.core_policy_exacs_compartment} //Allow Admins to manage Cert Leaf",
+          "allow group ${local.core_policy_exacs_admin_group_name} to manage certificate-authority-family in compartment ${local.core_policy_exacs_compartment} //Allow Admins to manage Cert CA",
           "allow group ${local.core_policy_group_name} to use network-security-groups in compartment ${local.core_policy_exacs_compartment} //Allow CE to use DBMGMT for ExaCS",
           "allow group ${local.core_policy_group_name} to use bastion in compartment ${local.core_policy_exacs_compartment} //Allow CE to use existing bastion for ExaCS",
           "allow group ${local.core_policy_group_name} to manage bastion-session in compartment ${local.core_policy_exacs_compartment} //Allow CE to manage bastion sessions for ExaCS",
@@ -403,6 +405,10 @@ locals {
           "allow group ${local.core_policy_group_name} to use metrics in compartment ${local.core_policy_oda_compartment} //Allow CE to See Metrics for ODA",
           "allow group ${local.core_policy_group_name} to manage oda-private-endpoints in compartment ${local.core_policy_engineer_compartment} //Allow CE to Manage PE for ODA",
           "allow dynamic-group '${local.default_domain_name}'/'${local.oda_dynamic_group_name}' to manage genai-agent-family in compartment ${local.core_policy_engineer_compartment} //DG Access to AI Agents in CE Compartment",
+          "allow any-user to manage genai-agent-family in tenancy where request.principal.type='odainstance'//Allows ODA instances to use GenAI",
+          "allow any-user to manage genai-agent-family in tenancy where request.principal.type='autonomousdatabase'//Allows all ADBs to use GenAI",
+          "allow any-user to read object-family in tenancy where request.principal.type='autonomousdatabase'//Allows ADBs to read objects",
+          "allow any-user to manage object-family in tenancy where ALL { request.principal.type='autonomousdatabase', request.permission = 'PAR_MANAGE' }//Allows ADBs to manage PARs",
           "allow dynamic-group '${local.default_domain_name}'/'${local.oda_dynamic_group_name}' to manage genai-agent-family in compartment ${local.core_policy_oda_compartment} //DG Access to AI Agents in ODA Compartment",
           "allow dynamic-group '${local.default_domain_name}'/'${local.oda_dynamic_group_name}' to manage object-family in compartment ${local.core_policy_engineer_compartment} //DG Access to OSS in CE Coompartments",
           "allow dynamic-group '${local.default_domain_name}'/'${local.oda_dynamic_group_name}' to manage object-family in compartment ${local.core_policy_oda_compartment} //DG Access to OSS in ODA compartment",
