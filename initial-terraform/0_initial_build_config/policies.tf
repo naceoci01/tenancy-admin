@@ -427,7 +427,7 @@ locals {
         description : "Permissions for Oracle Analytics - please request admin access to group ${local.core_policy_oac_group_name}"
         compartment_id : "TENANCY-ROOT"
         statements : [
-          "allow group ${local.core_policy_group_name} to use analytics-instances in compartment ${local.core_policy_oac_compartment} where request.permission!='StopAnalyticsInstance' // Allow CE to see and only start existing OAC in Shared OAC Compartment",
+          "allow group ${local.core_policy_group_name} to use analytics-instances in compartment ${local.core_policy_oac_compartment} where request.operation!='StopAnalyticsInstance' // Allow CE to see and only start existing OAC in Shared OAC Compartment",
           "allow group ${local.core_policy_oac_group_name} to manage analytics-instances in compartment ${local.core_policy_oac_compartment} // Allow OAC Admin CE to use create OAC in Shared OAC Compartment",
           "allow group ${local.core_policy_oac_group_name} to manage analytics-instance-work-requests in compartment ${local.core_policy_oac_compartment} // Allow CE to use existing OAC in Shared OAC Compartment",
           "allow dynamic-group '${local.default_domain_name}'/'${local.oac_dynamic_group_name}' to manage objects in compartment ${local.core_policy_oac_compartment} //Allows OAC DG to manage OSS objects",
