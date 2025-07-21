@@ -20,6 +20,7 @@ locals {
   core_policy_mysql_compartment       = "${local.core_policy_shared_compartment}:${module.cislz_compartments.compartments.MYSQL-CMP.name}"
   core_policy_postgres_compartment    = "${local.core_policy_shared_compartment}:${module.cislz_compartments.compartments.POSTGRES-CMP.name}"
   core_policy_oac_compartment         = "${local.core_policy_shared_compartment}:${module.cislz_compartments.compartments.OAC-CMP.name}"
+  core_policy_oic_compartment         = "${local.core_policy_shared_compartment}:${module.cislz_compartments.compartments.OIC-CMP.name}"
   core_policy_exacs_compartment       = "${local.core_policy_shared_compartment}:${module.cislz_compartments.compartments.EXACS-CMP.name}"
   core_policy_oda_compartment         = "${local.core_policy_shared_compartment}:${module.cislz_compartments.compartments.ODA-CMP.name}"
   core_policy_gg_compartment          = "${local.core_policy_shared_compartment}:${module.cislz_compartments.compartments.GG-CMP.name}"
@@ -80,6 +81,7 @@ locals {
           "allow group ${local.core_policy_group_name} to use marketplace-listings in compartment ${local.core_policy_engineer_compartment} //Allows Cloud Engineers to use ORM Stacks (Marketplace)",
           "allow group ${local.core_policy_group_name} to manage waf-family in compartment ${local.core_policy_engineer_compartment} //Allows Cloud Engineers to use Web App Firewall (WAF)",
           "allow group ${local.core_policy_group_name} to manage disaster-recovery-family in compartment ${local.core_policy_engineer_compartment} //Allows Cloud Engineers to use Full Stack DR Service",
+          "allow group ${local.core_policy_group_name} to manage queues in compartment ${local.core_policy_engineer_compartment} //Allows Cloud Engineers to use Queues Service",
           "allow group ${local.core_policy_group_name} to manage vcns in compartment ${local.core_policy_shared_compartment} where request.operation!='CreateVcn' //Allow CE to use shared bastion",
           "allow group ${local.core_policy_group_name} to use bastion in compartment ${local.core_policy_shared_compartment} //Allow CE to use shared bastion",
           "allow group ${local.core_policy_group_name} to manage bastion-session in compartment ${local.core_policy_shared_compartment} //Allow CE to manage bastion sessions",
@@ -345,19 +347,44 @@ locals {
         description : "Permissions for Oracle Integration"
         compartment_id : "TENANCY-ROOT"
         statements : [
-          "allow group ${local.core_policy_oic_admin_group_name} to manage integration-instance in compartment ${local.core_policy_shared_compartment}:OIC //Allow OIC Admins to manage all OIC",
-          "allow group ${local.core_policy_oic_admin_group_name} to manage process-automation-instances in compartment ${local.core_policy_shared_compartment}:OIC //Allow OIC Admins to manage all Process Automation",
-          "allow group ${local.core_policy_oic_admin_group_name} to read metrics in compartment ${local.core_policy_shared_compartment}:OIC //Allow OIC Admins to read all metrics in OIC",
-          "allow group ${local.core_policy_oic_admin_group_name} to manage logging-family in compartment ${local.core_policy_shared_compartment}:OIC //Allow OIC Admins to set up Logging in OIC",
-          "allow group ${local.core_policy_oic_admin_group_name} to manage visualbuilder-instance in compartment ${local.core_policy_shared_compartment}:OIC //Allow OIC Admins to manage VBCS",
-          "allow group ${local.core_policy_oic_admin_group_name} to manage autonomous-database-family in compartment ${local.core_policy_shared_compartment}:OIC //Allow OIC Admins to manage ADB instances in OIC",
-          "allow group ${local.core_policy_oic_admin_group_name} to manage api-gateway-family in compartment ${local.core_policy_shared_compartment}:OIC //Allow OIC Admins to manage ADB instances in OIC",
-          "allow group ${local.core_policy_oic_admin_group_name} to manage object-family in compartment ${local.core_policy_shared_compartment}:OIC //Allow OIC Admins to manage OSS in OIC",
-          "allow group ${local.core_policy_oic_admin_group_name} to manage virtual-network-family in compartment ${local.core_policy_shared_compartment}:OIC //Allow OIC Admins to manage VCN in OIC",
-          "allow group ${local.core_policy_oic_admin_group_name} to manage stream-family in compartment ${local.core_policy_shared_compartment}:OIC //Allow OIC Admins to manage Streams in OIC",
-          "allow group ${local.core_policy_oic_admin_group_name} to manage cloudevents-rules in compartment ${local.core_policy_shared_compartment}:OIC //Allow OIC Admins to manage Event Rules in OIC",
+          "allow group ${local.core_policy_oic_admin_group_name} to manage integration-instance in compartment ${local.core_policy_oic_compartment} //Allow OIC Admins to manage all OIC",
+          "allow group ${local.core_policy_oic_admin_group_name} to manage process-automation-instances in compartment ${local.core_policy_oic_compartment} //Allow OIC Admins to manage all Process Automation",
+          "allow group ${local.core_policy_oic_admin_group_name} to read metrics in compartment ${local.core_policy_oic_compartment} //Allow OIC Admins to read all metrics in OIC",
+          "allow group ${local.core_policy_oic_admin_group_name} to manage logging-family in compartment ${local.core_policy_oic_compartment} //Allow OIC Admins to set up Logging in OIC",
+          "allow group ${local.core_policy_oic_admin_group_name} to manage visualbuilder-instance in compartment ${local.core_policy_oic_compartment} //Allow OIC Admins to manage VBCS",
+          "allow group ${local.core_policy_oic_admin_group_name} to manage autonomous-database-family in compartment ${local.core_policy_oic_compartment} //Allow OIC Admins to manage ADB instances in OIC",
+          "allow group ${local.core_policy_oic_admin_group_name} to manage api-gateway-family in compartment ${local.core_policy_oic_compartment} //Allow OIC Admins to manage ADB instances in OIC",
+          "allow group ${local.core_policy_oic_admin_group_name} to manage object-family in compartment ${local.core_policy_oic_compartment} //Allow OIC Admins to manage OSS in OIC",
+          "allow group ${local.core_policy_oic_admin_group_name} to manage functions-family in compartment ${local.core_policy_oic_compartment} //Allow OIC Admins to manage Functions in OIC",
+          "allow group ${local.core_policy_oic_admin_group_name} to manage virtual-network-family in compartment ${local.core_policy_oic_compartment} //Allow OIC Admins to manage VCN in OIC",
+          "allow group ${local.core_policy_oic_admin_group_name} to manage stream-family in compartment ${local.core_policy_oic_compartment} //Allow OIC Admins to manage Streams in OIC",
+          "allow group ${local.core_policy_oic_admin_group_name} to manage cloudevents-rules in compartment ${local.core_policy_oic_compartment} //Allow OIC Admins to manage Event Rules in OIC",
+          "allow group ${local.core_policy_oic_admin_group_name} to manage queues in compartment ${local.core_policy_oic_compartment} //Allow OIC Admins to manage Queues in OIC",
         ]
       },
+      "CE-OIC-RP-POLICY" : {
+        name : "cloud-engineering-OIC-RP-policy"
+        description : "Permissions for Oracle Integration Resource Principal and Service Invocation"
+        compartment_id : "TENANCY-ROOT"
+        statements : [
+          "allow any-user to read all-resources in tenancy where request.principal.type='integrationinstance' // Broad read access for OIC Resource Principal to read anything in tenancy",
+          "allow any-user to manage object-family in compartment ${local.core_policy_engineer_compartment} where request.principal.type='integrationinstance' // Allow OIC instances to use RP in ce compartment for object storage",
+          "allow any-user to manage object-family in compartment ${local.core_policy_oic_compartment} where request.principal.type='integrationinstance' // Allow OIC instances to use RP in OIC compartment for object storage",
+          "allow any-user to use functions-family in compartment ${local.core_policy_engineer_compartment} where request.principal.type='integrationinstance' // Allow OIC instances to use RP for OCI Functions in CE compartment",
+          "allow any-user to use functions-family in compartment ${local.core_policy_oic_compartment} where request.principal.type='integrationinstance' // Allow OIC instances to use RP for OCI Functions in OIC compartment",
+          "allow any-user to use api-gateway-family in compartment ${local.core_policy_engineer_compartment} where request.principal.type='integrationinstance' // Allow OIC instances to use RP for OCI APIGW in CE compartment",
+          "allow any-user to use api-gateway-family in compartment ${local.core_policy_oic_compartment} where request.principal.type='integrationinstance' // Allow OIC instances to use RP for OCI APIGW in OIC compartment",
+          "allow any-user to use queues in compartment ${local.core_policy_engineer_compartment} where request.principal.type='integrationinstance' // Allow OIC instances to use RP for OCI Queues in CE compartment",
+          "allow any-user to use queues in compartment ${local.core_policy_oic_compartment} where request.principal.type='integrationinstance' // Allow OIC instances to use RP for OCI Queues in OIC compartment",
+          "allow any-user to use ai-service-document-family in compartment ${local.core_policy_engineer_compartment} where request.principal.type='integrationinstance' // Allow OIC instances to use RP for OCI Doc in CE compartment",
+          "allow any-user to use ai-service-document-family in compartment ${local.core_policy_oic_compartment} where request.principal.type='integrationinstance' // Allow OIC instances to use RP for OCI Doc in OIC compartment",
+          "allow any-user to use ai-service-speech-family in compartment ${local.core_policy_engineer_compartment} where request.principal.type='integrationinstance' // Allow OIC instances to use RP for OCI Speech in CE compartment",
+          "allow any-user to use ai-service-speech-family in compartment ${local.core_policy_oic_compartment} where request.principal.type='integrationinstance' // Allow OIC instances to use RP for OCI Speech in OIC compartment",
+          "allow any-user to use ai-service-vision-family in compartment ${local.core_policy_engineer_compartment} where request.principal.type='integrationinstance' // Allow OIC instances to use RP for OCI Vision in CE compartment",
+          "allow any-user to use ai-service-vision-family in compartment ${local.core_policy_oic_compartment} where request.principal.type='integrationinstance' // Allow OIC instances to use RP for OCI Vision in OIC compartment",
+        ]
+      },
+      //allow dynamic-group 'cloud-engineering-domain'/'oic-resource-principal-dg' to manage ai-service-document-family in compartment cloud-engineering-shared:oic //allow oic instances to use resource principal in oic compartment for document understanding
     } : {}, #No policy OIC
     var.create_exa == true ? {
       "CE-EXACS-POLICY" : {
