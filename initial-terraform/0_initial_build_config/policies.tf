@@ -102,7 +102,7 @@ locals {
         compartment_id : "TENANCY-ROOT"
         statements : [
           "allow group ${local.core_policy_group_name} to manage disaster-recovery-family in compartment ${local.core_policy_engineer_compartment} //Allows Cloud Engineers to use Full Stack DR Service in CE Compartment",
-          "allow group ${local.core_policy_group_name} to {DISASTER_RECOVERY_PLAN_PRECHECK_CREATE, DISASTER_RECOVERY_PLAN_EXECUTION_CREATE, INSTANCE_POWER_ACTIONS} in compartment ${local.core_policy_fsdr_compartment} //Allows Cloud Engineers to use Full Stack DR Service in limited fashion in Shared Comp",
+          "allow group ${local.core_policy_group_name} to {DISASTER_RECOVERY_PLAN_PRECHECK_CREATE, DISASTER_RECOVERY_PLAN_EXECUTION_CREATE, INSTANCE_POWER_ACTIONS, INSTANCE_UPDATE} in compartment ${local.core_policy_fsdr_compartment} //Allows Cloud Engineers to use Full Stack DR Service in limited fashion in Shared Comp",
           "allow group ${local.core_policy_group_name} to manage objects in compartment ${local.core_policy_fsdr_compartment} //Allows Cloud Engineers to use Full Stack DR Service in limited fashion in Shared Comp",
           "allow group ${local.core_policy_group_name} to manage instance-agent-command-family in compartment ${local.core_policy_fsdr_compartment} //Allows Cloud Engineers to use Full Stack DR Service in limited fashion in Shared Comp",
           "allow dynamic-group 'Default'/'all-instances' to manage instance-agent-command-family in compartment ${local.core_policy_engineer_compartment} // For FSDR to use DGs to run instance command in CE Main compartment",
