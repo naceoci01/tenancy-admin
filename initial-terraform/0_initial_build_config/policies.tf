@@ -27,6 +27,7 @@ locals {
   core_policy_fw_compartment          = "${local.core_policy_shared_compartment}:${module.cislz_compartments.compartments.FW-CMP.name}"
   core_policy_di_compartment          = "${local.core_policy_shared_compartment}:${module.cislz_compartments.compartments.DI-CMP.name}"
   core_policy_idl_compartment         = "${local.core_policy_shared_compartment}:${module.cislz_compartments.compartments.IDL-CMP.name}"
+  core_policy_fsdr_compartment        = "${local.core_policy_shared_compartment}:${module.cislz_compartments.compartments.FSDR-CMP.name}"
   core_policy_engineer_ocid           = module.cislz_compartments.compartments.CLOUD-ENG.id
   default_domain_name                 = "Default"
 
@@ -80,7 +81,6 @@ locals {
           "allow group ${local.core_policy_group_name} to manage orm-family in compartment ${local.core_policy_engineer_compartment} //Allows Cloud Engineers to use ORM Stacks",
           "allow group ${local.core_policy_group_name} to use marketplace-listings in compartment ${local.core_policy_engineer_compartment} //Allows Cloud Engineers to use ORM Stacks (Marketplace)",
           "allow group ${local.core_policy_group_name} to manage waf-family in compartment ${local.core_policy_engineer_compartment} //Allows Cloud Engineers to use Web App Firewall (WAF)",
-          "allow group ${local.core_policy_group_name} to manage disaster-recovery-family in compartment ${local.core_policy_engineer_compartment} //Allows Cloud Engineers to use Full Stack DR Service",
           "allow group ${local.core_policy_group_name} to manage queues in compartment ${local.core_policy_engineer_compartment} //Allows Cloud Engineers to use Queues Service",
           "allow group ${local.core_policy_group_name} to manage vcns in compartment ${local.core_policy_shared_compartment} where request.operation!='CreateVcn' //Allow CE to use shared bastion",
           "allow group ${local.core_policy_group_name} to use bastion in compartment ${local.core_policy_shared_compartment} //Allow CE to use shared bastion",
@@ -92,6 +92,23 @@ locals {
           "allow group ${local.core_policy_group_name} to use cloud-shell-public-network in TENANCY //Required tenancy-level for Cloud Shell",
           "allow group ${local.core_policy_group_name} to manage resource-schedule-family in compartment ${local.core_policy_engineer_compartment} //Allow Cloud Engineers to control Vulnerability Scanning in CE Main compartment",
           "allow dynamic-group '${local.default_domain_name}'/'${local.resource_dynamic_group_name}' to manage functions-family in compartment ${local.core_policy_engineer_compartment} //Allow Dynamic Group for Resource Scheduler to manipulate Functions in CE Main compartment",
+        ]
+      }
+    },
+    {
+      "CE-FSDR-POLICY" : {
+        name : "cloud-engineering-FSDR-policy"
+        description : "Full Stack Disaster Recovery Service permissions"
+        compartment_id : "TENANCY-ROOT"
+        statements : [
+          "allow group ${local.core_policy_group_name} to manage disaster-recovery-family in compartment ${local.core_policy_engineer_compartment} //Allows Cloud Engineers to use Full Stack DR Service in CE Compartment",
+          "allow group ${local.core_policy_group_name} to {DISASTER_RECOVERY_PLAN_PRECHECK_CREATE, DISASTER_RECOVERY_PLAN_EXECUTION_CREATE, INSTANCE_POWER_ACTIONS} in compartment ${local.core_policy_fsdr_compartment} //Allows Cloud Engineers to use Full Stack DR Service in limited fashion in Shared Comp",
+          "allow dynamic-group 'Default'/'all-instances' to manage instance-agent-command-family in compartment ${local.core_policy_engineer_compartment} // For FSDR to use DGs to run instance command in CE Main compartment",
+          "allow dynamic-group 'Default'/'all-instances' to manage instance-agent-command-family in compartment ${local.core_policy_fsdr_compartment} // For FSDR to use DGs to run instance command",
+          "allow dynamic-group 'Default'/'all-instances' to manage instance-agent-command-execution-family in compartment ${local.core_policy_engineer_compartment} // For FSDR to use DGs to see instance command output",
+          "allow dynamic-group 'Default'/'all-instances' to manage instance-agent-command-execution-family in compartment ${local.core_policy_fsdr_compartment} // For FSDR to use DGs to see instance command output",
+          "allow dynamic-group 'Default'/'all-instances' to manage objects in compartment ${local.core_policy_engineer_compartment} //Instances to record command output to OSS",
+          "allow dynamic-group 'Default'/'all-instances' to manage objects in compartment ${local.core_policy_fsdr_compartment} //Instances to record command output to OSS",
         ]
       }
     },

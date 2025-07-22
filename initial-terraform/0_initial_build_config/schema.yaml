@@ -46,6 +46,7 @@ variableGroups:
       - create_func
       - create_firewall
       - engineer_firewall_group_name
+      - create_fsdr
   - title: "Hidden Variables" 
     visible: false
     variables:
@@ -195,4 +196,7 @@ variables:
     type: boolean
   create_idl:
     title: Create the Intelligent Data Lake Compartment and Policies
+    type: boolean
+  create_fsdr:
+    title: Create the Full Stack DR Compartment and Policies
     type: boolean

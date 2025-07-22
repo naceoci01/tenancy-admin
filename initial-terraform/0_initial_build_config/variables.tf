@@ -150,3 +150,8 @@ variable "create_firewall" {
     type = bool
     description = "Whether to enable OCI Network Firewall"
 }
+
+variable "create_fsdr" {
+    type = bool
+    description = "Whether to enable FSDR"
+}
