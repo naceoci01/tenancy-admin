@@ -403,7 +403,7 @@ locals {
           "allow any-user to use ai-service-vision-family in compartment ${local.core_policy_oic_compartment} where request.principal.type='integrationinstance' // Allow OIC instances to use RP for OCI Vision in OIC compartment",
           "allow dynamic-group '${local.default_domain_name}'/'${local.oic_rp_dynamic_group_name}' to manage object-family in compartment ${local.core_policy_engineer_compartment} //Allows Resource Principal to manage object family in CE compartment",
           "allow dynamic-group '${local.default_domain_name}'/'${local.oic_rp_dynamic_group_name}' to manage object-family in compartment ${local.core_policy_oic_compartment} //Allows Resource Principal to manage object family in OIC compartment",
-oic-resource-principal-DG
+          # "allow dynamic-group 'oic-resource-principal-DG'
         ]
       },
       //allow dynamic-group 'cloud-engineering-domain'/'oic-resource-principal-dg' to manage ai-service-document-family in compartment cloud-engineering-shared:oic //allow oic instances to use resource principal in oic compartment for document understanding
