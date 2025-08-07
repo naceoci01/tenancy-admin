@@ -37,7 +37,8 @@ locals {
   resource_dynamic_group_name        = "all-resourceschedules-DG"
   data_catalog_dynamic_group_key         = "DATACATALOG-DYN-GROUP"
   data_catalog_dynamic_group_name        = "all-data-catalog-DG"
-
+  oic_rp_dynamic_group_key         = "OIC-RP-DYN-GROUP"
+  oic_rp_dynamic_group_name        = "all-OIC-RP-DG"
   # Dynamic Groups
   all_dynamic_groups = merge(
     {
@@ -175,6 +176,15 @@ locals {
         name               = local.data_catalog_dynamic_group_name
         description        = "Defines all Data Catalog via resource type"
         matching_rule      = "any {resource.type='datacatalog', resource.type='datacatalogprivateendpoint', resource.type='datacatalogmetastore'}"
+      }
+    } : {},
+    var.create_oic == true ?
+    {
+      (local.oic_rp_dynamic_group_key) = {
+        identity_domain_id = var.default_domain_ocid
+        name               = local.oic_rp_dynamic_group_name
+        description        = "Defines all OIC Instances by Resource ID (OAUTH APPID)"
+        matching_rule      = "any {resource.id='xxx', resource.id='yyy', resource.id='zzz'}"
       }
     } : {},
 

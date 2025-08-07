@@ -401,6 +401,9 @@ locals {
           "allow any-user to use ai-service-speech-family in compartment ${local.core_policy_oic_compartment} where request.principal.type='integrationinstance' // Allow OIC instances to use RP for OCI Speech in OIC compartment",
           "allow any-user to use ai-service-vision-family in compartment ${local.core_policy_engineer_compartment} where request.principal.type='integrationinstance' // Allow OIC instances to use RP for OCI Vision in CE compartment",
           "allow any-user to use ai-service-vision-family in compartment ${local.core_policy_oic_compartment} where request.principal.type='integrationinstance' // Allow OIC instances to use RP for OCI Vision in OIC compartment",
+          "allow dynamic-group '${local.default_domain_name}'/'${local.oic_rp_dynamic_group_name}' to manage object-family in compartment ${local.core_policy_engineer_compartment} //Allows Resource Principal to manage object family in CE compartment",
+          "allow dynamic-group '${local.default_domain_name}'/'${local.oic_rp_dynamic_group_name}' to manage object-family in compartment ${local.core_policy_oic_compartment} //Allows Resource Principal to manage object family in OIC compartment",
+
         ]
       },
       //allow dynamic-group 'cloud-engineering-domain'/'oic-resource-principal-dg' to manage ai-service-document-family in compartment cloud-engineering-shared:oic //allow oic instances to use resource principal in oic compartment for document understanding
@@ -433,6 +436,12 @@ locals {
           "allow group ${local.core_policy_exacs_admin_group_name} to manage exadb-vm-clusters in compartment ${local.core_policy_exacs_compartment} //Allow Admins for ExaScale VM Cluster",
           "allow group ${local.core_policy_exacs_admin_group_name} to manage cloud-exadata-infrastructures in compartment ${local.core_policy_exacs_compartment} //Allow Admins to manage Infra",
           "allow group ${local.core_policy_exacs_admin_group_name} to manage db-homes in compartment ${local.core_policy_exacs_compartment} //Allow Admins to manage DB Homes",
+          "allow group ${local.core_policy_exacs_admin_group_name} to manage scheduling-policies in compartment ${local.core_policy_exacs_compartment} //Allow Admins to manage Schedules",
+          "allow group ${local.core_policy_exacs_admin_group_name} to manage scheduling-windows in compartment ${local.core_policy_exacs_compartment} //Allow Admins to manage Schedules",
+          "allow group ${local.core_policy_exacs_admin_group_name} to manage scheduling-plan in compartment ${local.core_policy_exacs_compartment} //Allow Admins to manage Schedules",
+          "allow group ${local.core_policy_exacs_admin_group_name} to manage scheduling-action in compartment ${local.core_policy_exacs_compartment} //Allow Admins to manage Schedules",
+          "allow group ${local.core_policy_exacs_admin_group_name} to manage execution-windows in compartment ${local.core_policy_exacs_compartment} //Allow Admins to manage Schedules",
+          "allow group ${local.core_policy_exacs_admin_group_name} to manage execution-action in compartment ${local.core_policy_exacs_compartment} //Allow Admins to manage Schedules",
           "allow dynamic-group '${local.default_domain_name}'/'${local.exacs_dynamic_group_name}' to manage keys in compartment ${local.core_policy_shared_compartment} //Allows DG for ExaCS to work with customer-managed keys",
           "allow dynamic-group '${local.default_domain_name}'/'${local.exacs_dynamic_group_name}' to read vaults in tenancy //Allows DG for ExaCS to work with vaults",
           "allow dynamic-group 'Default'/'all-exacs-DG' to use secret-family in compartment cloud-engineering-shared // Used for OKV managed keys",
