@@ -439,7 +439,7 @@ locals {
           "allow group ${local.core_policy_exacs_admin_group_name} to manage scheduling-policies in compartment ${local.core_policy_exacs_compartment} //Allow Admins to manage Schedules",
           "allow group ${local.core_policy_exacs_admin_group_name} to manage scheduling-windows in compartment ${local.core_policy_exacs_compartment} //Allow Admins to manage Schedules",
           "allow group ${local.core_policy_exacs_admin_group_name} to manage scheduling-plan in compartment ${local.core_policy_exacs_compartment} //Allow Admins to manage Schedules",
-          "allow group ${local.core_policy_exacs_admin_group_name} to manage scheduling-action in compartment ${local.core_policy_exacs_compartment} //Allow Admins to manage Schedules",
+          "allow group ${local.core_policy_exacs_admin_group_name} to manage scheduled-action in compartment ${local.core_policy_exacs_compartment} //Allow Admins to manage Schedules",
           "allow group ${local.core_policy_exacs_admin_group_name} to manage execution-windows in compartment ${local.core_policy_exacs_compartment} //Allow Admins to manage Schedules",
           "allow group ${local.core_policy_exacs_admin_group_name} to manage execution-action in compartment ${local.core_policy_exacs_compartment} //Allow Admins to manage Schedules",
           "allow dynamic-group '${local.default_domain_name}'/'${local.exacs_dynamic_group_name}' to manage keys in compartment ${local.core_policy_shared_compartment} //Allows DG for ExaCS to work with customer-managed keys",
