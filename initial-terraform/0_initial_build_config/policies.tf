@@ -30,6 +30,7 @@ locals {
   core_policy_fsdr_compartment        = "${local.core_policy_shared_compartment}:${module.cislz_compartments.compartments.FSDR-CMP.name}"
   core_policy_engineer_ocid           = module.cislz_compartments.compartments.CLOUD-ENG.id
   default_domain_name                 = "Default"
+  ce_domain_name                 = "cloud-engineering-domain" # TODO - fix this so it comes from variables
 
   policies = merge(
     {
@@ -403,7 +404,8 @@ locals {
           "allow any-user to use ai-service-vision-family in compartment ${local.core_policy_oic_compartment} where request.principal.type='integrationinstance' // Allow OIC instances to use RP for OCI Vision in OIC compartment",
           "allow dynamic-group '${local.default_domain_name}'/'${local.oic_rp_dynamic_group_name}' to manage object-family in compartment ${local.core_policy_engineer_compartment} //Allows Resource Principal to manage object family in CE compartment",
           "allow dynamic-group '${local.default_domain_name}'/'${local.oic_rp_dynamic_group_name}' to manage object-family in compartment ${local.core_policy_oic_compartment} //Allows Resource Principal to manage object family in OIC compartment",
-          # "allow dynamic-group 'oic-resource-principal-DG'
+          "allow dynamic-group '${local.ce_domain_name}'/'oic-resource-principal-DG' to manage object-family in compartment ${local.core_policy_engineer_compartment} //Allows Resource Principal to manage object family in CE compartment",
+          "allow dynamic-group '${local.ce_domain_name}'/'oic-resource-principal-DG' to manage object-family in compartment ${local.core_policy_oic_compartment} //Allows Resource Principal to manage object family in OIC compartment",
         ]
       },
       //allow dynamic-group 'cloud-engineering-domain'/'oic-resource-principal-dg' to manage ai-service-document-family in compartment cloud-engineering-shared:oic //allow oic instances to use resource principal in oic compartment for document understanding
@@ -439,7 +441,7 @@ locals {
           "allow group ${local.core_policy_exacs_admin_group_name} to manage scheduling-policies in compartment ${local.core_policy_exacs_compartment} //Allow Admins to manage Schedules",
           "allow group ${local.core_policy_exacs_admin_group_name} to manage scheduling-windows in compartment ${local.core_policy_exacs_compartment} //Allow Admins to manage Schedules",
           "allow group ${local.core_policy_exacs_admin_group_name} to manage scheduling-plans in compartment ${local.core_policy_exacs_compartment} //Allow Admins to manage Schedules",
-          # "allow group ${local.core_policy_exacs_admin_group_name} to manage scheduled-action in compartment ${local.core_policy_exacs_compartment} //Allow Admins to manage Schedules",
+          "allow group ${local.core_policy_exacs_admin_group_name} to manage scheduled-actions in compartment ${local.core_policy_exacs_compartment} //Allow Admins to manage Schedules",
           # "allow group ${local.core_policy_exacs_admin_group_name} to manage execution-windows in compartment ${local.core_policy_exacs_compartment} //Allow Admins to manage Schedules",
           # "allow group ${local.core_policy_exacs_admin_group_name} to manage execution-action in compartment ${local.core_policy_exacs_compartment} //Allow Admins to manage Schedules",
           "allow dynamic-group '${local.default_domain_name}'/'${local.exacs_dynamic_group_name}' to manage keys in compartment ${local.core_policy_shared_compartment} //Allows DG for ExaCS to work with customer-managed keys",
