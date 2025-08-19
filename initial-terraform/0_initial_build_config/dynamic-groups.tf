@@ -13,6 +13,8 @@ locals {
   stackmon_dynamic_group_name     = "all-stackmon-instances"
   certificate_dynamic_group_key   = "CERT-AUTH-DYN-GROUP"
   certificate_dynamic_group_name  = "CertificateAuthority-DG"
+  container_dynamic_group_key            = "CONT-DYN-GROUP"
+  container_dynamic_group_name           = "all-containerinstances-DG"
   gg_dynamic_group_key            = "GG-DYN-GROUP"
   gg_dynamic_group_name           = "all-goldengate-deployments-DG"
   func_dynamic_group_key          = "FUNC-DYN-GROUP"
@@ -55,6 +57,14 @@ locals {
         name               = local.adb_dynamic_group_name
         description        = "Allows any instance to be an ADB instance - Resource Principal"
         matching_rule      = "resource.type='autonomousdatabase'"
+      }
+    },
+    {
+      (local.container_dynamic_group_key) = {
+        identity_domain_id = var.default_domain_ocid
+        name               = local.container_dynamic_group_name
+        description        = "Allows any container instance to be included in this DG"
+        matching_rule      = "resource.type='computecontainerinstance'"
       }
     },
     {
