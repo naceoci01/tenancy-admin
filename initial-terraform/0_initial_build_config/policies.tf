@@ -211,8 +211,12 @@ locals {
           "allow group ${local.core_policy_group_name} to {DATABASE_SERVICE_USAGE_INSPECT} in TENANCY //Allow CE to read DBMGMT Usage",
           "allow group ${local.core_policy_group_name} to manage dbmgmt-family in compartment ${local.core_policy_engineer_compartment} where ALL { request.permission != 'DBMGMT_PRIVATE_ENDPOINT_DELETE', request.permission != 'DBMGMT_PRIVATE_ENDPOINT_CREATE', request.permission != 'DBMGMT_PRIVATE_ENDPOINT_UPDATE' } //Allow CE to use almost all DBMgmt in CE Compartment",
           "allow group ${local.core_policy_group_name} to manage dbmgmt-family in compartment ${local.core_policy_exacs_compartment} where ALL { request.permission != 'DBMGMT_PRIVATE_ENDPOINT_DELETE', request.permission != 'DBMGMT_PRIVATE_ENDPOINT_CREATE', request.permission != 'DBMGMT_PRIVATE_ENDPOINT_UPDATE' } //Allow CE to use almost all DBMgmt in ExaCS Compartment",
+          "allow group ${local.core_policy_group_name} to manage dbmgmt-dblm-family in compartment ${local.core_policy_engineer_compartment} //Allow CE to use DBMgmt DBLM in Main CE Compartment",
+          "allow group ${local.core_policy_group_name} to manage dbmgmt-dblm-family in compartment ${local.core_policy_exacs_compartment} //Allow CE to use DBMgmt DBLM in ExaCS Compartment",
           "Allow service dpd to read secret-family in compartment ${local.core_policy_engineer_compartment} //Service Permission for Database management into CE Paaswords",
           "Allow service dpd to read secret-family in compartment ${local.core_policy_exacs_compartment} //Service Permission for Database management into ExaCS Passwords",
+          "Allow any-user to read secret-family in compartment ${local.core_policy_engineer_compartment} where request.principal.type = 'dbmgmtmanageddatabase'} //Resource Principal for DBMGMT Managed Database to read secrets in Main CE Compartment",
+          "Allow any-user to read secret-family in compartment ${local.core_policy_exacs_compartment} where request.principal.type = 'dbmgmtmanageddatabase'} //Resource Principal for DBMGMT Managed Database to read secrets in ExaCS Compartment",
         ]
       }
     },
@@ -409,9 +413,10 @@ locals {
           "allow dynamic-group '${local.default_domain_name}'/'${local.oic_rp_dynamic_group_name}' to manage object-family in compartment ${local.core_policy_oic_compartment} //Allows Resource Principal to manage object family in OIC compartment",
           "allow dynamic-group '${local.ce_domain_name}'/'oic-resource-principal-DG' to manage object-family in compartment ${local.core_policy_engineer_compartment} //Allows Resource Principal to manage object family in CE compartment",
           "allow dynamic-group '${local.ce_domain_name}'/'oic-resource-principal-DG' to manage object-family in compartment ${local.core_policy_oic_compartment} //Allows Resource Principal to manage object family in OIC compartment",
+          "allow dynamic-group '${local.ce_domain_name}'/'oic-resource-principal-DG' to manage ai-service-document-family in compartment ${local.core_policy_oic_compartment} //allow oic instances to use resource principal in oic compartment for document understanding",
+          "allow dynamic-group '${local.ce_domain_name}'/'oic-resource-principal-DG' to manage ai-service-document-family in compartment ${local.core_policy_engineer_compartment} //allow oic instances to use resource principal in Main CE compartment for document understanding",
         ]
       },
-      //allow dynamic-group 'cloud-engineering-domain'/'oic-resource-principal-dg' to manage ai-service-document-family in compartment cloud-engineering-shared:oic //allow oic instances to use resource principal in oic compartment for document understanding
     } : {}, #No policy OIC
     var.create_exa == true ? {
       "CE-EXACS-POLICY" : {
