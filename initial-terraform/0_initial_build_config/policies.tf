@@ -213,8 +213,8 @@ locals {
           "allow group ${local.core_policy_group_name} to manage dbmgmt-family in compartment ${local.core_policy_exacs_compartment} where ALL { request.permission != 'DBMGMT_PRIVATE_ENDPOINT_DELETE', request.permission != 'DBMGMT_PRIVATE_ENDPOINT_CREATE', request.permission != 'DBMGMT_PRIVATE_ENDPOINT_UPDATE' } //Allow CE to use almost all DBMgmt in ExaCS Compartment",
           "Allow service dpd to read secret-family in compartment ${local.core_policy_engineer_compartment} //Service Permission for Database management into CE Paaswords",
           "Allow service dpd to read secret-family in compartment ${local.core_policy_exacs_compartment} //Service Permission for Database management into ExaCS Passwords",
-          "Allow any-user to read secret-family in compartment ${local.core_policy_engineer_compartment} where request.principal.type = 'dbmgmtmanageddatabase'} //Resource Principal for DBMGMT Managed Database to read secrets in Main CE Compartment",
-          "Allow any-user to read secret-family in compartment ${local.core_policy_exacs_compartment} where request.principal.type = 'dbmgmtmanageddatabase'} //Resource Principal for DBMGMT Managed Database to read secrets in ExaCS Compartment",
+          "Allow any-user to read secret-family in compartment ${local.core_policy_engineer_compartment} where request.principal.type = 'dbmgmtmanageddatabase' //Resource Principal for DBMGMT Managed Database to read secrets in Main CE Compartment",
+          "Allow any-user to read secret-family in compartment ${local.core_policy_exacs_compartment} where request.principal.type = 'dbmgmtmanageddatabase' //Resource Principal for DBMGMT Managed Database to read secrets in ExaCS Compartment",
         ]
       }
     },
