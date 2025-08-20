@@ -10,11 +10,11 @@ locals {
 
     # Groups
     cloud_engineers_group = {
-        (local.cloud_engineering_group_key) = {
-            identity_domain_id        = var.ce_domain_ocid
-            name                      = "test-group"
-            description               = local.cloud_engineering_group_description
-        }
+        # (local.cloud_engineering_group_key) = {
+        #     identity_domain_id        = var.ce_domain_ocid
+        #     name                      = "test-group"
+        #     description               = local.cloud_engineering_group_description
+        # }
     }
 
     # Merge all groups
