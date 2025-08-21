@@ -8,7 +8,6 @@ variable "user_ocid" { default = "" }
 variable "fingerprint" { default = "" }
 variable "private_key_path" { default = "" }
 variable "private_key_password" { default = "" }
-variable "home_region" {description = "Your tenancy home region"}
 
 # Required Inputs
 variable "default_domain_ocid" {
@@ -150,21 +149,6 @@ variable "create_ds" {
 variable "create_postgres" {
     type = bool
     description = "Whether to enable Postgres"
-}
-
-variable "create_opensearch" {
-    type = bool
-    description = "Whether to enable OpenSearch"
-}
-
-variable "create_func" {
-    type = bool
-    description = "Whether to enable OCI Functions"
-}
-
-variable "create_di" {
-    type = bool
-    description = "Whether to enable OCI Data Integration"
 }
 
 variable "create_firewall" {
