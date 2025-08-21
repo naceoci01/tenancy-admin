@@ -49,6 +49,9 @@ locals {
             for comp in local.comp_names: "set compute-core quota standard-e5-core-count to 8 in compartment ${data.oci_identity_compartment.cloud-eng-comp.name}:${comp}"
         ],
         [
+            for comp in local.comp_names: "set compute-core quota standard-e6-core-count to 8 in compartment ${data.oci_identity_compartment.cloud-eng-comp.name}:${comp}"
+        ],
+        [
             for comp in local.comp_names: "set compute-core quota standard2-core-count to 8 in compartment ${data.oci_identity_compartment.cloud-eng-comp.name}:${comp}"
         ],
         [
@@ -69,30 +72,36 @@ locals {
             "set compute-memory quota standard-a1-memory-regional-count to 10000000 in compartment ${data.oci_identity_compartment.cloud-eng-comp.name}",
         ],
         [
-            for comp in local.comp_names: "set compute-memory quota standard-e5-memory-count to 120 in compartment ${data.oci_identity_compartment.cloud-eng-comp.name}:${comp}"
+            for comp in local.comp_names: "set compute-memory quota standard-e5-memory-count to 200 in compartment ${data.oci_identity_compartment.cloud-eng-comp.name}:${comp}"
         ],
         [
-            for comp in local.comp_names: "set compute-memory quota standard3-memory-count to 120 in compartment ${data.oci_identity_compartment.cloud-eng-comp.name}:${comp}"
+            for comp in local.comp_names: "set compute-memory quota standard-e6-memory-count to 200 in compartment ${data.oci_identity_compartment.cloud-eng-comp.name}:${comp}"
         ],
         [
-            for comp in local.comp_names: "set compute-memory quota standard-a1-memory-count to 120 in compartment ${data.oci_identity_compartment.cloud-eng-comp.name}:${comp}"
+            for comp in local.comp_names: "set compute-memory quota standard3-memory-count to 200 in compartment ${data.oci_identity_compartment.cloud-eng-comp.name}:${comp}"
+        ],
+        [
+            for comp in local.comp_names: "set compute-memory quota standard-a1-memory-count to 200 in compartment ${data.oci_identity_compartment.cloud-eng-comp.name}:${comp}"
         ],
     )
 
     storage_quota_statements = concat(
         [
-            "zero block-storage quota in compartment ${data.oci_identity_compartment.cloud-eng-comp.name}",
+            "zero block-storage quota total-storage-gb in compartment ${data.oci_identity_compartment.cloud-eng-comp.name}",
             "zero filesystem quota in compartment ${data.oci_identity_compartment.cloud-eng-comp.name}"
         ],
         [
             for comp in local.comp_names: "set block-storage quota total-storage-gb to 4096 in compartment ${data.oci_identity_compartment.cloud-eng-comp.name}:${comp}"
         ],
         [
-            for comp in local.comp_names: "set filesystem quota file-system-count to 1 in compartment ${data.oci_identity_compartment.cloud-eng-comp.name}:${comp}"
+            for comp in local.comp_names: "set filesystem quota file-system-count to 2 in compartment ${data.oci_identity_compartment.cloud-eng-comp.name}:${comp}"
         ],
         [
             for comp in local.comp_names: "set filesystem quota mount-target-count to 1 in compartment ${data.oci_identity_compartment.cloud-eng-comp.name}:${comp}"
-        ]       
+        ],      
+        [
+            for comp in local.comp_names: "set filesystem quota replication-count to 1 in compartment ${data.oci_identity_compartment.cloud-eng-comp.name}:${comp}"
+        ]     
     )
     network_quota_statements = concat(
         [

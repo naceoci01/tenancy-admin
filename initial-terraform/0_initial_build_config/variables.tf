@@ -17,11 +17,11 @@ variable "home_region" {description = "Your tenancy home region"}
 
 # Required Inputs
 variable "default_domain_ocid" {
-    description = "OCID of Default Identity domain"
+    description = "OCID of Default Identity Domain"
 }
 
 variable "ce_domain_ocid" {
-    description = "OCID of Cloud Engineers Identity domain (nondefault)"
+    description = "OCID of Cloud Engineers Identity Domain (nondefault)"
 }
 
 # Groups
@@ -149,4 +149,16 @@ variable "create_idl" {
 variable "create_firewall" {
     type = bool
     description = "Whether to enable OCI Network Firewall"
+}
+
+variable "create_fsdr" {
+    type = bool
+    description = "Whether to enable FSDR"
+}
+
+# List Variables
+variable "oic_resource_ids" {
+    type = list(string)
+    description = "List of OIC Resource OCIDs that will be allowed to access resources in the tenancy"
+    default = []
 }

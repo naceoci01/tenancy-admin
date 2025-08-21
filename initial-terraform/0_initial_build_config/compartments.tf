@@ -74,11 +74,16 @@ locals {
       description = "Shared Intelligent Data Lake"
     }
   } : {}
-
+  fsdr_comp = var.create_fsdr ? {
+    FSDR-CMP = {
+      name        = "FullStackDR",
+      description = "Full Stack Disaster Recovery Service"
+    }
+  } : {}
   children = merge(local.oac_comp, local.oic_comp, local.exacs_comp,
     local.pg_comp, local.ds_comp, local.mysql_comp, local.di_comp,
     local.opensearch_comp, local.firewall_comp, local.gg_comp,
-    local.oda_comp, local.idl_comp)
+    local.oda_comp, local.idl_comp, local.fsdr_comp)
 
   all_comp = {
     CLOUD-ENG = {

@@ -6,20 +6,18 @@ locals {
   cloud_engineering_domain_key         = "CLOUD-ENGINEERS-DOMAIN"
 
   identity_domains_configuration = {
-    # default_compartment_id : "TENANCY-ROOT",
-    # ocid1.tenancy.oc1..aaaaaaaaonqlfuxbai2t677fopst4vowm5axun74bmowkxtcqvbx6liagciq
     default_defined_tags : null
     default_freeform_tags : null,
     identity_domains : {
       (local.cloud_engineering_domain_key) : {
         # compartment_id = "TENANCY-ROOT"
-        description                      = "${var.ce_domain_name} Identity Domain"
+        description                      = var.ce_domain_desc
         display_name                     = var.ce_domain_name
         license_type                     = "oracle-apps"
-        admin_email                      = "orasenatdpltintegration01_us@oracle.com"
-        admin_first_name                 = "Integration01"
-        admin_last_name                  = "Administrator"
-        admin_user_name                  = "orasenatdpltintegration01_us@oracle.com"
+        admin_email                      = var.ce_domain_admin_email
+        admin_first_name                 = var.ce_domain_admin_first_name
+        admin_last_name                  = var.ce_domain_admin_last_name
+        admin_user_name                  = var.ce_domain_admin_email
         home_region                      = var.region
         is_hidden_on_login               = false
         is_notification_bypassed         = false

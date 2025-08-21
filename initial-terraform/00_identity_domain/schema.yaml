@@ -10,26 +10,43 @@ locale: "en"
 variableGroups:
   - title: "Identity Domain Configuration"
     variables:
+      - default_domain_ocid
       - ce_domain_name
       - ce_domain_description
-      - default_domain_ocid
+      - 
+
+  - title: "Shared Group Config (Mandatory)"
+    description: This group will be created in the non-Default Identity Domain specified above.  This group is used to assign policies to all Cloud Engineers in the tenancy.
+    variables:
       - engineer_group_name
-  - title: "Groups"
-    description: Whether to create each of the following groups.  Note - groups are not working at the moment
+      - engineer_group_desc
+
+  - title: "Optional Groups"
+    description: Whether to create each of the following groups.  These groups will be created in the non-Default Identity Domain specified above.  When referencing these groups in policies (as created by 0_initial_build_config stack), policies will refer to subject as the_domain/the_group.
     variables:
       - create_oic
       - engineer_oic_group_name
+      - engineer_oic_group_desc
       - create_oac
       - engineer_oac_group_name
-      - create_ds
-      - engineer_datascience_group_name
-      - create_mysql
-      - engineer_mysql_group_name
+      - engineer_oac_group_desc
       - create_exa
       - engineer_exacs_group_name
+      - engineer_exacs_group_desc
+      - create_ds
+      - engineer_datascience_group_name
+      - engineer_datascience_group_desc
+      - create_mysql
+      - engineer_mysql_group_name
+      - engineer_mysql_group_desc
       - create_postgres
       - engineer_postgres_group_name
-      - create_gg
+      - engineer_postgres_group_desc
+      - create_firewall
+      - engineer_firewall_group_name
+      - engineer_firewall_group_desc
+
+
   - title: "Hidden Variables" 
     visible: false
     variables:
@@ -42,40 +59,95 @@ variableGroups:
 
 variables:
   # string field
+  default_domain_ocid:
+    title: Default Identity Domain
+    description: The OCID of the default Identity Domain in the tenancy. This should be selected from the list of Identity Domains in the tenancy and correspond with the existing Default Domain.
+    type: oci:identity:domains:id
+
   ce_domain_name:
     title: Identity Domain Name
     type: string
-    description: Do not update this unless you know it is different from the default.
+    description: This is the new Identity Domain name for uses by the general population of users. Do not update this unless you know it is different from the default.
+    default: cloud-engineering-domain
 
   ce_domain_desc:
     title: Identity Domain Description
     type: string
     description: This Identity Domain is for all users of the tenancy that are not Default Domain users
+    default: Identity Domain for Cloud Engineering users
 
-  default_domain_ocid:
-    title: Default Identity Domain
-    type: oci:identity:domains:id
+  ce_domain_admin_first_name:
+    title: Identity Domain Admin First Name
+    type: string
+    description: The first name of the Identity Domain Administrator.  This is used to create the Identity Domain Admin user.
+    default: Cloud Engineering
 
-# Groups
+  ce_domain_admin_last_name:
+    title: Identity Domain Admin Last Name
+    type: string
+    description: The last name of the Identity Domain Administrator.  This is used to create the Identity Domain Admin user.
+    default: Administrator
+
+  ce_domain_admin_email:
+    title: Identity Domain Admin Email
+    type: string
+    description: The email address of the Identity Domain Administrator.  This is used to create the Identity Domain Admin user.
+    required: true
+
+# Mandatory Groups
   engineer_group_name:
     title: Name of IAM group for engineers
     type: string
-    description: Change as necessary
+    description: The group to use for the general population of engineers in the tenancy. This group will be used for all engineers.
     default: cloud-engineering-domain-users
 
-  engineer_datascience_group_name:
-    title: Name of IAM group for Data Science engineers
+  engineer_group_desc:
+    title: Description of IAM group for engineers
     type: string
-    description: Change as necessary
-    default: cloud-engineering-datascience-users
-    visible: create_ds
+    description: The description to use for the general population of engineers in the tenancy. This group will be used for all engineers.
+    default: General group for all users in the cloud engineering domain.  Users in this group can be assigned to other groups in the domain, if desired.
+
+# Optional Groups
+  engineer_oic_group_name:
+    title: Name of IAM group for OIC Admins
+    type: string
+    description: Users in this group have the ability to manage OIC and associated resources in the shared OIC compartment.  Regular users can be added as OIC Service User role from the Domains Integrated Services screen.
+    default: cloud-engineering-oic-admins
+    visible: create_oic
+
+  engineer_oic_group_desc:
+    title: Description for OIC Admins group
+    type: string
+    description: Users in this group have the ability to manage OIC and associated resources in the shared OIC compartment.  Regular users can be added as OIC Service User role from the Domains Integrated Services screen.
+    default: Users who can administer OIC Instances in OCI and have ServiceAdministrator role
+    visible: create_oic
 
   engineer_oac_group_name:
     title: Name of IAM group for Oracle Analytics Admins
     type: string
-    description: Users in this group have full admin over OAC Instances and within
+    description: Users in this group have full admin over OAC Instances for creation purposes.  Note that this group may separately need to be added to the Domain Integrated Services Screen for OAC instances as they are created.
     default: cloud-engineering-oac-admins
     visible: create_oac
+
+  engineer_oac_group_desc:
+    title: Description for OAC Admins group
+    type: string
+    description: Users in this group have full admin over OAC Instances for creation purposes.  Note that this group may separately need to be added to the Domain Integrated Services Screen for OAC instances as they are created.
+    default: Users who can administer OAC Instances in OCI
+
+  engineer_datascience_group_name:
+    title: Name of IAM group for Data Science engineers
+    type: string
+    description: Users in this group have the ability to create and use Data Science resources
+    default: cloud-engineering-datascience-users
+    visible: create_ds
+
+  engineer_datascience_group_desc:
+    title: Description for Data Science Users group
+    type: string
+    description: Users in this group have the ability to create and use Data Science resources
+    default: Users who can create and use Data Science resources in OCI
+    visible: create_ds
 
   engineer_mysql_group_name:
     title: Name of IAM group for MySQL Heatwave Admins
@@ -84,19 +156,39 @@ variables:
     default: cloud-engineering-mysql-admins
     visible: create_mysql
 
+  engineer_mysql_group_desc:
+    title: Description for MySQL Admins group
+    type: string
+    description: Users in this group have full admin over MySQL and VCNs in MySQL compartment
+    default: Users who can administer MySQL Instances in OCI
+    visible: create_mysql
+
   engineer_postgres_group_name:
     title: Name of IAM group for Postgres Users
     type: string
-    description: Users in this group have the ability to create and use Postgres
+    description: Users in this group have the ability to create Postgres instances in the postgres compartment
     default: cloud-engineering-postgres-users
-    required: false
+    visible: create_postgres
+
+  engineer_postgres_group_desc:
+    title: Description for Postgres Users group
+    type: string
+    description: Users in this group have the ability to create Postgres instances in the postgres compartment
+    default: Users who can create and use Postgres instances in OCI
     visible: create_postgres
 
   engineer_exacs_group_name:
     title: Name of IAM group for ExaCS Admins
     type: string
-    description: Users in this group have the ability to create and destroy ExaCS Infa and VM Clusters
+    description: Users in this group have the ability to create and destroy ExaCS Infa and VM Clusters.
     default: cloud-engineering-exacs-admins
+    visible: create_exa
+
+  engineer_exacs_group_desc:
+    title: Description for ExaCS Admins group
+    type: string
+    description: Users in this group have the ability to create and destroy ExaCS Infa and VM Clusters.
+    default: Users who can administer ExaCS Instances in OCI
     visible: create_exa
 
   engineer_firewall_group_name:
@@ -106,29 +198,19 @@ variables:
     default: cloud-engineering-firewall-admins
     visible: create_firewall
 
-  engineer_oic_group_name:
-    title: Name of IAM group for OIC Admins
+  engineer_firewall_group_desc:
+    title: Description for Firewall Admins group
     type: string
-    description: Users in this group have the ability to manage OIC in shared compartment
-    default: cloud-engineering-oic-admins
-    visible: create_oic
-
-  engineer_oic_group_desc:
-    title: Description of IAM group for OIC Admins
-    type: string
-    description: Description of OIC group
-    default: Users in OIC Group
-    visible: create_oic
+    description: Users in this group have the ability to create destroy Network Firewall in shared compartment
+    default: Users who can administer Network Firewall Instances in OCI 
+    visible: create_firewall
 
 # Booleans
   create_oic:
-    title: Create the OIC Policy and compartment
+    title: Create the OIC Admin Group
     type: boolean
   create_exa:
-    title: Create the ExaCS Policy and compartment
-    type: boolean
-  create_oda:
-    title: Create the ODA Policy and compartment
+    title: Create the ExaCS Admin Group
     type: boolean
   create_mysql:
     title: Create the MySQL Policy and compartment
@@ -139,24 +221,9 @@ variables:
   create_ds:
     title: Create the Data Science Policy and compartment
     type: boolean
-  create_ai:
-    title: Create the AI and GenAI Policy
-    type: boolean
-  create_gg:
-    title: Create the GoldenGate Policy and compartment
-    type: boolean
-  create_func:
-    title: Create the OCI Functions Policy
-    type: boolean
   create_postgres:
     title: Create the Postgres Compartment and Policy
     type: boolean
-  create_opensearch:
-    title: Create the OpenSearch Compartment
-    type: boolean
-  create_di:
-    title: Create the Data Integration and Data Flow Compartment, Dynamic Groups, and Policy
-    type: boolean
   create_firewall:
-    title: Create the Network Firewall Compartment
+    title: Create the Network Firewall Policy and compartment
     type: boolean

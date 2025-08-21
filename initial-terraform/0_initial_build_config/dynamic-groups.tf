@@ -13,6 +13,8 @@ locals {
   stackmon_dynamic_group_name     = "all-stackmon-instances"
   certificate_dynamic_group_key   = "CERT-AUTH-DYN-GROUP"
   certificate_dynamic_group_name  = "CertificateAuthority-DG"
+  container_dynamic_group_key            = "CONT-DYN-GROUP"
+  container_dynamic_group_name           = "all-containerinstances-DG"
   gg_dynamic_group_key            = "GG-DYN-GROUP"
   gg_dynamic_group_name           = "all-goldengate-deployments-DG"
   func_dynamic_group_key          = "FUNC-DYN-GROUP"
@@ -31,9 +33,14 @@ locals {
   mysql_dynamic_group_name        = "all-mysql-dbsystems-DG"
   exacs_dynamic_group_key         = "EXACS-DYN-GROUP"
   exacs_dynamic_group_name        = "all-exacs-DG"
+  database_dynamic_group_key         = "DB-DYN-GROUP"
+  database_dynamic_group_name        = "all-databases-DG"
+  resource_dynamic_group_key         = "RESOURCE-DYN-GROUP"
+  resource_dynamic_group_name        = "all-resourceschedules-DG"
   data_catalog_dynamic_group_key         = "DATACATALOG-DYN-GROUP"
   data_catalog_dynamic_group_name        = "all-data-catalog-DG"
-
+  oic_rp_dynamic_group_key         = "OIC-RP-DYN-GROUP"
+  oic_rp_dynamic_group_name        = "all-OIC-RP-DG"
   # Dynamic Groups
   all_dynamic_groups = merge(
     {
@@ -50,6 +57,14 @@ locals {
         name               = local.adb_dynamic_group_name
         description        = "Allows any instance to be an ADB instance - Resource Principal"
         matching_rule      = "resource.type='autonomousdatabase'"
+      }
+    },
+    {
+      (local.container_dynamic_group_key) = {
+        identity_domain_id = var.default_domain_ocid
+        name               = local.container_dynamic_group_name
+        description        = "Allows any container instance to be included in this DG"
+        matching_rule      = "resource.type='computecontainerinstance'"
       }
     },
     {
@@ -74,6 +89,22 @@ locals {
         name               = local.func_dynamic_group_name
         description        = "Defines all OCI Functions"
         matching_rule      = "resource.type = 'fnfunc'"
+      }
+    },
+    {
+      (local.resource_dynamic_group_key) = {
+        identity_domain_id = var.default_domain_ocid
+        name               = local.resource_dynamic_group_name
+        description        = "Defines all OCI Resource Schedules"
+        matching_rule      = "resource.type = 'resourceschedule'"
+      }
+    },
+    {
+      (local.database_dynamic_group_key) = {
+        identity_domain_id = var.default_domain_ocid
+        name               = local.database_dynamic_group_name
+        description        = "Defines all OCI Databases"
+        matching_rule      = "ANY {resource.type = 'database', resource.type = 'dbsystem'}"
       }
     },
 
@@ -155,6 +186,15 @@ locals {
         name               = local.data_catalog_dynamic_group_name
         description        = "Defines all Data Catalog via resource type"
         matching_rule      = "any {resource.type='datacatalog', resource.type='datacatalogprivateendpoint', resource.type='datacatalogmetastore'}"
+      }
+    } : {},
+    var.create_oic == true ?
+    {
+      (local.oic_rp_dynamic_group_key) = {
+        identity_domain_id = var.default_domain_ocid
+        name               = local.oic_rp_dynamic_group_name
+        description        = "Defines all OIC Instances by Resource ID (OAUTH APPID)"
+        matching_rule      = "any { ${join(", ", [for id in var.oic_resource_ids : "resource.id='${id}'"])} }"
       }
     } : {},
 
