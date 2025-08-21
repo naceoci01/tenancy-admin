@@ -12,8 +12,10 @@ variableGroups:
     variables:
       - default_domain_ocid
       - ce_domain_name
-      - ce_domain_description
-      - 
+      - ce_domain_desc
+      - ce_domain_admin_first_name
+      - ce_domain_admin_last_name
+      - ce_domain_admin_email
 
   - title: "Shared Group Config (Mandatory)"
     description: This group will be created in the non-Default Identity Domain specified above.  This group is used to assign policies to all Cloud Engineers in the tenancy.
@@ -63,6 +65,8 @@ variables:
     title: Default Identity Domain
     description: The OCID of the default Identity Domain in the tenancy. This should be selected from the list of Identity Domains in the tenancy and correspond with the existing Default Domain.
     type: oci:identity:domains:id
+    dependsOn:
+      compartmentId: compartment_ocid
 
   ce_domain_name:
     title: Identity Domain Name
