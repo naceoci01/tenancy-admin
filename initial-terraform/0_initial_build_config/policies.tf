@@ -431,6 +431,7 @@ locals {
           "allow group ${local.core_policy_exacs_admin_group_name} to manage cloud-vmclusters in compartment ${local.core_policy_exacs_compartment} //Allow Admins for ExaCS VM Cluster",
           "allow group ${local.core_policy_exacs_admin_group_name} to manage exadb-vm-clusters in compartment ${local.core_policy_exacs_compartment} //Allow Admins for ExaScale VM Cluster",
           "allow group ${local.core_policy_exacs_admin_group_name} to manage cloud-exadata-infrastructures in compartment ${local.core_policy_exacs_compartment} //Allow Admins to manage Infra",
+          "allow group ${local.core_policy_exacs_admin_group_name} to manage exadata-infrastructures in compartment ${local.core_policy_exacs_compartment} //Allow Admins to manage real Exa Infra for CC",
           "allow group ${local.core_policy_exacs_admin_group_name} to manage db-homes in compartment ${local.core_policy_exacs_compartment} //Allow Admins to manage DB Homes",
           "allow group ${local.core_policy_exacs_admin_group_name} to manage scheduling-policies in compartment ${local.core_policy_exacs_compartment} //Allow Admins to manage Schedules",
           "allow group ${local.core_policy_exacs_admin_group_name} to manage scheduling-windows in compartment ${local.core_policy_exacs_compartment} //Allow Admins to manage Schedules",
