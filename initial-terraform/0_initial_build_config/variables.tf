@@ -155,3 +155,10 @@ variable "create_fsdr" {
     type = bool
     description = "Whether to enable FSDR"
 }
+
+# List Variables
+variable "oic_resource_ids" {
+    type = list(string)
+    description = "List of OIC Resource OCIDs that will be allowed to access resources in the tenancy"
+    default = []
+}

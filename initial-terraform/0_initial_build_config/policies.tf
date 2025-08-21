@@ -369,7 +369,7 @@ locals {
     var.create_oic == true ? {
       "CE-OIC-POLICY" : {
         name : "cloud-engineering-OIC-policy"
-        description : "Permissions for Oracle Integration"
+        description : "Permissions for Oracle Integration and admin group"
         compartment_id : "TENANCY-ROOT"
         statements : [
           "allow group ${local.core_policy_oic_admin_group_name} to manage integration-instance in compartment ${local.core_policy_oic_compartment} //Allow OIC Admins to manage all OIC",
@@ -389,30 +389,18 @@ locals {
       },
       "CE-OIC-RP-POLICY" : {
         name : "cloud-engineering-OIC-RP-policy"
-        description : "Permissions for Oracle Integration Resource Principal and Service Invocation"
+        description : "Permissions for OIC3 Resource Principal and Service Invocation"
         compartment_id : "TENANCY-ROOT"
         statements : [
-          "allow any-user to read all-resources in tenancy where request.principal.type='integrationinstance' // Broad read access for OIC Resource Principal to read anything in tenancy",
-          "allow any-user to manage object-family in compartment ${local.core_policy_engineer_compartment} where request.principal.type='integrationinstance' // Allow OIC instances to use RP in ce compartment for object storage",
-          "allow any-user to manage object-family in compartment ${local.core_policy_oic_compartment} where request.principal.type='integrationinstance' // Allow OIC instances to use RP in OIC compartment for object storage",
-          "allow any-user to use functions-family in compartment ${local.core_policy_engineer_compartment} where request.principal.type='integrationinstance' // Allow OIC instances to use RP for OCI Functions in CE compartment",
-          "allow any-user to use functions-family in compartment ${local.core_policy_oic_compartment} where request.principal.type='integrationinstance' // Allow OIC instances to use RP for OCI Functions in OIC compartment",
-          "allow any-user to use api-gateway-family in compartment ${local.core_policy_engineer_compartment} where request.principal.type='integrationinstance' // Allow OIC instances to use RP for OCI APIGW in CE compartment",
-          "allow any-user to use api-gateway-family in compartment ${local.core_policy_oic_compartment} where request.principal.type='integrationinstance' // Allow OIC instances to use RP for OCI APIGW in OIC compartment",
-          "allow any-user to use queues in compartment ${local.core_policy_engineer_compartment} where request.principal.type='integrationinstance' // Allow OIC instances to use RP for OCI Queues in CE compartment",
-          "allow any-user to use queues in compartment ${local.core_policy_oic_compartment} where request.principal.type='integrationinstance' // Allow OIC instances to use RP for OCI Queues in OIC compartment",
-          "allow any-user to use ai-service-document-family in compartment ${local.core_policy_engineer_compartment} where request.principal.type='integrationinstance' // Allow OIC instances to use RP for OCI Doc in CE compartment",
-          "allow any-user to use ai-service-document-family in compartment ${local.core_policy_oic_compartment} where request.principal.type='integrationinstance' // Allow OIC instances to use RP for OCI Doc in OIC compartment",
-          "allow any-user to use ai-service-speech-family in compartment ${local.core_policy_engineer_compartment} where request.principal.type='integrationinstance' // Allow OIC instances to use RP for OCI Speech in CE compartment",
-          "allow any-user to use ai-service-speech-family in compartment ${local.core_policy_oic_compartment} where request.principal.type='integrationinstance' // Allow OIC instances to use RP for OCI Speech in OIC compartment",
-          "allow any-user to use ai-service-vision-family in compartment ${local.core_policy_engineer_compartment} where request.principal.type='integrationinstance' // Allow OIC instances to use RP for OCI Vision in CE compartment",
-          "allow any-user to use ai-service-vision-family in compartment ${local.core_policy_oic_compartment} where request.principal.type='integrationinstance' // Allow OIC instances to use RP for OCI Vision in OIC compartment",
+          "allow dynamic-group '${local.default_domain_name}'/'${local.oic_rp_dynamic_group_name}' to read all-resources in tenancy //Allows Resource Principal for OIC to read anything in tenancy",
           "allow dynamic-group '${local.default_domain_name}'/'${local.oic_rp_dynamic_group_name}' to manage object-family in compartment ${local.core_policy_engineer_compartment} //Allows Resource Principal to manage object family in CE compartment",
           "allow dynamic-group '${local.default_domain_name}'/'${local.oic_rp_dynamic_group_name}' to manage object-family in compartment ${local.core_policy_oic_compartment} //Allows Resource Principal to manage object family in OIC compartment",
-          "allow dynamic-group '${local.ce_domain_name}'/'oic-resource-principal-DG' to manage object-family in compartment ${local.core_policy_engineer_compartment} //Allows Resource Principal to manage object family in CE compartment",
-          "allow dynamic-group '${local.ce_domain_name}'/'oic-resource-principal-DG' to manage object-family in compartment ${local.core_policy_oic_compartment} //Allows Resource Principal to manage object family in OIC compartment",
-          "allow dynamic-group '${local.ce_domain_name}'/'oic-resource-principal-DG' to manage ai-service-document-family in compartment ${local.core_policy_oic_compartment} //allow oic instances to use resource principal in oic compartment for document understanding",
-          "allow dynamic-group '${local.ce_domain_name}'/'oic-resource-principal-DG' to manage ai-service-document-family in compartment ${local.core_policy_engineer_compartment} //allow oic instances to use resource principal in Main CE compartment for document understanding",
+          "allow dynamic-group '${local.default_domain_name}'/'${local.oic_rp_dynamic_group_name}' to manage ai-service-document-family in compartment ${local.core_policy_engineer_compartment} //Allows Resource Principal to manage OCI Document Understanding in CE compartment",
+          "allow dynamic-group '${local.default_domain_name}'/'${local.oic_rp_dynamic_group_name}' to manage generative-ai-family in compartment ${local.core_policy_engineer_compartment} //Allows Resource Principal to manage Generative AI family in CE compartment",
+          "allow dynamic-group '${local.default_domain_name}'/'${local.oic_rp_dynamic_group_name}' to manage genai-agent-family in compartment ${local.core_policy_engineer_compartment} //Allows Resource Principal to manage Generative AI Agent family in CE compartment",
+          "allow dynamic-group '${local.default_domain_name}'/'${local.oic_rp_dynamic_group_name}' to manage ai-service-language-family in compartment ${local.core_policy_engineer_compartment} //Allows Resource Principal to manage OCI Language in CE compartment",
+          "allow dynamic-group '${local.default_domain_name}'/'${local.oic_rp_dynamic_group_name}' to manage ai-service-speech-family in compartment ${local.core_policy_engineer_compartment} //Allows Resource Principal to manage OCI Speech in CE compartment",
+          "allow dynamic-group '${local.default_domain_name}'/'${local.oic_rp_dynamic_group_name}' to manage ai-service-vision-family in compartment ${local.core_policy_engineer_compartment} //Allows Resource Principal to manage OCI Vision in CE compartment",
         ]
       },
     } : {}, #No policy OIC

@@ -194,7 +194,7 @@ locals {
         identity_domain_id = var.default_domain_ocid
         name               = local.oic_rp_dynamic_group_name
         description        = "Defines all OIC Instances by Resource ID (OAUTH APPID)"
-        matching_rule      = "any {resource.id='xxx', resource.id='yyy', resource.id='zzz'}"
+        matching_rule      = "any { ${join(", ", [for id in var.oic_resource_ids : "resource.id='${id}'"])} }"
       }
     } : {},
 

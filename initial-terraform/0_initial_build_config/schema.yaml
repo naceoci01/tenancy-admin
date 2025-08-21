@@ -21,6 +21,7 @@ variableGroups:
     variables:
       - create_oic
       - engineer_oic_group_name
+      - oic_resource_ids
       - create_oac
       - engineer_oac_group_name
       - create_ds
@@ -139,6 +140,14 @@ variables:
     type: string
     description: Users in this group have the ability to manage OIC in shared compartment
     default: cloud-engineering-oic-admins
+    visible: create_oic
+  
+  oic_resource_ids:
+    title: OIC Resource OCIDs
+    type: list
+    description: List of OIC Resource OCIDs that will be allowed to access resources in the tenancy
+    items:
+      type: string
     visible: create_oic
 
   engineer_di_group_name:
