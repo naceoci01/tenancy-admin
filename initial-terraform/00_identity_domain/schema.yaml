@@ -12,8 +12,10 @@ variableGroups:
     variables:
       - default_domain_ocid
       - ce_domain_name
-      - ce_domain_description
-      - 
+      - ce_domain_desc
+      - ce_domain_admin_first_name
+      - ce_domain_admin_last_name
+      - ce_domain_admin_email
 
   - title: "Shared Group Config (Mandatory)"
     description: This group will be created in the non-Default Identity Domain specified above.  This group is used to assign policies to all Cloud Engineers in the tenancy.
@@ -63,29 +65,36 @@ variables:
     title: Default Identity Domain
     description: The OCID of the default Identity Domain in the tenancy. This should be selected from the list of Identity Domains in the tenancy and correspond with the existing Default Domain.
     type: oci:identity:domains:id
+    required: true
+    dependsOn:
+      compartmentId: compartment_ocid
 
   ce_domain_name:
     title: Identity Domain Name
     type: string
     description: This is the new Identity Domain name for uses by the general population of users. Do not update this unless you know it is different from the default.
+    required: true
     default: cloud-engineering-domain
 
   ce_domain_desc:
     title: Identity Domain Description
     type: string
     description: This Identity Domain is for all users of the tenancy that are not Default Domain users
+    required: true
     default: Identity Domain for Cloud Engineering users
 
   ce_domain_admin_first_name:
     title: Identity Domain Admin First Name
     type: string
     description: The first name of the Identity Domain Administrator.  This is used to create the Identity Domain Admin user.
+    required: true
     default: Cloud Engineering
 
   ce_domain_admin_last_name:
     title: Identity Domain Admin Last Name
     type: string
     description: The last name of the Identity Domain Administrator.  This is used to create the Identity Domain Admin user.
+    required: true
     default: Administrator
 
   ce_domain_admin_email:
@@ -93,12 +102,14 @@ variables:
     type: string
     description: The email address of the Identity Domain Administrator.  This is used to create the Identity Domain Admin user.
     required: true
+    pattern: "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$"
 
 # Mandatory Groups
   engineer_group_name:
     title: Name of IAM group for engineers
     type: string
     description: The group to use for the general population of engineers in the tenancy. This group will be used for all engineers.
+    required: true
     default: cloud-engineering-domain-users
 
   engineer_group_desc:
@@ -134,6 +145,7 @@ variables:
     type: string
     description: Users in this group have full admin over OAC Instances for creation purposes.  Note that this group may separately need to be added to the Domain Integrated Services Screen for OAC instances as they are created.
     default: Users who can administer OAC Instances in OCI
+    visible: create_oac
 
   engineer_datascience_group_name:
     title: Name of IAM group for Data Science engineers
