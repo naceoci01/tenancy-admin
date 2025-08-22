@@ -1,8 +1,8 @@
 # Use CISLZ Module to create a basic Identity Domain
 
 module "cislz_identity_domains" {
-  #source       = "github.com/oracle-quickstart/terraform-oci-cis-landing-zone-iam/identity-domains"
-  source       = "github.com/oci-landing-zones/terraform-oci-modules-iam//identity-domains?ref=release-0.2.9"
+  source       = "github.com/oracle-quickstart/terraform-oci-cis-landing-zone-iam/identity-domains"
+  #source       = "github.com/oci-landing-zones/terraform-oci-modules-iam//identity-domains?ref=release-0.2.9"
 
   tenancy_ocid                                  = var.tenancy_ocid
   identity_domains_configuration                = local.identity_domains_configuration
