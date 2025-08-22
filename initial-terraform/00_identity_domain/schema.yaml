@@ -225,17 +225,17 @@ variables:
     title: Create the ExaCS Admin Group
     type: boolean
   create_mysql:
-    title: Create the MySQL Policy and compartment
+    title: Create the MySQL Admin Group
     type: boolean
   create_oac:
-    title: Create the OAC Policy and compartment
+    title: Create the OAC Admin Group
     type: boolean
   create_ds:
-    title: Create the Data Science Policy and compartment
+    title: Create the Data Science Users Group
     type: boolean
   create_postgres:
-    title: Create the Postgres Compartment and Policy
+    title: Create the Postgres Admin Group
     type: boolean
   create_firewall:
-    title: Create the Network Firewall Policy and compartment
+    title: Create the Network Firewall Admin Group
     type: boolean

@@ -99,6 +99,7 @@ locals {
 
   # Merge all groups
   identity_domain_groups_configuration = {
+    # ignore_external_membership_updates : true
     groups : merge(local.cloud_engineers_group, local.optional_groups)
   }
 }
