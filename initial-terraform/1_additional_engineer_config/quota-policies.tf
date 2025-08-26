@@ -25,7 +25,7 @@ locals {
             "set database quota ex-pdb-count to 1000 in compartment ${data.oci_identity_compartment.cloud-eng-comp.name}"
         ],
         [
-            for comp in local.comp_names: "set database quota /*-total-storage-tb/ to 2 in compartment ${data.oci_identity_compartment.cloud-eng-comp.name}:${comp}"
+            for comp in local.comp_names: "set database quota /*-total-storage-tb/ to 4 in compartment ${data.oci_identity_compartment.cloud-eng-comp.name}:${comp}"
         ],
         [
             for comp in local.comp_names: "set database quota /*-ecpu-count/ to 6 in compartment ${data.oci_identity_compartment.cloud-eng-comp.name}:${comp}"
