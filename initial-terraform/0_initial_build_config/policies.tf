@@ -162,6 +162,7 @@ locals {
         compartment_id : "TENANCY-ROOT"
         statements : [
           "allow group ${local.core_policy_group_name} to manage instance-family in compartment ${local.core_policy_engineer_compartment} //Allow CE to work with all compute within main CE compartment",
+          "allow group ${local.core_policy_group_name} to manage auto-scaling-configurations in compartment ${local.core_policy_engineer_compartment} //Allow CE to work with all compute auto-scaling within main CE compartment",
           "allow group ${local.core_policy_group_name} to manage compute-container-family in compartment ${local.core_policy_engineer_compartment} //Allow CE to work with all container instances within main CE compartment",
           "allow dynamic-group '${local.default_domain_name}'/'${local.container_dynamic_group_name}' to read repos in compartment ${local.core_policy_engineer_compartment} // Allows container instances to to read from repos in CE Compartment",
           "allow group ${local.core_policy_group_name} to manage compute-management-family in compartment ${local.core_policy_engineer_compartment} //Allow CE to work with all compute within main CE compartment",
@@ -533,7 +534,7 @@ locals {
           "allow dynamic-group '${local.default_domain_name}'/'${local.genai_agent_group_name}' to {BUCKET_INSPECT, BUCKET_READ, OBJECT_INSPECT, OBJECT_READ, OBJECT_CREATE, OBJECT_OVERWRITE, PAR_MANAGE} in compartment ${local.core_policy_engineer_compartment} //DG Access to object storage buckets in engineer comp",
           "allow dynamic-group '${local.default_domain_name}'/'${local.genai_agent_group_name}' to read objects in compartment ${local.core_policy_engineer_compartment} //DG Access to object storage",
           "allow dynamic-group '${local.default_domain_name}'/'${local.genai_agent_group_name}' to use database-tools-family in compartment ${local.core_policy_shared_compartment} //DG Access to DB Tools in Shared Comp",
-          "allow dynamic-group '${local.default_domain_name}'/'${local.genai_agent_group_name}' to use database-tools-family in compartment ${local.core_policy_engineer_compartment} //DG Access to DB Tools in Engineer Comp",
+          "allow dynamic-group '${local.default_domain_name}'/'${local.genai_agent_group_name}' to manage database-tools-family in compartment ${local.core_policy_engineer_compartment} //DG Access to DB Tools in Engineer Comp",
           "allow dynamic-group '${local.default_domain_name}'/'${local.genai_agent_group_name}' to read secret-family in compartment ${local.core_policy_shared_compartment} //DG access to Vault secrets in Shared Comp",
           "allow dynamic-group '${local.default_domain_name}'/'${local.genai_agent_group_name}' to read secret-family in compartment ${local.core_policy_engineer_compartment} //DG access to Vault secrets in Engineer Comp",
         ]
