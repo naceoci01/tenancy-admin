@@ -546,6 +546,9 @@ locals {
         statements : [
           "allow group ${local.core_policy_group_name} to manage ai-service-vision-family in compartment ${local.core_policy_engineer_compartment} //Allow CE to manage Vision, including custom projects",
           "allow group ${local.core_policy_group_name} to manage ai-service-speech-family in compartment ${local.core_policy_engineer_compartment} //Allow CE to manage Speech",
+          "allow group ${local.core_policy_group_name} to manage ai-service-speech-synthesize in compartment ${local.core_policy_engineer_compartment} //To allow CE to use AI Speech service, original aggregate ai-service-speech-family type was not allowing all permissions, breaking down to Individual Resource Types",
+          "allow group ${local.core_policy_group_name} to manage ai-service-speech-synthesize-voice in compartment ${local.core_policy_engineer_compartment} //To allow CE to use AI Speech service, original aggregate ai-service-speech-family type was not allowing all permissions, breaking down to Individual Resource Types",
+          "allow group ${local.core_policy_group_name} to manage ai-service-speech-transcription-job in compartment ${local.core_policy_engineer_compartment} //To allow CE to use AI Speech service, original aggregate ai-service-speech-family type was not allowing all permissions, breaking down to Individual Resource Types",
           "allow group ${local.core_policy_group_name} to manage ai-service-language-family in compartment ${local.core_policy_engineer_compartment} where ALL {request.permission != 'AI_SERVICE_LANGUAGE_ENDPOINT_CREATE', request.permission != 'AI_SERVICE_LANGUAGE_MODEL_CREATE'}//Allow CE to manage Language (no endpoint)",
           "allow group ${local.core_policy_group_name} to manage ai-service-document-family in compartment ${local.core_policy_engineer_compartment} //Allow CE to manage Document Understanding",
         ]
