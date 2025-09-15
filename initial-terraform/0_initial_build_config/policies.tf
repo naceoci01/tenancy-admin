@@ -613,6 +613,10 @@ locals {
           "allow service dataintegration to use virtual-network-family in compartment ${local.core_policy_shared_compartment} // Allow DI Workspace to use a VCN in Shared Compartment",
           "allow group ${local.core_policy_di_user_group_name} to manage dis-workspaces in compartment ${local.core_policy_di_compartment} // DIS Workspaces in Shared Compartment",
           "allow group ${local.core_policy_di_user_group_name} to manage dis-work-requests in compartment ${local.core_policy_di_compartment} // DIS Workspaces in Shared Compartment",
+          "allow group ${local.core_policy_group_name} to manage dis-workspaces in compartment ${local.core_policy_engineer_compartment} // DIS Workspaces in Main CE Compartment",
+          "allow group ${local.core_policy_group_name} to manage dis-work-requests in compartment ${local.core_policy_engineer_compartment} // DIS Workspaces in Main CE Compartment",
+          "allow dynamic-group '${local.default_domain_name}'/'${local.data_disworkspace_dynamic_group_name}' to use virtual-network-family in compartment ${local.core_policy_engineer_compartment} //Allows DIS Workspace to use VCN in Main CE Compartment",
+          "allow dynamic-group '${local.default_domain_name}'/'${local.data_disworkspace_dynamic_group_name}' to use virtual-network-family in compartment ${local.core_policy_di_compartment} //Allows DIS Workspace to use VCN Shared DI Compartment",
           "allow any-user to use buckets in compartment ${local.core_policy_engineer_compartment} where request.principal.type='disworkspace' // DIS Workspace RP to access CE Buckets",
           "allow any-user to use buckets in compartment ${local.core_policy_di_compartment} where request.principal.type='disworkspace' // DIS Workspace RP to access Shared Buckets",
           "allow any-user to manage objects in compartment ${local.core_policy_engineer_compartment} where request.principal.type='disworkspace' // DIS Workspace RP to access CE Buckets",
@@ -624,6 +628,16 @@ locals {
           "allow any-user to read dataflow-private-endpoint in compartment ${local.core_policy_di_compartment} where request.principal.type = 'disworkspace' // DIS Workspace Read Data Flow Endpoint",
           "allow any-user to inspect compartments in tenancy where request.principal.type='disworkspace' //DIS Workspace inspect compartments",
           "allow any-user to read secret-bundles in compartment cloud-engineering where request.principal.type = 'disworkspace' // DIS Workspace read Shared Vault with secret in CE",
+          "allow any-user to use ai-service-language-family in tenancy where ALL {request.principal.type = 'disapplication'} //Allow DIS Apps to use Language",
+          "allow any-user to use ai-service-vision-family in tenancy where ALL {request.principal.type = 'disapplication'} //Allow DIS Apps to use Vision",
+          "allow any-user to use ai-service-speech-family in tenancy where ALL {request.principal.type = 'disapplication'} //Allow DIS Apps to use Speech",
+        ]
+      },
+      "CE-DF-POLICY" : {
+        name : "cloud-engineering-DATAFLOW-policy"
+        description : "Permissions for Data Flow - please request access to group cloud-engineering-data-integration-users"
+        compartment_id : "TENANCY-ROOT"
+        statements : [
           "allow group ${local.core_policy_di_user_group_name} to manage dataflow-application in compartment ${local.core_policy_di_compartment} // Data Integration Users can create DF applications",
           "allow group ${local.core_policy_di_user_group_name} to manage dataflow-run in compartment ${local.core_policy_di_compartment} // Data Integration Users to manage Data Flow run",
           "allow group ${local.core_policy_di_user_group_name} to use dataflow-pool in compartment ${local.core_policy_di_compartment} // Data Integration Users to use Data Flow pool",
@@ -632,6 +646,13 @@ locals {
           "ALLOW ANY-USER TO MANAGE OBJECTS IN compartment ${local.core_policy_di_compartment} WHERE ALL {request.principal.type='dataflowrun'} //Data Flow Run use OSS in DI compartment",
           "ALLOW ANY-USER TO {STREAM_INSPECT, STREAM_READ, STREAM_CONSUME} IN compartment ${local.core_policy_engineer_compartment} WHERE ALL {request.principal.type='dataflowrun'} //Data Flow Run use streams in CE compartment",
           "ALLOW ANY-USER TO MANAGE OBJECTS IN compartment ${local.core_policy_engineer_compartment} WHERE ALL {request.principal.type='dataflowrun'} //Data Flow Run use OSS in CE compartment",
+        ]
+      },
+      "CE-DC-POLICY" : {
+        name : "cloud-engineering-DATACATALOG-policy"
+        description : "Permissions for Data Catalog - please request access to group cloud-engineering-data-integration-users"
+        compartment_id : "TENANCY-ROOT"
+        statements : [
           # Data Catalog - all except manage
           "allow group ${local.core_policy_di_user_group_name} to manage data-catalog-family in compartment ${local.core_policy_di_compartment} where all {request.operation != 'CreateCatalog', request.operation != 'DeleteCatalog', request.operation != 'ChangeCatalogCompartment', request.operation != 'CreateMetastore', request.operation != 'DeleteMetastore', request.operation != 'ChangeMetastoreCompartment'} //Allow DI Engineers to manage data catalogs but not delete or create",
           "allow dynamic-group '${local.default_domain_name}'/'${local.data_catalog_dynamic_group_name}' to manage object-family in compartment ${local.core_policy_di_compartment} //Allow Catalog and Metastore access to object storage in DI Compartment",

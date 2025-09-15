@@ -39,6 +39,8 @@ locals {
   resource_dynamic_group_name        = "all-resourceschedules-DG"
   data_catalog_dynamic_group_key         = "DATACATALOG-DYN-GROUP"
   data_catalog_dynamic_group_name        = "all-data-catalog-DG"
+  data_disworkspace_dynamic_group_key         = "DISWORKSPACE-DYN-GROUP"
+  data_disworkspace_dynamic_group_name        = "all-dis-workspace-DG"
   oic_rp_dynamic_group_key         = "OIC-RP-DYN-GROUP"
   oic_rp_dynamic_group_name        = "all-OIC-RP-DG"
   # Dynamic Groups
@@ -186,7 +188,14 @@ locals {
         name               = local.data_catalog_dynamic_group_name
         description        = "Defines all Data Catalog via resource type"
         matching_rule      = "any {resource.type='datacatalog', resource.type='datacatalogprivateendpoint', resource.type='datacatalogmetastore'}"
+      },
+      (local.data_disworkspace_dynamic_group_key) = {
+        identity_domain_id = var.default_domain_ocid
+        name               = local.data_disworkspace_dynamic_group_name
+        description        = "Defines all Data Integration via resource type"
+        matching_rule      = "resource.type = 'disworkspace'"
       }
+
     } : {},
     var.create_oic == true ?
     {
