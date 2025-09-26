@@ -27,6 +27,5 @@ locals {
         # license_type                     = "free"
       }
     }
-
   }
 }

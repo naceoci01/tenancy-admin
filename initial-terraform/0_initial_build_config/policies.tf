@@ -12,7 +12,7 @@ locals {
   core_policy_oic_admin_group_name    = "'${data.oci_identity_domain.ce_domain.display_name}'/'${var.engineer_oic_group_name}'"
   core_policy_fw_admin_group_name     = "'${data.oci_identity_domain.ce_domain.display_name}'/'${var.engineer_firewall_group_name}'"
   core_policy_di_user_group_name      = "'${data.oci_identity_domain.ce_domain.display_name}'/'${var.engineer_di_group_name}'"
-  core_policy_idl_user_group_name     = "'${data.oci_identity_domain.ce_domain.display_name}'/'${var.engineer_idl_group_name}'"
+  core_policy_aidp_user_group_name     = "'${data.oci_identity_domain.ce_domain.display_name}'/'${var.engineer_aidp_group_name}'"
   
   # Dynamic Group Names
   oic_rp_dyngroup_name           = "'${local.default_domain_name}'/'${local.oic_rp_dynamic_group_name}'"
@@ -35,7 +35,8 @@ locals {
   core_policy_gg_compartment          = "${local.core_policy_shared_compartment}:${module.cislz_compartments.compartments.GG-CMP.name}"
   core_policy_fw_compartment          = "${local.core_policy_shared_compartment}:${module.cislz_compartments.compartments.FW-CMP.name}"
   core_policy_di_compartment          = "${local.core_policy_shared_compartment}:${module.cislz_compartments.compartments.DI-CMP.name}"
-  core_policy_idl_compartment         = "${local.core_policy_shared_compartment}:${module.cislz_compartments.compartments.IDL-CMP.name}"
+  
+  core_policy_aidp_compartment        = var.create_aidp == true ? "${local.core_policy_shared_compartment}:${module.cislz_compartments.compartments.AIDP-CMP.name}" : "none"
   core_policy_fsdr_compartment        = "${local.core_policy_shared_compartment}:${module.cislz_compartments.compartments.FSDR-CMP.name}"
   core_policy_engineer_ocid           = module.cislz_compartments.compartments.CLOUD-ENG.id
   default_domain_name                 = "Default"
@@ -203,7 +204,7 @@ locals {
           "allow group ${local.core_policy_group_name} to manage pluggable-databases in compartment ${local.core_policy_engineer_compartment} //Allow CE to work with all Base Pluggable DB main CE compartment",
           "allow group ${local.core_policy_group_name} to manage data-safe-family in compartment ${local.core_policy_engineer_compartment} //Allow CE to use Data Safe in Main CE Compartment",
           "allow group ${local.core_policy_group_name} to manage data-safe-sql-firewall-family in compartment ${local.core_policy_engineer_compartment} //Allow CE to use Data Safe SQL Firewall in Main CE Compartment",
-          "allow group ${local.core_policy_group_name} to manage database-tools-connections in compartment cloud-engineering //Allow CE to work with SQL worksheets in main CE compartment",
+          "allow group ${local.core_policy_group_name} to manage database-tools-connections in compartment ${local.core_policy_engineer_compartment} //Allow CE to work with SQL worksheets in main CE compartment",
           "allow group ${local.core_policy_group_name} to manage database-tools-connections in compartment ${local.core_policy_shared_compartment}:exacs //Allow CE to work with SQL worksheets in ExaCS compartment",
           "allow group ${local.core_policy_group_name} to use database-tools-private-endpoints in compartment ${local.core_policy_shared_compartment}:exacs //Allow CE to work with PE in ExaCS compartment",
           "allow group ${local.core_policy_group_name} to use database-tools-private-endpoints in compartment ${local.core_policy_shared_compartment} //Allow CE to work with PE in Shared compartment",
@@ -710,31 +711,32 @@ locals {
         ]
       }
     } : {}, #No policy FW
-    var.create_idl == true ? {
-      "CE-DATALAKE-POLICY" : {
-        name : "cloud-engineering-DATALAKE-policy"
-        description : "Cloud Engineers Intelligent Data Lake permissions"
+    var.create_aidp == true ? {
+      "CE-DATALPLATFORM-POLICY" : {
+        name : "cloud-engineering-DATAPLATFORM-policy"
+        description : "Cloud Engineers AI Data Platform permissions - https://docs.oracle.com/en/cloud/paas/ai-data-platform/aidug/iam-policies-oracle-ai-data-platform.html"
         compartment_id : "TENANCY-ROOT"
         statements : [
-          "allow group ${local.core_policy_group_name} to use datalakes in compartment ${local.core_policy_idl_compartment} //Allow CE to use existing Data Lakes in shared compartment",
-          "allow any-user to {AUTHENTICATION_INSPECT, GROUP_MEMBERSHIP_INSPECT, DYNAMIC_GROUP_INSPECT, GROUP_INSPECT, USER_INSPECT, USER_READ,  DOMAIN_INSPECT, DOMAIN_READ} IN TENANCY where all {request.principal.type='datalake'} //Allow IDL to do basic IAM introspection",
-          "allow any-user to manage log-groups in compartment ${local.core_policy_idl_compartment} where ALL { request.principal.type='datalake'} //Allow IDL to manage logs in shared compartment",
-          "allow any-user to read log-content in compartment ${local.core_policy_idl_compartment} where ALL { request.principal.type='datalake'} //Allow IDL to manage logs in shared compartment",
-          "allow any-user to use metrics in compartment ${local.core_policy_idl_compartment} where ALL { request.principal.type='datalake', target.metrics.namespace='oracle_datalake'} //Allow IDL to use metrics in shared compartment",
-          "allow any-user to {TAG_NAMESPACE_CREATE, TAG_NAMESPACE_INSPECT, TAG_NAMESPACE_READ} in TENANCY where ALL { request.principal.type='datalake'} //Allow IDL to work with necessary tags in tenancy",
-          "allow any-user to manage tag-namespaces in TENANCY where all { request.principal.type = 'datalake', target.tag-namespace.name = 'datalake-managed-resources' } //Allow IDL to work with its own tag namespace",
-          "allow any-user to manage buckets in compartment ${local.core_policy_idl_compartment} where all { request.principal.type='datelake', any { request.permission = 'BUCKET_CREATE', request.permission = 'BUCKET_UPDATE', request.permission = 'BUCKET_INSPECT', request.permission = 'BUCKET_READ' }} //IDL OSS Permissions",
-          "allow any-user to manage buckets in compartment ${local.core_policy_idl_compartment} where all { request.principal.id=target.bucket.tag.datalake-managed-resources.governingdatalakeId, any {request.permission='BUCKET_DELETE', request.permission='PAR_MANAGE', request.permission='RETENTION_RULE_LOCK', request.permission='RETENTION_RULE_MANAGE'} } //IDL OSS Permissions",
-          "allow any-user to read objectstorage-namespaces in TENANCY where all { request.principal.type='datalake', any {request.permission = 'OBJECTSTORAGE_NAMESPACE_READ'}} //IDL OSS Permissions",
-          "allow any-user to manage objects in compartment ${local.core_policy_idl_compartment} where all { request.principal.id=target.bucket.tag.datalake-managed-resources.governingdatalakeId } //IDL OSS Permissions",
-          "allow any-user to manage vnics in compartment ${local.core_policy_idl_compartment} where all { request.principal.type='datalake'} //Allow IDL to work with its own VCN",
-          "allow any-user to use subnets in compartment ${local.core_policy_idl_compartment} where all { request.principal.type='datalake'} //Allow IDL to work with its own VCN",
-          "allow any-user to use network-security-groups in compartment ${local.core_policy_idl_compartment} where all { request.principal.type='datalake'} //Allow IDL to work with its own VCN",
-          "allow any-user to manage vnics in compartment ${local.core_policy_engineer_compartment} where all { request.principal.type='datalake'} //Allow IDL to work CE VCN",
-          "allow any-user to use subnets in compartment ${local.core_policy_engineer_compartment} where all { request.principal.type='datalake'} //Allow IDL to work with CE VCN",
-          "allow any-user to use network-security-groups in compartment ${local.core_policy_engineer_compartment} where all { request.principal.type='datalake'} //Allow IDL to work with CE VCN",
-          "allow service objectstorage-${var.region} to manage object-family in compartment ${local.core_policy_idl_compartment} //OSS Permission",
-          "allow service objectstorage-us-ashburn-1 to manage object-family in compartment ${local.core_policy_idl_compartment} //OSS Permission"
+          "allow group ${local.core_policy_group_name} to use ai-data-platforms in compartment ${local.core_policy_aidp_compartment} //Allow CE to use existing Data Platform in shared compartment",
+          "allow group ${local.core_policy_aidp_user_group_name} to manage ai-data-platforms in compartment ${local.core_policy_aidp_compartment} //Allow AIDP admins to manage existing Data Platform in shared compartment",
+          "allow any-user to {AUTHENTICATION_INSPECT, GROUP_MEMBERSHIP_INSPECT, DYNAMIC_GROUP_INSPECT, GROUP_INSPECT, USER_INSPECT, USER_READ,  DOMAIN_INSPECT, DOMAIN_READ} IN TENANCY where all {request.principal.type='aidataplatform'} //Allow AIDP to do basic IAM introspection",
+          "allow any-user to manage log-groups in compartment ${local.core_policy_aidp_compartment} where ALL { request.principal.type='aidataplatform'} //Allow AI Data Platform to manage logs in shared compartment",
+          "allow any-user to read log-content in compartment ${local.core_policy_aidp_compartment} where ALL { request.principal.type='aidataplatform'} //Allow AI Data Platform to manage logs in shared compartment",
+          "allow any-user to use metrics in compartment ${local.core_policy_aidp_compartment} where ALL { request.principal.type='aidataplatform', target.metrics.namespace='oracle_aidataplatform'} //Allow AI Data Platform to use metrics in shared compartment",
+          "allow any-user to manage buckets in compartment ${local.core_policy_aidp_compartment} where all { request.principal.type='aidataplatform', any { request.permission = 'BUCKET_CREATE', request.permission = 'BUCKET_UPDATE', request.permission = 'BUCKET_INSPECT', request.permission = 'BUCKET_READ' }} //AI Data Platform OSS Permissions",
+          "allow any-user to {TAG_NAMESPACE_USE} in TENANCY where ALL { request.principal.type='aidataplatform'} //Allow AI Data Platform to work with necessary tags in tenancy",
+          "allow any-user to manage buckets in tenancy where all { request.principal.id=target.resource.tag.orcl-aidp.governingAidpId, any {request.permission = 'PAR_MANAGE', request.permission = 'RETENTION_RULE_LOCK', request.permission = 'RETENTION_RULE_MANAGE'} } //AIDP OSS Permissions",
+          "allow any-user to read objectstorage-namespaces in TENANCY where all { request.principal.type='aidataplatform', any {request.permission = 'OBJECTSTORAGE_NAMESPACE_READ'}} //AI Data Platform OSS Permissions",
+          "allow any-user to manage objects in compartment ${local.core_policy_aidp_compartment} where all { request.principal.id=target.bucket.system-tag.orcl-aidp.governingAidpId }  //AI Data Platform OSS Permissions for Shared CE",
+          "allow any-user to manage objects in compartment ${local.core_policy_engineer_compartment} where all { request.principal.id=target.bucket.system-tag.orcl-aidp.governingAidpId }  //AI Data Platform OSS Permissions for Engineer comp",
+          "allow any-user to manage vnics in compartment ${local.core_policy_aidp_compartment} where all { request.principal.type='aidataplatform'} //Allow AI Data Platform to work with its own VCN",
+          "allow any-user to manage vnics in compartment ${local.core_policy_engineer_compartment} where all { request.principal.type='aidataplatform'} //Allow AI Data Platform to work with its Engineers VCN",
+          "allow any-user to use subnets in compartment ${local.core_policy_aidp_compartment} where all { request.principal.type='aidataplatform'} //Allow AI Data Platform to work with its own VCN",
+          "allow any-user to use subnets in compartment ${local.core_policy_engineer_compartment} where all { request.principal.type='aidataplatform'} //Allow AI Data Platform to work with its Engineers VCN",
+          "allow any-user to use network-security-groups in compartment ${local.core_policy_aidp_compartment} where all { request.principal.type='aidataplatform'} //Allow AI Data Platform to work with its own VCN",
+          "allow any-user to use network-security-groups in compartment ${local.core_policy_engineer_compartment} where all { request.principal.type='aidataplatform'} //Allow AI Data Platform to work with its Engineers VCN",
+          "allow service objectstorage-${var.region} to manage object-family in tenancy //OSS Permission",
+          "allow service objectstorage-us-ashburn-1 to manage object-family in tenancy //OSS Permission"
         ]
       }
     } : {}, #No policy for Intelligent Data Lake

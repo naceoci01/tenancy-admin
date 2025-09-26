@@ -17,7 +17,7 @@ locals {
   # It is created in the non-Default Identity Domain specified by the user
   cloud_engineers_group = {
     (local.cloud_engineering_group_key) = {
-      identity_domain_id = module.cislz_identity_domains.identity_domains.CLOUD-ENGINEERS-DOMAIN.id
+      # identity_domain_id = module.cislz_identity_domains.identity_domains.CLOUD-ENGINEERS-DOMAIN.id
       name               = var.engineer_group_name
       description        = var.engineer_group_desc
     }
@@ -29,7 +29,7 @@ locals {
     var.create_oic == true ?
     {
       (local.oic_admin_group_key) = {
-        identity_domain_id = module.cislz_identity_domains.identity_domains.CLOUD-ENGINEERS-DOMAIN.id
+        # identity_domain_id = module.cislz_identity_domains.identity_domains.CLOUD-ENGINEERS-DOMAIN.id
         name               = var.engineer_oic_group_name
         description        = var.engineer_oic_group_desc
       }
@@ -39,7 +39,7 @@ locals {
     var.create_exa == true ?
     {
       (local.exacs_admin_group_key) = {
-        identity_domain_id = module.cislz_identity_domains.identity_domains.CLOUD-ENGINEERS-DOMAIN.id
+        # identity_domain_id = module.cislz_identity_domains.identity_domains.CLOUD-ENGINEERS-DOMAIN.id
         name               = var.engineer_exacs_group_name
         description        = var.engineer_exacs_group_desc
       }
@@ -49,7 +49,7 @@ locals {
     var.create_oac == true ?
     {
       (local.oac_admin_group_key) = {
-        identity_domain_id = module.cislz_identity_domains.identity_domains.CLOUD-ENGINEERS-DOMAIN.id
+        # identity_domain_id = module.cislz_identity_domains.identity_domains.CLOUD-ENGINEERS-DOMAIN.id
         name               = var.engineer_oac_group_name
         description        = var.engineer_oac_group_desc
       }
@@ -59,7 +59,7 @@ locals {
     var.create_ds == true ?
     {
       (local.datasci_admin_group_key) = {
-        identity_domain_id = module.cislz_identity_domains.identity_domains.CLOUD-ENGINEERS-DOMAIN.id
+        # identity_domain_id = module.cislz_identity_domains.identity_domains.CLOUD-ENGINEERS-DOMAIN.id
         name               = var.engineer_datascience_group_name
         description        = var.engineer_datascience_group_desc
       }
@@ -69,7 +69,7 @@ locals {
     var.create_mysql == true ?
     {
       (local.mysql_admin_group_key) = {
-        identity_domain_id = module.cislz_identity_domains.identity_domains.CLOUD-ENGINEERS-DOMAIN.id
+        # identity_domain_id = module.cislz_identity_domains.identity_domains.CLOUD-ENGINEERS-DOMAIN.id
         name               = var.engineer_mysql_group_name
         description        = var.engineer_mysql_group_desc
       }
@@ -79,7 +79,7 @@ locals {
     var.create_postgres == true ?
     {
       (local.postgres_admin_group_key) = {
-        identity_domain_id = module.cislz_identity_domains.identity_domains.CLOUD-ENGINEERS-DOMAIN.id
+        # identity_domain_id = module.cislz_identity_domains.identity_domains.CLOUD-ENGINEERS-DOMAIN.id
         name               = var.engineer_postgres_group_name
         description        = var.engineer_postgres_group_desc
       }
@@ -89,7 +89,7 @@ locals {
     var.create_firewall == true ?
     {
       (local.firewall_admin_group_key) = {
-        identity_domain_id = module.cislz_identity_domains.identity_domains.CLOUD-ENGINEERS-DOMAIN.id
+        # identity_domain_id = module.cislz_identity_domains.identity_domains.CLOUD-ENGINEERS-DOMAIN.id
         name               = var.engineer_firewall_group_name
         description        = var.engineer_firewall_group_desc
       }
@@ -99,7 +99,9 @@ locals {
 
   # Merge all groups
   identity_domain_groups_configuration = {
-    # ignore_external_membership_updates : true
+    ignore_external_membership_updates = false
+    default_identity_domain_id         = local.cloud_engineering_domain_key
     groups : merge(local.cloud_engineers_group, local.optional_groups)
+    # groups : merge(local.cloud_engineers_group)
   }
 }

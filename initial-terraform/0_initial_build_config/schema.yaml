@@ -40,8 +40,8 @@ variableGroups:
       - create_postgres
       - engineer_postgres_group_name
       - create_gg
-      - create_idl
-      - engineer_idl_group_name
+      - create_aidp
+      - engineer_aidp_group_name
   - title: "Other Services"
     variables:
       - create_func
@@ -157,12 +157,12 @@ variables:
     default: cloud-engineering-data-integration-users
     visible: create_di
 
-  engineer_idl_group_name:
+  engineer_aidp_group_name:
     title: Name of IAM group for Data Lake Users
     type: string
     description: Users in this group have the ability to work with Intelligent Data Lake shared compartment
     default: cloud-engineering-datalake-users
-    visible: create_idl
+    visible: create_aidp
 
   create_oic:
     title: Create the OIC Policy and compartment
@@ -203,7 +203,7 @@ variables:
   create_firewall:
     title: Create the Network Firewall Compartment
     type: boolean
-  create_idl:
+  create_aidp:
     title: Create the Intelligent Data Lake Compartment and Policies
     type: boolean
   create_fsdr:

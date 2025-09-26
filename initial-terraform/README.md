@@ -1,17 +1,18 @@
 # Terraform to configure tenancy
 
-(doc in progress - 02/11/2025)
+(doc in progress - 08/22/2025)
 
 To set up a "Cloud Engineer" tenancy, there are several main steps to getting set up.  The scripts here will do some of them.
 
 - Parent Tenancy Steps
 - Github Repo for these stacks
-- Create Identity Domain and initial Groups (Stack 00)
+- Create Identity Domain and Groups (Stack 00)
 - Configure SSO (with optional JIT)
 - Create main compartments, policies and dynamic groups (Stack 0)
 - Ongoing (via cron or function) Compartment and quota policy per engineer (Stack 1)
 - Create admin compartment, server, and dynamic group (Stack 2)
-- Create advanced services (TBD)
+- Create VCN via LZ (Stack 3)
+- Additional OCI Services (Stack 4 and beyond - not created yet as of August 2025)
 
 ## Parent Tenancy
 Subscribe all needed regions
@@ -23,17 +24,18 @@ Subscribe child to governance rules
 
 Stacks in this repo are in subfolders, so they can be pulled from single GitHub repo.
 
-Configure a Configuration Source Provider in home region, using an Org-based repo and a Personal Access Token.
+Several options exist for creation:
+* Clone the repo and run via local terraform from your computer, a cloud VM, or Cloud Shell (implies OCI access via API Key)
+* Create a Resource Manager Stack and upload the appropriate folder
+* Configure a Configuration Source Provider in home region, using an Org-based repo and a Personal Access Token.  Then bring in each stack to Resource Manager
 
-From this, you then can create the stacks
+The stacks are organized under the `initial_terraform` folder, and each folder
 
 ## Create Identity domain (Stack 00)
 
-Strategy is to avoid using default identity domain for anything other than admin user, some dynamic groups.
+This will create a very basic Identity Domain, which all engineers can be added to.  The Domain can then be configured manually for SSO or other ID Domain features.  For this reason, the 00 stack is run just once.  It will also create some of the admin or user groups that are used 
 
-Use Stack 00 to create a basic Identity domain and note the name and OCID.  There is some functionality to create groups for main cloud engineer community and other purposes later on.  
-
-NOTE - this one CANNOT be re-run over and over as re-creation of the main `cloud-engineering` group will remove all members.
+NOTE - this one CANNOT be re-run over and over as re-creation of the main `cloud-engineering` group will remove all members.  There is work in flight in the IAM module (v0.3.0) to allow retention of group membership.
 
 ## Enable SSO for Domain (no stack)
 
