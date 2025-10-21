@@ -206,8 +206,8 @@ locals {
           "allow group ${local.core_policy_group_name} to manage data-safe-sql-firewall-family in compartment ${local.core_policy_engineer_compartment} //Allow CE to use Data Safe SQL Firewall in Main CE Compartment",
           "allow group ${local.core_policy_group_name} to manage database-tools-connections in compartment ${local.core_policy_engineer_compartment} //Allow CE to work with SQL worksheets in main CE compartment",
           "allow group ${local.core_policy_group_name} to manage database-tools-connections in compartment ${local.core_policy_shared_compartment}:exacs //Allow CE to work with SQL worksheets in ExaCS compartment",
-          "allow group ${local.core_policy_group_name} to use database-tools-private-endpoints in compartment ${local.core_policy_shared_compartment}:exacs //Allow CE to work with PE in ExaCS compartment",
-          "allow group ${local.core_policy_group_name} to use database-tools-private-endpoints in compartment ${local.core_policy_shared_compartment} //Allow CE to work with PE in Shared compartment",
+          "allow group ${local.core_policy_group_name} to manage database-tools-private-endpoints in compartment ${local.core_policy_shared_compartment}:exacs //Allow CE to work with PE in ExaCS compartment",
+          "allow group ${local.core_policy_group_name} to manage database-tools-private-endpoints in compartment ${local.core_policy_shared_compartment} //Allow CE to work with PE in Shared compartment",
           "allow dynamic-group ${local.database_dyngroup_name} to use vaults in compartment ${local.core_policy_shared_compartment} // For DB Systems to read vaults for Customer KMS",
           "allow dynamic-group ${local.database_dyngroup_name} to use keys in compartment ${local.core_policy_shared_compartment} // For DB Systems to use keys for Customer KMS"
         ]
@@ -712,7 +712,7 @@ locals {
       }
     } : {}, #No policy FW
     var.create_aidp == true ? {
-      "CE-DATALPLATFORM-POLICY" : {
+      "CE-DATAPLATFORM-POLICY" : {
         name : "cloud-engineering-DATAPLATFORM-policy"
         description : "Cloud Engineers AI Data Platform permissions - https://docs.oracle.com/en/cloud/paas/ai-data-platform/aidug/iam-policies-oracle-ai-data-platform.html"
         compartment_id : "TENANCY-ROOT"
