@@ -736,7 +736,8 @@ locals {
           "allow any-user to use network-security-groups in compartment ${local.core_policy_aidp_compartment} where all { request.principal.type='aidataplatform'} //Allow AI Data Platform to work with its own VCN",
           "allow any-user to use network-security-groups in compartment ${local.core_policy_engineer_compartment} where all { request.principal.type='aidataplatform'} //Allow AI Data Platform to work with its Engineers VCN",
           "allow service objectstorage-${var.region} to manage object-family in tenancy //OSS Permission",
-          "allow service objectstorage-us-ashburn-1 to manage object-family in tenancy //OSS Permission"
+          "allow service objectstorage-us-ashburn-1 to manage object-family in tenancy //OSS Permission",
+          "allow any-user to use generative-ai-family in compartment ${local.core_policy_aidp_compartment}/Allow AIDP to use GenAI"
         ]
       }
     } : {}, #No policy for Intelligent Data Lake
