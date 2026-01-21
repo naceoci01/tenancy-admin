@@ -42,6 +42,8 @@ variableGroups:
       - create_gg
       - create_aidp
       - engineer_aidp_group_name
+      - create_gdd
+      - engineer_gdd_admin_group_name
   - title: "Other Services"
     variables:
       - create_func
@@ -164,6 +166,13 @@ variables:
     default: cloud-engineering-datalake-users
     visible: create_aidp
 
+  engineer_gdd_admin_group_name:
+    title: Name of IAM group for Globally Distributed Databases Admins
+    type: string
+    description: Users in this group have the ability to work with Globally Distributed Databases shared compartment
+    default: cloud-engineering-gdd-admins
+    visible: create_gdd
+
   create_oic:
     title: Create the OIC Policy and compartment
     type: boolean
@@ -208,4 +217,7 @@ variables:
     type: boolean
   create_fsdr:
     title: Create the Full Stack DR Compartment and Policies
+    type: boolean
+  create_gdd:
+    title: Create the Globally Distributed Databases Compartment and Policies
     type: boolean

@@ -43,6 +43,14 @@ locals {
   data_disworkspace_dynamic_group_name        = "all-dis-workspace-DG"
   oic_rp_dynamic_group_key         = "OIC-RP-DYN-GROUP"
   oic_rp_dynamic_group_name        = "all-OIC-RP-DG"
+  gdd_cas_dynamic_group_key       = "GDD-CAS-DYN-GROUP"
+  gdd_cas_dynamic_group_name      = "gdd-cas-dg" # From documentation
+  gdd_clusters_dynamic_group_key       = "GDD-CLUSTERS-DYN-GROUP"
+  gdd_clusters_dynamic_group_name      = "gdd-clusters-dg" # From documentation
+  gdd_instances_dynamic_group_key       = "GDD-INSTANCES-DYN-GROUP"
+  gdd_instances_dynamic_group_name      = "gdd-instances-dg" # From documentation
+
+
   # Dynamic Groups
   all_dynamic_groups = merge(
     {
@@ -204,6 +212,27 @@ locals {
         name               = local.oic_rp_dynamic_group_name
         description        = "Defines all OIC Instances by Resource ID (OAUTH APPID)"
         matching_rule      = "any { ${join(", ", [for id in var.oic_resource_ids : "resource.id='${id}'"])} }"
+      }
+    } : {},
+    var.create_gdd== true ?
+    {
+      (local.gdd_cas_dynamic_group_key) = {
+        identity_domain_id = var.default_domain_ocid
+        name               = local.gdd_cas_dynamic_group_name
+        description        = "Defines all GDD Certificate authority resources"
+        matching_rule      = "resource.type='certificateauthority'"
+      },
+      (local.gdd_clusters_dynamic_group_key) = {
+        identity_domain_id = var.default_domain_ocid
+        name               = local.gdd_clusters_dynamic_group_name
+        description        = "Defines all GDD Clusters"
+        matching_rule      = "resource.compartment.id='cluster'"
+      },
+      (local.gdd_instances_dynamic_group_key) = {
+        identity_domain_id = var.default_domain_ocid
+        name               = local.gdd_instances_dynamic_group_name
+        description        = "Defines all GDD Instances"
+        matching_rule      = "resource.compartment.id='instance'"
       }
     } : {},
 

@@ -13,6 +13,7 @@ locals {
   core_policy_fw_admin_group_name     = "'${data.oci_identity_domain.ce_domain.display_name}'/'${var.engineer_firewall_group_name}'"
   core_policy_di_user_group_name      = "'${data.oci_identity_domain.ce_domain.display_name}'/'${var.engineer_di_group_name}'"
   core_policy_aidp_user_group_name     = "'${data.oci_identity_domain.ce_domain.display_name}'/'${var.engineer_aidp_group_name}'"
+  core_policy_gdd_admin_group_name     = "'${data.oci_identity_domain.ce_domain.display_name}'/'${var.engineer_gdd_admin_group_name}'"
   
   # Dynamic Group Names
   oic_rp_dyngroup_name           = "'${local.default_domain_name}'/'${local.oic_rp_dynamic_group_name}'"
@@ -35,6 +36,7 @@ locals {
   core_policy_gg_compartment          = "${local.core_policy_shared_compartment}:${module.cislz_compartments.compartments.GG-CMP.name}"
   core_policy_fw_compartment          = "${local.core_policy_shared_compartment}:${module.cislz_compartments.compartments.FW-CMP.name}"
   core_policy_di_compartment          = "${local.core_policy_shared_compartment}:${module.cislz_compartments.compartments.DI-CMP.name}"
+  core_policy_gdd_compartment         = var.create_gdd == true ? "${local.core_policy_shared_compartment}:${module.cislz_compartments.compartments.GDD-CMP.name}" : "none"
   
   core_policy_aidp_compartment        = var.create_aidp == true ? "${local.core_policy_shared_compartment}:${module.cislz_compartments.compartments.AIDP-CMP.name}" : "none"
   core_policy_fsdr_compartment        = "${local.core_policy_shared_compartment}:${module.cislz_compartments.compartments.FSDR-CMP.name}"
@@ -736,11 +738,25 @@ locals {
           "allow any-user to use network-security-groups in compartment ${local.core_policy_aidp_compartment} where all { request.principal.type='aidataplatform'} //Allow AI Data Platform to work with its own VCN",
           "allow any-user to use network-security-groups in compartment ${local.core_policy_engineer_compartment} where all { request.principal.type='aidataplatform'} //Allow AI Data Platform to work with its Engineers VCN",
           "allow service objectstorage-${var.region} to manage object-family in tenancy //OSS Permission",
-          "allow service objectstorage-us-ashburn-1 to manage object-family in tenancy //OSS Permission"
+          "allow service objectstorage-us-ashburn-1 to manage object-family in tenancy //OSS Permission",
+          "allow group ${local.core_policy_group_name} to manage autonomous-databases in compartment ${local.core_policy_aidp_compartment} //Allow CE to create ADB in Data Platform shared compartment",
+          "allow any-user to use generative-ai-family in tenancy where all { request.principal.type='aidataplatform'} //Allow AIDP to use GenAI"
         ]
       }
     } : {}, #No policy for Intelligent Data Lake
-    # End of policies block
+    var.create_gdd == true ? {
+      "CE-GDD-POLICY" : {
+        name : "cloud-engineering-GLOBALLY-DISTRIBUTED-policy"
+        description : "Cloud Engineering Globally Distributed Databases permissions"
+        compartment_id : "TENANCY-ROOT"
+        statements : [
+          "allow group ${local.core_policy_gdd_admin_group_name} to INSPECT tenancies in tenancy",
+          "allow group ${local.core_policy_gdd_admin_group_name} to INSPECT work-requests in tenancy",
+          "allow group ${local.core_policy_gdd_admin_group_name} MANAGE exadb-vm-clusters in compartment ${local.core_policy_gdd_compartment} //Allow GDD Admins to manage GDD in Shared compartment",
+          "",
+        ]
+      }
+    } : {}, #No policy GDD    # End of policies block
   )
 
   # Merge all policies
