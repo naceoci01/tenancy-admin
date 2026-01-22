@@ -747,13 +747,24 @@ locals {
     var.create_gdd == true ? {
       "CE-GDD-POLICY" : {
         name : "cloud-engineering-GLOBALLY-DISTRIBUTED-policy"
-        description : "Cloud Engineering Globally Distributed Databases permissions"
+        description : "Cloud Engineering Globally Distributed Databases permissions - only 2 levels - regular CE user and GDD admin.  All users have read all-resouces, so this list is abbreviated.  More info at https://docs.oracle.com/en/cloud/paas/globally-distributed-exascale-database/user/set-environment.html#GUID-DBE849DB-7291-4CFA-A833-95F1289DE279"
         compartment_id : "TENANCY-ROOT"
         statements : [
-          "allow group ${local.core_policy_gdd_admin_group_name} to INSPECT tenancies in tenancy",
-          "allow group ${local.core_policy_gdd_admin_group_name} to INSPECT work-requests in tenancy",
-          "allow group ${local.core_policy_gdd_admin_group_name} MANAGE exadb-vm-clusters in compartment ${local.core_policy_gdd_compartment} //Allow GDD Admins to manage GDD in Shared compartment",
-          "",
+          "allow group ${local.core_policy_gdd_admin_group_name} to USE autonomous-exadata-infrastructures in compartment ${local.core_policy_gdd_compartment} //Allow GDD Admins to use Exadata Infrastructure in Shared compartment",
+          "allow group ${local.core_policy_gdd_admin_group_name} to USE cloud-autonomous-vmclusters in compartment ${local.core_policy_gdd_compartment} //Allow GDD Admins to use GDD VM Clusters in Shared compartment",
+          "allow group ${local.core_policy_gdd_admin_group_name} to MANAGE exadb-vm-clusters in compartment ${local.core_policy_gdd_compartment} //Allow GDD Admins to manage GDD in Shared compartment",
+          "allow group ${local.core_policy_gdd_admin_group_name} to MANAGE instance-family in compartment ${local.core_policy_gdd_compartment} //Allow GDD Admins to manage instances in Shared compartment",
+          "allow group ${local.core_policy_gdd_admin_group_name} to MANAGE distributed-database in compartment ${local.core_policy_gdd_compartment} //Allow GDD Admins to manage GDD Databases in Shared compartment",
+          "allow group ${local.core_policy_gdd_admin_group_name} to MANAGE tags in compartment ${local.core_policy_gdd_compartment} //Allow GDD Admins to manage GDD tags in Shared compartment",
+          "allow group ${local.core_policy_gdd_admin_group_name} to MANAGE virtual-network-family in compartment ${local.core_policy_gdd_compartment} //Allow GDD Admins to manage GDD VCNs in Shared compartment",
+          "allow group ${local.core_policy_gdd_admin_group_name} to MANAGE virtual-network-family in compartment ${local.core_policy_gdd_compartment} //Allow GDD Admins to manage GDD VCNs in Shared compartment",
+          "allow group ${local.core_policy_gdd_admin_group_name} to MANAGE virtual-network-family in compartment ${local.core_policy_gdd_compartment} //Allow GDD Admins to manage GDD VCNs in Shared compartment",
+          "allow group ${local.core_policy_gdd_admin_group_name} to MANAGE virtual-network-family in compartment ${local.core_policy_gdd_compartment} //Allow GDD Admins to manage GDD VCNs in Shared compartment",
+          "allow dynamic-group 'Default'/'gdd-cas-dg' to MANAGE objects in compartment ${local.core_policy_gdd_compartment} //Allow dynamic group to manage OSS in GDD compartment",
+          "allow dynamic-group 'Default'/'gdd-cas-dg' to USE keys in compartment ${local.core_policy_gdd_compartment} //Allow dynamic group to use keys in GDD compartment",
+          "allow dynamic-group 'Default'/'gdd-clusters-dg' to MANAGE keys in compartment ${local.core_policy_gdd_compartment} //Allow dynamic group to use keys in GDD compartment",
+          "allow dynamic-group 'Default'/'gdd-clusters-dg' to READ vaults in compartment ${local.core_policy_gdd_compartment} //Allow dynamic group to use keys in GDD compartment",
+          "Allow service keymanagementservice to MANAGE vaults in compartment ${local.core_policy_gdd_compartment} //Allow service to manage vaults in GDD compartment"
         ]
       }
     } : {}, #No policy GDD    # End of policies block
