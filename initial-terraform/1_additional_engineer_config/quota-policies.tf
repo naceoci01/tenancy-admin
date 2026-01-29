@@ -46,10 +46,10 @@ locals {
             "set compute-core quota standard-a1-core-regional-count to 10000000 in compartment ${data.oci_identity_compartment.cloud-eng-comp.name}"
         ],
         [
-            for comp in local.comp_names: "set compute-core quota standard-e5-core-count to 8 in compartment ${data.oci_identity_compartment.cloud-eng-comp.name}:${comp}"
+            for comp in local.comp_names: "set compute-core quota standard-e5-core-count to 12 in compartment ${data.oci_identity_compartment.cloud-eng-comp.name}:${comp}"
         ],
         [
-            for comp in local.comp_names: "set compute-core quota standard-e6-core-count to 8 in compartment ${data.oci_identity_compartment.cloud-eng-comp.name}:${comp}"
+            for comp in local.comp_names: "set compute-core quota standard-e6-core-count to 12 in compartment ${data.oci_identity_compartment.cloud-eng-comp.name}:${comp}"
         ],
         [
             for comp in local.comp_names: "set compute-core quota standard2-core-count to 8 in compartment ${data.oci_identity_compartment.cloud-eng-comp.name}:${comp}"
