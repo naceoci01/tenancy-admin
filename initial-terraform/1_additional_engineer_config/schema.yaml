@@ -18,6 +18,10 @@ variableGroups:
   - title: "Quota Configuration"
     variables:
       - per-engineer-vcn-quota
+      - per-engineer-core-quota
+      - per-engineer-memory-quota
+      - per-engineer-oke-nodes-quota
+      - per-engineer-block-storage-quota
   - title: "Hidden Variables" 
     visible: false
     variables:
@@ -49,3 +53,27 @@ variables:
     description: Number of VCNs an engineer can create within their own compartment
     type: int
     default: 2
+
+  per-engineer-core-quota:
+    title: Per Engineer Core Quota
+    description: Number of compute cores an engineer can create within their own compartment - per type of VM
+    type: int
+    default: 16
+  
+  per-engineer-memory-quota:
+    title: Per Engineer Memory Quota
+    description: Amount of memory (in GBs) an engineer can create within their own compartment - per type of VM
+    type: int
+    default: 256
+
+per-engineer-oke-nodes-quota:
+    title: Per Engineer OKE Nodes Quota
+    description: Number of OKE worker nodes an engineer can create within their own compartment
+    type: int
+    default: 3
+
+per-engineer-block-storage-quota:
+    title: Per Engineer Block Storage Quota
+    description: Amount of Block Storage (in GBs) an engineer can create within their own compartment. Total across all volumes.
+    type: int
+    default: 4096

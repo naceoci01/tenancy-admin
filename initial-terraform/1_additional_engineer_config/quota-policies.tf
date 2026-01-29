@@ -46,24 +46,24 @@ locals {
             "set compute-core quota standard-a1-core-regional-count to 10000000 in compartment ${data.oci_identity_compartment.cloud-eng-comp.name}"
         ],
         [
-            for comp in local.comp_names: "set compute-core quota standard-e5-core-count to 12 in compartment ${data.oci_identity_compartment.cloud-eng-comp.name}:${comp}"
+            for comp in local.comp_names: "set compute-core quota standard-e5-core-count to ${var.per-engineer-core-quota} in compartment ${data.oci_identity_compartment.cloud-eng-comp.name}:${comp}"
         ],
         [
-            for comp in local.comp_names: "set compute-core quota standard-e6-core-count to 12 in compartment ${data.oci_identity_compartment.cloud-eng-comp.name}:${comp}"
+            for comp in local.comp_names: "set compute-core quota standard-e6-core-count to ${var.per-engineer-core-quota} in compartment ${data.oci_identity_compartment.cloud-eng-comp.name}:${comp}"
+        ],
+        # [
+        #     for comp in local.comp_names: "set compute-core quota standard2-core-count to 8 in compartment ${data.oci_identity_compartment.cloud-eng-comp.name}:${comp}"
+        # ],
+        [
+            for comp in local.comp_names: "set compute-core quota standard3-core-count to ${var.per-engineer-core-quota} in compartment ${data.oci_identity_compartment.cloud-eng-comp.name}:${comp}"
         ],
         [
-            for comp in local.comp_names: "set compute-core quota standard2-core-count to 8 in compartment ${data.oci_identity_compartment.cloud-eng-comp.name}:${comp}"
-        ],
-        [
-            for comp in local.comp_names: "set compute-core quota standard3-core-count to 8 in compartment ${data.oci_identity_compartment.cloud-eng-comp.name}:${comp}"
-        ],
-        [
-            for comp in local.comp_names: "set compute-core quota standard-a1-core-count to 8 in compartment ${data.oci_identity_compartment.cloud-eng-comp.name}:${comp}"
+            for comp in local.comp_names: "set compute-core quota standard-a1-core-count to ${var.per-engineer-core-quota} in compartment ${data.oci_identity_compartment.cloud-eng-comp.name}:${comp}"
         ]
     )
     oke_quota_statements = concat(
         [
-            for comp in local.comp_names: "set container-engine quota virtual-node-count to 3 in compartment ${data.oci_identity_compartment.cloud-eng-comp.name}:${comp}"
+            for comp in local.comp_names: "set container-engine quota virtual-node-count to ${var.per-engineer-oke-nodes-quota} in compartment ${data.oci_identity_compartment.cloud-eng-comp.name}:${comp}"
         ]
     )
     compute_mem_quota_statements = concat(
@@ -72,16 +72,16 @@ locals {
             "set compute-memory quota standard-a1-memory-regional-count to 10000000 in compartment ${data.oci_identity_compartment.cloud-eng-comp.name}",
         ],
         [
-            for comp in local.comp_names: "set compute-memory quota standard-e5-memory-count to 200 in compartment ${data.oci_identity_compartment.cloud-eng-comp.name}:${comp}"
+            for comp in local.comp_names: "set compute-memory quota standard-e5-memory-count to ${var.per-engineer-memory-quota} in compartment ${data.oci_identity_compartment.cloud-eng-comp.name}:${comp}"
         ],
         [
-            for comp in local.comp_names: "set compute-memory quota standard-e6-memory-count to 200 in compartment ${data.oci_identity_compartment.cloud-eng-comp.name}:${comp}"
+            for comp in local.comp_names: "set compute-memory quota standard-e6-memory-count to ${var.per-engineer-memory-quota} in compartment ${data.oci_identity_compartment.cloud-eng-comp.name}:${comp}"
         ],
         [
-            for comp in local.comp_names: "set compute-memory quota standard3-memory-count to 200 in compartment ${data.oci_identity_compartment.cloud-eng-comp.name}:${comp}"
+            for comp in local.comp_names: "set compute-memory quota standard3-memory-count to ${var.per-engineer-memory-quota} in compartment ${data.oci_identity_compartment.cloud-eng-comp.name}:${comp}"
         ],
         [
-            for comp in local.comp_names: "set compute-memory quota standard-a1-memory-count to 200 in compartment ${data.oci_identity_compartment.cloud-eng-comp.name}:${comp}"
+            for comp in local.comp_names: "set compute-memory quota standard-a1-memory-count to ${var.per-engineer-memory-quota} in compartment ${data.oci_identity_compartment.cloud-eng-comp.name}:${comp}"
         ],
     )
 
@@ -91,7 +91,7 @@ locals {
             "zero filesystem quota in compartment ${data.oci_identity_compartment.cloud-eng-comp.name}"
         ],
         [
-            for comp in local.comp_names: "set block-storage quota total-storage-gb to 4096 in compartment ${data.oci_identity_compartment.cloud-eng-comp.name}:${comp}"
+            for comp in local.comp_names: "set block-storage quota total-storage-gb to ${var.per-engineer-block-storage-quota} in compartment ${data.oci_identity_compartment.cloud-eng-comp.name}:${comp}"
         ],
         [
             for comp in local.comp_names: "set filesystem quota file-system-count to 2 in compartment ${data.oci_identity_compartment.cloud-eng-comp.name}:${comp}"
@@ -108,7 +108,7 @@ locals {
             "zero vcn quota in compartment ${data.oci_identity_compartment.cloud-eng-comp.name}"
         ],
         [
-            for comp in local.comp_names: "set vcn quota vcn-count to 2 in compartment ${data.oci_identity_compartment.cloud-eng-comp.name}:${comp}"
+            for comp in local.comp_names: "set vcn quota vcn-count to ${var.per-engineer-vcn-quota} in compartment ${data.oci_identity_compartment.cloud-eng-comp.name}:${comp}"
         ],
         [
             for comp in local.comp_names: "set vcn quota reserved-public-ip-count to 2 in compartment ${data.oci_identity_compartment.cloud-eng-comp.name}:${comp}"
