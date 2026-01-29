@@ -66,13 +66,13 @@ variables:
     type: int
     default: 256
 
-per-engineer-oke-nodes-quota:
+  per-engineer-oke-nodes-quota:
     title: Per Engineer OKE Nodes Quota
     description: Number of OKE worker nodes an engineer can create within their own compartment
     type: int
     default: 3
 
-per-engineer-block-storage-quota:
+  per-engineer-block-storage-quota:
     title: Per Engineer Block Storage Quota
     description: Amount of Block Storage (in GBs) an engineer can create within their own compartment. Total across all volumes.
     type: int
