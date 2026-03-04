@@ -26,6 +26,7 @@ locals {
   # Compartments
   core_policy_engineer_compartment    = module.cislz_compartments.compartments.CLOUD-ENG.name
   core_policy_shared_compartment      = module.cislz_compartments.compartments.SHARED-CMP.name
+  core_policy_shared_compartment_ocid = module.cislz_compartments.compartments.SHARED-CMP.id
   core_policy_datascience_compartment = "${local.core_policy_shared_compartment}:${module.cislz_compartments.compartments.DS-CMP.name}"
   core_policy_mysql_compartment       = "${local.core_policy_shared_compartment}:${module.cislz_compartments.compartments.MYSQL-CMP.name}"
   core_policy_postgres_compartment    = "${local.core_policy_shared_compartment}:${module.cislz_compartments.compartments.POSTGRES-CMP.name}"
@@ -36,7 +37,7 @@ locals {
   core_policy_gg_compartment          = "${local.core_policy_shared_compartment}:${module.cislz_compartments.compartments.GG-CMP.name}"
   core_policy_fw_compartment          = "${local.core_policy_shared_compartment}:${module.cislz_compartments.compartments.FW-CMP.name}"
   core_policy_di_compartment          = "${local.core_policy_shared_compartment}:${module.cislz_compartments.compartments.DI-CMP.name}"
-  core_policy_gdd_compartment         = var.create_gdd == true ? "${local.core_policy_shared_compartment}:${module.cislz_compartments.compartments.GDD-CMP.name}" : "none"
+  core_policy_gdd_compartment         = var.create_gdd == true ? "${module.cislz_compartments.compartments.GDD-CMP.name}" : "none"
   
   core_policy_aidp_compartment        = var.create_aidp == true ? "${local.core_policy_shared_compartment}:${module.cislz_compartments.compartments.AIDP-CMP.name}" : "none"
   core_policy_fsdr_compartment        = "${local.core_policy_shared_compartment}:${module.cislz_compartments.compartments.FSDR-CMP.name}"
@@ -748,7 +749,7 @@ locals {
       "CE-GDD-POLICY" : {
         name : "cloud-engineering-GLOBALLY-DISTRIBUTED-policy"
         description : "Cloud Engineering Globally Distributed Databases permissions - only 2 levels - regular CE user and GDD admin.  All users have read all-resouces, so this list is abbreviated.  More info at https://docs.oracle.com/en/cloud/paas/globally-distributed-exascale-database/user/set-environment.html#GUID-DBE849DB-7291-4CFA-A833-95F1289DE279"
-        compartment_id : "TENANCY-ROOT"
+        compartment_id : "${local.core_policy_shared_compartment_ocid}"
         statements : [
           "allow group ${local.core_policy_gdd_admin_group_name} to USE autonomous-exadata-infrastructures in compartment ${local.core_policy_gdd_compartment} //Allow GDD Admins to use Exadata Infrastructure in Shared compartment",
           "allow group ${local.core_policy_gdd_admin_group_name} to USE cloud-autonomous-vmclusters in compartment ${local.core_policy_gdd_compartment} //Allow GDD Admins to use GDD VM Clusters in Shared compartment",
