@@ -25,11 +25,12 @@ locals {
 
   # Compartments
   core_policy_engineer_compartment    = module.cislz_compartments.compartments.CLOUD-ENG.name
+  core_policy_engineer_compartment_ocid    = module.cislz_compartments.compartments.CLOUD-ENG.id
   core_policy_shared_compartment      = module.cislz_compartments.compartments.SHARED-CMP.name
   core_policy_shared_compartment_ocid = module.cislz_compartments.compartments.SHARED-CMP.id
   core_policy_datascience_compartment = "${local.core_policy_shared_compartment}:${module.cislz_compartments.compartments.DS-CMP.name}"
   core_policy_mysql_compartment       = "${local.core_policy_shared_compartment}:${module.cislz_compartments.compartments.MYSQL-CMP.name}"
-  core_policy_postgres_compartment    = "${local.core_policy_shared_compartment}:${module.cislz_compartments.compartments.POSTGRES-CMP.name}"
+  core_policy_postgres_compartment    = "${module.cislz_compartments.compartments.POSTGRES-CMP.name}"
   core_policy_oac_compartment         = "${local.core_policy_shared_compartment}:${module.cislz_compartments.compartments.OAC-CMP.name}"
   core_policy_oic_compartment         = "${local.core_policy_shared_compartment}:${module.cislz_compartments.compartments.OIC-CMP.name}"
   core_policy_exacs_compartment       = "${local.core_policy_shared_compartment}:${module.cislz_compartments.compartments.EXACS-CMP.name}"
@@ -37,7 +38,7 @@ locals {
   core_policy_gg_compartment          = "${local.core_policy_shared_compartment}:${module.cislz_compartments.compartments.GG-CMP.name}"
   core_policy_fw_compartment          = "${local.core_policy_shared_compartment}:${module.cislz_compartments.compartments.FW-CMP.name}"
   core_policy_di_compartment          = "${local.core_policy_shared_compartment}:${module.cislz_compartments.compartments.DI-CMP.name}"
-  core_policy_gdd_compartment         = var.create_gdd == true ? "${module.cislz_compartments.compartments.GDD-CMP.name}" : "none"
+  core_policy_gdd_compartment         = var.create_gdd == true ? "${module.cislz_compartments.compartments.GDD-CMP.name}" : "none" // moved to shared comp
   
   core_policy_aidp_compartment        = var.create_aidp == true ? "${local.core_policy_shared_compartment}:${module.cislz_compartments.compartments.AIDP-CMP.name}" : "none"
   core_policy_fsdr_compartment        = "${local.core_policy_shared_compartment}:${module.cislz_compartments.compartments.FSDR-CMP.name}"
@@ -690,7 +691,7 @@ locals {
       "CE-POSTGRES-POLICY" : {
         name : "cloud-engineering-POSTGRES-policy"
         description : "Permissions for PostGres - please request access to group cloud-engineering-postgres-users"
-        compartment_id : "TENANCY-ROOT"
+        compartment_id : "${local.core_policy_shared_compartment_ocid}" # Postgres is in the shared compartment to allow for easier access to GenAI and other shared services
         statements : [
           "allow group ${local.core_policy_group_name} to use bastions in compartment ${local.core_policy_postgres_compartment} // Postgres Bastion Usage",
           "allow group ${local.core_policy_group_name} to manage bastion-sessions in compartment ${local.core_policy_postgres_compartment} // Postgres Bastion Usage",
