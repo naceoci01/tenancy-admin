@@ -89,6 +89,7 @@ locals {
           "allow group ${local.core_policy_group_name} to manage stream-family in compartment ${local.core_policy_engineer_compartment} //Allows Cloud Engineers to use OCI Streaming",
           "allow group ${local.core_policy_group_name} to manage logging-family in compartment ${local.core_policy_engineer_compartment} //Allows Cloud Engineers to use OCI Logging",
           "allow group ${local.core_policy_group_name} to manage email-family in compartment ${local.core_policy_engineer_compartment} //Allows Cloud Engineers to use email",
+          "allow group ${local.core_policy_group_name} to manage suppressions in tenancy //Email suppression tenancywide (not compartment-based)",
           "allow group ${local.core_policy_group_name} to manage ons-family in compartment ${local.core_policy_engineer_compartment} //Allows Cloud Engineers to use notifications and topics",
           "allow group ${local.core_policy_group_name} to manage api-gateway-family in compartment ${local.core_policy_engineer_compartment} //Allows Cloud Engineers to use notifications and topics",
           "allow group ${local.core_policy_group_name} to manage cloudevents-rules in compartment ${local.core_policy_engineer_compartment} //Allows Cloud Engineers to use Event Rules",
@@ -526,12 +527,9 @@ locals {
         description : "Permissions for Generative AI"
         compartment_id : "TENANCY-ROOT"
         statements : [
-          "allow group ${local.core_policy_group_name} to use generative-ai-chat in compartment ${local.core_policy_engineer_compartment} //Allow CE to Use GenAI Chat",
-          "allow group ${local.core_policy_group_name} to use generative-ai-text-generation in compartment ${local.core_policy_engineer_compartment} //Allow CE to Use GenAI Text",
-          "allow group ${local.core_policy_group_name} to use generative-ai-text-summarization in compartment ${local.core_policy_engineer_compartment} //Allow CE to Use GenAI Text Summarization",
-          "allow group ${local.core_policy_group_name} to use generative-ai-text-embedding in compartment ${local.core_policy_engineer_compartment} //Allow CE to Use GenAI Text Embedding",
-          "allow group ${local.core_policy_group_name} to read generative-ai-work-request in compartment ${local.core_policy_engineer_compartment} //Allow CE to read GenAI Work requests",
-          "allow any-user to use generative-ai-family in compartment ${local.core_policy_engineer_compartment} where any { request.principal.type = 'autonomousdatabase' } //Allow any ADB to use GenAI",
+          "deny group ${local.core_policy_group_name} to us generative-ai-dedicated-ai-cluster in tenancy //Deny CE to Use GenAI Dedicated Cluster",
+          "allow group ${local.core_policy_group_name} to manage generative-ai-family in compartment ${local.core_policy_engineer_compartment} //Allow CE to Use GenAI Family in CE Compartment (no dedicated via deny)",
+          "allow any-user to use generative-ai-family in compartment ${local.core_policy_engineer_compartment} where any { request.principal.type = 'autonomousdatabase' } //Allow any ADB to use GenAI (Resource Principal)",
           "allow group ${local.core_policy_group_name} to manage genai-agent-family in compartment ${local.core_policy_engineer_compartment} //Allow CE to manage GenAI Agents",
           "allow dynamic-group '${local.default_domain_name}'/'${local.genai_agent_group_name}' to inspect buckets in compartment ${local.core_policy_shared_compartment} //DG Access to object storage buckets in shared comp",
           "allow dynamic-group '${local.default_domain_name}'/'${local.genai_agent_group_name}' to inspect buckets in compartment ${local.core_policy_engineer_compartment} //DG Access to object storage buckets in engineer comp",
@@ -547,7 +545,7 @@ locals {
       "CE-AI-POLICY" : {
         name : "cloud-engineering-AI-policy"
         description : "Permissions for AI Services"
-        compartment_id : "TENANCY-ROOT"
+        compartment_id : "${local.core_policy_engineer_ocid}"
         statements : [
           "allow group ${local.core_policy_group_name} to manage ai-service-vision-family in compartment ${local.core_policy_engineer_compartment} //Allow CE to manage Vision, including custom projects",
           "allow group ${local.core_policy_group_name} to manage ai-service-speech-family in compartment ${local.core_policy_engineer_compartment} //Allow CE to manage Speech",
