@@ -527,7 +527,7 @@ locals {
         description : "Permissions for Generative AI"
         compartment_id : "TENANCY-ROOT"
         statements : [
-          "deny group ${local.core_policy_group_name} to us generative-ai-dedicated-ai-cluster in tenancy //Deny CE to Use GenAI Dedicated Cluster",
+          "deny group ${local.core_policy_group_name} to use generative-ai-dedicated-ai-cluster in tenancy //Deny CE to Use GenAI Dedicated Cluster",
           "allow group ${local.core_policy_group_name} to manage generative-ai-family in compartment ${local.core_policy_engineer_compartment} //Allow CE to Use GenAI Family in CE Compartment (no dedicated via deny)",
           "allow any-user to use generative-ai-family in compartment ${local.core_policy_engineer_compartment} where any { request.principal.type = 'autonomousdatabase' } //Allow any ADB to use GenAI (Resource Principal)",
           "allow group ${local.core_policy_group_name} to manage genai-agent-family in compartment ${local.core_policy_engineer_compartment} //Allow CE to manage GenAI Agents",
