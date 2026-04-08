@@ -59,7 +59,8 @@ locals {
           "allow group ${local.core_policy_group_name} to manage tickets in TENANCY //Allows Cloud Engineers manipulate tickets",
           "allow group ${local.core_policy_group_name} to read all-resources in TENANCY //CE can read ALL - showoci",
           "allow group ${local.core_policy_group_name} to manage tag-defaults in compartment cloud-engineering //Allow Cloud Engineers to set compartment tag defaults",
-          "allow group ${local.core_policy_group_name} to manage tag-namespaces in compartment cloud-engineering //Allow Cloud Engineers to manage tag namespaces in the CE Compartments",
+          "allow group ${local.core_policy_group_name} to use tag-namespaces in tenancy //Allow Cloud Engineers to apply tag namespaces in the tenancy",
+          "allow group ${local.core_policy_group_name} to manage tag-namespaces in compartment ${local.core_policy_engineer_compartment} //Allow Cloud Engineers to manage tag namespaces in the CE Compartments",
         ]
       }
     },
