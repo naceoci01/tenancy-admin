@@ -80,10 +80,16 @@ locals {
       description = "Full Stack Disaster Recovery Service"
     }
   } : {}
-  children = merge(local.oac_comp, local.oic_comp, local.exacs_comp,
+  gdd_comp = var.create_gdd ? {
+    GDD-CMP = {
+      name        = "GloballyDistributedDatabases",
+      description = "Globally Distributed Databases"
+    }
+  } : {}
+    children = merge(local.oac_comp, local.oic_comp, local.exacs_comp,
     local.pg_comp, local.ds_comp, local.mysql_comp, local.di_comp,
     local.opensearch_comp, local.firewall_comp, local.gg_comp,
-    local.oda_comp, local.aidp_comp, local.fsdr_comp)
+    local.oda_comp, local.aidp_comp, local.fsdr_comp, local.gdd_comp)
 
   all_comp = {
     CLOUD-ENG = {

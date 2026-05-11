@@ -80,6 +80,11 @@ variable "engineer_aidp_group_name" {
     default = "cloud-engineering-aidp-users"
 }
 
+variable "engineer_gdd_admin_group_name" { 
+    description = "Name of admin group for Globally Distributed Databases Admins"
+    default = "cloud-engineering-gdd-admins"
+}
+
 # Booleans
 variable "create_oic" {
     type = bool
@@ -88,7 +93,7 @@ variable "create_oic" {
 
 variable "create_exa" {
     type = bool
-    description = "Whether to enable Oracle Integration"
+    description = "Whether to enable Oracle Exadata Cloud Service"
 }
 
 variable "create_oda" {
@@ -154,6 +159,11 @@ variable "create_firewall" {
 variable "create_fsdr" {
     type = bool
     description = "Whether to enable FSDR"
+}
+
+variable "create_gdd" {
+    type = bool
+    description = "Whether to enable Globally Distributed Databases"
 }
 
 # List Variables

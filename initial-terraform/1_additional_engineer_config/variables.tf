@@ -29,4 +29,41 @@ variable "cloud_engineering_groupid" {
 variable "per-engineer-vcn-quota" {
     type = number
     description = "Number of VCNs allowed per engineer"
+    default = 3
+}
+
+variable "per-engineer-core-quota" {
+    type = number
+    description = "Number of compute cores allowed per engineer - will apply to all engineer compartments and all types we allow - E5/E6/Standard3"
+    default = 12
+}
+
+variable "per-engineer-memory-quota" {
+    type = number
+    description = "Amount of memory allowed per engineer - will apply to all engineer compartments and all types we allow - E5/E6/Standard3"
+    default = 200
+}
+
+variable "per-engineer-oke-nodes-quota" {
+    type = number
+    description = "Number of virtual OKE nodes allowed per engineer"
+    default = 3
+}
+
+variable "per-engineer-block-storage-quota" {
+    type = number
+    description = "Amount of block storage (in GBs) allowed per engineer"
+    default = 4096
+}
+
+variable "per-engineer-file-system-quota" {
+    type = number
+    description = "Number of file systems allowed per engineer"
+    default = 2
+}
+
+variable "per-engineer-mount-target-quota" {
+    type = number
+    description = "Number of mount targets allowed per engineer"
+    default = 1
 }
