@@ -77,3 +77,15 @@ variables:
     description: Amount of Block Storage (in GBs) an engineer can create within their own compartment. Total across all volumes.
     type: int
     default: 4096
+
+  per-engineer-mount-target-quota:
+    title: Per Engineer Mount Target Quota
+    description: Number of Mount Targets an engineer can create within their own compartment
+    type: int
+    default: 1
+
+  per-engineer-file-system-quota:
+    title: Per Engineer File System Quota
+    description: Number of File Systems an engineer can create within their own compartment
+    type: int
+    default: 2

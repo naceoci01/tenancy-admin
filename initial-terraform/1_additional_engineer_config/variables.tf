@@ -55,3 +55,15 @@ variable "per-engineer-block-storage-quota" {
     description = "Amount of block storage (in GBs) allowed per engineer"
     default = 4096
 }
+
+variable "per-engineer-file-system-quota" {
+    type = number
+    description = "Number of file systems allowed per engineer"
+    default = 2
+}
+
+variable "per-engineer-mount-target-quota" {
+    type = number
+    description = "Number of mount targets allowed per engineer"
+    default = 1
+}
