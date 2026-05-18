@@ -210,12 +210,23 @@ locals {
           "allow group ${local.core_policy_group_name} to manage pluggable-databases in compartment ${local.core_policy_engineer_compartment} //Allow CE to work with all Base Pluggable DB main CE compartment",
           "allow group ${local.core_policy_group_name} to manage data-safe-family in compartment ${local.core_policy_engineer_compartment} //Allow CE to use Data Safe in Main CE Compartment",
           "allow group ${local.core_policy_group_name} to manage data-safe-sql-firewall-family in compartment ${local.core_policy_engineer_compartment} //Allow CE to use Data Safe SQL Firewall in Main CE Compartment",
-          "allow group ${local.core_policy_group_name} to manage database-tools-connections in compartment ${local.core_policy_engineer_compartment} //Allow CE to work with SQL worksheets in main CE compartment",
-          "allow group ${local.core_policy_group_name} to manage database-tools-connections in compartment ${local.core_policy_shared_compartment}:exacs //Allow CE to work with SQL worksheets in ExaCS compartment",
-          "allow group ${local.core_policy_group_name} to manage database-tools-private-endpoints in compartment ${local.core_policy_shared_compartment}:exacs //Allow CE to work with PE in ExaCS compartment",
-          "allow group ${local.core_policy_group_name} to manage database-tools-private-endpoints in compartment ${local.core_policy_shared_compartment} //Allow CE to work with PE in Shared compartment",
           "allow dynamic-group ${local.database_dyngroup_name} to use vaults in compartment ${local.core_policy_shared_compartment} // For DB Systems to read vaults for Customer KMS",
           "allow dynamic-group ${local.database_dyngroup_name} to use keys in compartment ${local.core_policy_shared_compartment} // For DB Systems to use keys for Customer KMS"
+        ]
+      }
+    },
+    {
+      "CE-DBTOOLS-POLICY" : {
+        name : "cloud-engineering-DBTOOLS-policy"
+        description : "Cloud Engineers Database Tools and MCP Service permissions"
+        compartment_id : "TENANCY-ROOT"
+        statements : [
+          "allow group ${local.core_policy_group_name} to manage database-tools-family in compartment ${local.core_policy_engineer_compartment} //Allow CE to work with ALL DB Tools (Connections, PE, API) in main CE compartment",
+          "allow group ${local.core_policy_group_name} to manage database-connections in compartment ${local.core_policy_engineer_compartment} //Allow CE to work with Database Connections in main CE compartment",
+          "allow group ${local.core_policy_group_name} to manage database-tools-mcp-family in compartment ${local.core_policy_engineer_compartment} //Allow CE to work with DB MCP in main CE compartment",
+          "allow group ${local.core_policy_group_name} to manage database-tools-private-endpoints in compartment ${local.core_policy_shared_compartment} //Allow CE to work with PE in Shared and ExaCS compartment",
+          "allow any-user to use database-tools-db-connect-obo in tenancy where all {request.principal.type = 'databasetoolsmcpserver'} //RP-style for DB tools",
+          "allow any-user to read object-family in tenancy where request.principal.type = 'databasetoolsidentity' //RP-Style identity for DB Tools"
         ]
       }
     },
@@ -399,7 +410,7 @@ locals {
           "allow dynamic-group ${local.oic_rp_dyngroup_name} to read all-resources in tenancy //Allows Resource Principal for OIC to read anything in tenancy",
           "allow dynamic-group ${local.oic_rp_dyngroup_name} to manage object-family in compartment ${local.core_policy_engineer_compartment} //Allows Resource Principal to manage object family in CE compartment",
           "allow dynamic-group ${local.oic_rp_dyngroup_name} to manage object-family in compartment ${local.core_policy_oic_compartment} //Allows Resource Principal to manage object family in OIC compartment",
-          "allow dynamic-group ${local.oic_rp_dyngroup_name} to manage ai-service-document-family in compartment ${local.core_policy_engineer_compartment} //Allows Resource Principal to manage OCI Document Understanding in CE compartment",
+          "allow dynamic-group ${local.oic_rp_dyngroup_name} to manage ai-service-document-family in tenancy //Allows Resource Principal to manage OCI Document Understanding in tenancy",
           "allow dynamic-group ${local.oic_rp_dyngroup_name} to manage generative-ai-family in compartment ${local.core_policy_engineer_compartment} //Allows Resource Principal to manage Generative AI family in CE compartment",
           "allow dynamic-group ${local.oic_rp_dyngroup_name} to manage genai-agent-family in compartment ${local.core_policy_engineer_compartment} //Allows Resource Principal to manage Generative AI Agent family in CE compartment",
           "allow dynamic-group ${local.oic_rp_dyngroup_name} to manage ai-service-language-family in compartment ${local.core_policy_engineer_compartment} //Allows Resource Principal to manage OCI Language in CE compartment",
