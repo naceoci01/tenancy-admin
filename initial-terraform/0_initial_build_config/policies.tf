@@ -224,9 +224,12 @@ locals {
           "allow group ${local.core_policy_group_name} to manage database-tools-family in compartment ${local.core_policy_engineer_compartment} //Allow CE to work with ALL DB Tools (Connections, PE, API) in main CE compartment",
           "allow group ${local.core_policy_group_name} to manage database-connections in compartment ${local.core_policy_engineer_compartment} //Allow CE to work with Database Connections in main CE compartment",
           "allow group ${local.core_policy_group_name} to manage database-tools-mcp-family in compartment ${local.core_policy_engineer_compartment} //Allow CE to work with DB MCP in main CE compartment",
+          "allow group ${local.core_policy_group_name} to manage database-tools-mcp-servers-invocation in compartment ${local.core_policy_engineer_compartment} //Allow CE to perform invoke MCP in main CE compartment (not part of family)",
           "allow group ${local.core_policy_group_name} to manage database-tools-private-endpoints in compartment ${local.core_policy_shared_compartment} //Allow CE to work with PE in Shared and ExaCS compartment",
-          "allow any-user to use database-tools-db-connect-obo in tenancy where all {request.principal.type = 'databasetoolsmcpserver'} //RP-style for DB tools",
-          "allow any-user to read object-family in tenancy where request.principal.type = 'databasetoolsidentity' //RP-Style identity for DB Tools"
+          "allow any-user to use database-tools-db-connect-obo in tenancy where all {request.principal.type = 'databasetoolsmcpserver'} //RP-style for MCP DB to connect to DB",
+          "allow any-user to use database-tools-connections in tenancy where all {request.principal.type = 'databasetoolsmcpserver'} //RP-style for DB tools connections",
+          "allow any-user to read object-family in tenancy where request.principal.type = 'databasetoolsidentity' //RP-Style identity for DB Tools",
+
         ]
       }
     },
