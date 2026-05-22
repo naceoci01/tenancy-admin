@@ -357,6 +357,7 @@ locals {
           "allow group ${local.core_policy_gg_admin_group_name} to manage goldengate-family in compartment ${local.core_policy_gg_compartment} //Allow GG Admin in shared GG compartment",
           "allow group ${local.core_policy_gg_admin_group_name} to manage load-balancers in compartment ${local.core_policy_gg_compartment} //Allow GG Admin in shared GG compartment",
           "allow group ${local.core_policy_gg_admin_group_name} to manage logging-family in compartment ${local.core_policy_gg_compartment} //Allow GG Admin in shared GG compartment",
+          "allow group ${local.core_policy_gg_admin_group_name} to manage virtual-network-family in compartment ${local.core_policy_gg_compartment} //Allows GG admin in shated GG compartment to launch new deploymnets (dependency)",
           "allow dynamic-group '${local.default_domain_name}'/'${local.gg_dynamic_group_name}' to use keys in compartment ${local.core_policy_shared_compartment} //Allow GG DG to use keys in shared CE compartment",
           "allow dynamic-group '${local.default_domain_name}'/'${local.gg_dynamic_group_name}' to use vault in compartment ${local.core_policy_shared_compartment} //Allow GG DG to use vault in shared CE compartment",
           "allow dynamic-group '${local.default_domain_name}'/'${local.gg_dynamic_group_name}' to manage object-family in compartment ${local.core_policy_engineer_compartment} //Allow GG DG to manage OSS in main CE compartment",
