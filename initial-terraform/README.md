@@ -1,108 +1,68 @@
-# Terraform to configure tenancy
+# Tenancy Terraform stacks
 
-(doc in progress - 08/22/2025)
+This directory contains separate Terraform stacks for building and extending an
+OCI Cloud Engineer tenancy. Apply each stack from its own directory; each has
+its own providers, variables, and state. Review `schema.yaml` where present
+and the variable definitions before using it with OCI Resource Manager.
 
-To set up a "Cloud Engineer" tenancy, there are several main steps to getting set up.  The scripts here will do some of them.
+## Current deployment scope
 
-- Parent Tenancy Steps
-- Github Repo for these stacks
-- Create Identity Domain and Groups (Stack 00)
-- Configure SSO (with optional JIT)
-- Create main compartments, policies and dynamic groups (Stack 0)
-- Ongoing (via cron or function) Compartment and quota policy per engineer (Stack 1)
-- Create admin compartment, server, and dynamic group (Stack 2)
-- Create VCN via LZ (Stack 3)
-- Additional OCI Services (Stack 4 and beyond - not created yet as of August 2025)
+Only these stacks are in use today:
 
-## Parent Tenancy
-Subscribe all needed regions
-Tenancy govenance rules 
-Subscribe child to governance rules
-...
+| Stack | Purpose |
+| --- | --- |
+| [`00_identity_domain/`](00_identity_domain/) | Creates the Identity Domain foundation and initial groups. Run carefully because group changes can affect membership. |
+| [`0_initial_build_config/`](0_initial_build_config/) | Creates the active baseline compartments, identity-domain groups, dynamic groups, IAM policies, quotas, and vault configuration. |
 
-## Github Repo
+Apply stack 00 before the baseline when a new Identity Domain is needed.
 
-Stacks in this repo are in subfolders, so they can be pulled from single GitHub repo.
+## Superseded and in-flight stacks
 
-Several options exist for creation:
-* Clone the repo and run via local terraform from your computer, a cloud VM, or Cloud Shell (implies OCI access via API Key)
-* Create a Resource Manager Stack and upload the appropriate folder
-* Configure a Configuration Source Provider in home region, using an Org-based repo and a Personal Access Token.  Then bring in each stack to Resource Manager
+| Stack | Status |
+| --- | --- |
+| [`1_additional_engineer_config/`](1_additional_engineer_config/) | Superseded. Its ongoing engineer-compartment and quota work is now implemented by the [OCI Administration Functions](../admin-functions/README.md). |
+| [`2_admin/`](2_admin/) | In flight. |
+| [`3_shared_vcn/`](3_shared_vcn/) | In flight. |
+| [`4_multi_region_services/`](4_multi_region_services/) | In flight. |
+| [`5_special_project/`](5_special_project/) | In flight. |
 
-The stacks are organized under the `initial_terraform` folder, and each folder
+The `test-*` and `xx_*` directories are working or historical material, not
+current deployment stacks.
 
-## Create Identity domain (Stack 00)
+## Stack reference
 
-This will create a very basic Identity Domain, which all engineers can be added to.  The Domain can then be configured manually for SSO or other ID Domain features.  For this reason, the 00 stack is run just once.  It will also create some of the admin or user groups that are used 
+| Stack | Purpose | Typical use |
+| --- | --- | --- |
+| [`00_identity_domain/`](00_identity_domain/) | Identity Domain foundation and initial groups. | In use. |
+| [`0_initial_build_config/`](0_initial_build_config/) | Baseline tenancy configuration. | In use. |
+| [`1_additional_engineer_config/`](1_additional_engineer_config/) | Engineer configuration. | Superseded by OCI Functions. |
+| [`2_admin/`](2_admin/) | Administration compartment and networking foundation. | In flight. |
+| [`3_shared_vcn/`](3_shared_vcn/) | Shared-network infrastructure. | In flight. |
+| [`4_multi_region_services/`](4_multi_region_services/) | Multi-region service networking. | In flight. |
+| [`5_special_project/`](5_special_project/) | Project-specific compartment, policies, and identity configuration. | In flight. |
 
-NOTE - this one CANNOT be re-run over and over as re-creation of the main `cloud-engineering` group will remove all members.  There is work in flight in the IAM module (v0.3.0) to allow retention of group membership.
+The numeric prefixes show the intended progression; they do not mean every
+directory should be applied.
 
-## Enable SSO for Domain (no stack)
+## Apply a stack
 
-Set up SSO and JIT, using Oracle's production SSO configuration
+Run Terraform in the target stack directory with credentials and variable files
+for the tenancy you intend to change:
 
-Screen shots TBD
+```bash
+cd initial-terraform/0_initial_build_config
+terraform init
+terraform plan
+terraform apply
+```
 
-## Compartments, Policies, Dynamic Groups (Stack 1)
+Use isolated state per tenancy and keep state files, `*.tfvars`, credentials,
+and other environment-specific material out of commits. Terraform-managed
+resources should be changed in the corresponding stack rather than manually in
+the OCI Console, because a later apply can reconcile them back to configuration.
 
-This should create a majority of policies and Dynamic Groups needed for various services.  At the moment, it set up policies for:
+## Related automation
 
-- Compute, network, storage (CORE)
-- OCI Tenancy Services (SERVICES) - logging, metrics, notifications, alarms, SQL Tools, Cloud Shell, etc
-- Exadata Cloud Service (EXACS)
-- GoldenGate (GG) - shared
-- OS Management Hub (OSMH)
-- Database (DB) - Base, NoSQL
-- MySQL Heatwave (MYSQL) - shared
-- Autonomous DB (ADB) - with resource principals
-- Functions (FUNC)
-- Oracle Integration 3 (OIC) - shared with resource principals
-- Network Path Analyzer (VNPA)
-- AI Services (AI)
-- GenAI Services (GENAI)
-- Oracle Digital Assistant (ODA) - shared
-- more
-
-TODO: set up resource manager schema.yaml to enable or disable (DG, compartment, policy) by service.  For example, if Data Science is not needed, don't create the shared compartment and policies for it.
-
-**NOTE - this one can be re-run over and over as policies are added.  It will overwrite manual changes**
-
-## Admin Compartment (Stack 2)
-
-VCN, server for admins to use, along with Dynamic Group allowing instance principal execution of scripts. 
-
-Scripts include
-
-- Auto-Tag (schedule)
-- Auto-Shutdown (cost savings)
-- Extirpater / SuperDelete (as needed)
-- Tenancy-wide scale-down scripts (like ADB Storage)
-
-Also good practice to install Usage2ADW ADB-S and put binaries on admin VM.
-
-## Ongoing Engineer Compartments (Stack 1)
-
-This one can be set via cron to run every so often (20 min currently) and checks the membership of the main `cloud-engineering group`, and then for each user, adds or updates a compartment for them (using first half of email name minus @oracle.com), then updates a set of compartment quotas to allow each engineer to have a set of resources.
-
-**NOTE - this one can be updated and pushed to repo, then will automatically pick up changes next run.  Or run it manually**
-
-## Service Enablement
-
-TBD for this section.  Each service must be set up, but these could all be scripted. 
-
-What has been done manually
-
-- Regional DRG and RPC connection for all regions (all in `cloud-engineering-shared`)
-- VCNs for each of (ExaCS, MySQL, GoldenGate) with DRG attachments, SecLists, NSGs, routing rules
-- ExaCS Clusters for 19c and 23ai
-- ExaScale Clusters
-- ADB-Dedicated Clusters for 19c and 23ai
-- Oracle Integration instances with associated OAUTH apps, (file server, process automation, Visual builder enabled and configured)
-- Oracle Analytics Cloud instances with permissions for cloud-engineers to use
-- Oracle Digital Assitant instances
-- MySQL Systems using OCI Authentication Proxy (for all engineers)
-- GoldenGate Deployments to be shared by everyone
-- Data Science compartment for use by anyone, with dynamic groups allowing access to rest of tenancy
-- Logging Analytics and Connector Hubs for Audit, Flow Logs, and other things
-
-
+The Terraform stacks establish infrastructure; recurring engineer-compartment
+and quota operations are implemented as OCI Functions in
+[`../admin-functions/`](../admin-functions/README.md).

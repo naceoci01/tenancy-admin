@@ -1,0 +1,16 @@
+schema_version: 20180708
+name: engineer-compartment-lifecycle
+version: 0.2.5
+runtime: python3.11
+build_image: fnproject/python:3.11-dev
+run_image: fnproject/python:3.11
+entrypoint: /python/bin/fdk /function/func.py handler
+memory: 512
+timeout: 120
+config:
+  DEPENDENCY_LOG_LEVEL: WARNING
+  DELETE_GRACE_PERIOD_HOURS: "72"
+  DOMAIN_ID: ""
+  DRY_RUN: "false"
+  ENGINEER_ROOT_COMPARTMENT_OCID: ""
+  LOG_LEVEL: INFO

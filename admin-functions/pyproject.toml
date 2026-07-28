@@ -1,0 +1,12 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "tenancy-admin-scheduled-functions"
+version = "0.1.0"
+description = "Scheduled OCI Functions for tenancy administration"
+requires-python = ">=3.11"
+dependencies = [
+  "oci>=2.130.0",
+]
