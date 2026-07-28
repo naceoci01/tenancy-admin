@@ -1,0 +1,221 @@
+{
+  "dry_run": true,
+  "quota_config_json": [
+    {
+      "area": "database",
+      "quota_name": "cloud-engineering-DATABASE-quota",
+      "description": "Engineer quota (Database)",
+      "statements": [
+        {
+          "scope": "root",
+          "operation": "zero",
+          "service": "database"
+        },
+        {
+          "scope": "root",
+          "operation": "set",
+          "service": "database",
+          "quota": "ex-cdb-count",
+          "value": 1000
+        },
+        {
+          "scope": "root",
+          "operation": "set",
+          "service": "database",
+          "quota": "ex-non-cdb-count",
+          "value": 1000
+        },
+        {
+          "scope": "root",
+          "operation": "set",
+          "service": "database",
+          "quota": "ex-pdb-count",
+          "value": 1000
+        },
+        {
+          "scope": "per_engineer",
+          "operation": "set",
+          "service": "database",
+          "quota": "/*-total-storage-tb/",
+          "value": 4
+        },
+        {
+          "scope": "per_engineer",
+          "operation": "set",
+          "service": "database",
+          "quota": "/*-ecpu-count/",
+          "value": 8
+        },
+        {
+          "scope": "per_engineer",
+          "operation": "set",
+          "service": "database",
+          "quota": "vm-block-storage-gb",
+          "value": 1536
+        },
+        {
+          "scope": "per_engineer",
+          "operation": "set",
+          "service": "database",
+          "quota": "adb-developer-count",
+          "value": 2
+        },
+        {
+          "scope": "per_engineer",
+          "operation": "set",
+          "service": "database",
+          "quota": "vm-standard-e5-ocpu-count",
+          "value": 8
+        }
+      ]
+    },
+    {
+      "area": "network",
+      "quota_name": "cloud-engineering-NETWORK-quota",
+      "description": "Engineer quota (VCN)",
+      "statements": [
+        {
+          "scope": "root",
+          "operation": "zero",
+          "service": "vcn"
+        },
+        {
+          "scope": "per_engineer",
+          "operation": "set",
+          "service": "vcn",
+          "quota": "vcn-count",
+          "value": 4
+        },
+        {
+          "scope": "per_engineer",
+          "operation": "set",
+          "service": "vcn",
+          "quota": "reserved-public-ip-count",
+          "value": 2
+        }
+      ]
+    },
+    {
+      "area": "compute-core",
+      "quota_name": "cloud-engineering-COMPUTE-CORE-quota",
+      "description": "Engineer quota (Compute Core)",
+      "statements": [
+        {
+          "scope": "root",
+          "operation": "zero",
+          "service": "compute-core"
+        },
+        {
+          "scope": "root",
+          "operation": "set",
+          "service": "compute-core",
+          "quota": "standard-a1-core-regional-count",
+          "value": 10000000
+        },
+        {
+          "scope": "per_engineer",
+          "operation": "set",
+          "service": "compute-core",
+          "quota": "standard-e4-core-count",
+          "value": 12
+        },
+        {
+          "scope": "per_engineer",
+          "operation": "set",
+          "service": "compute-core",
+          "quota": "standard-e5-core-count",
+          "value": 12
+        },
+        {
+          "scope": "per_engineer",
+          "operation": "set",
+          "service": "compute-core",
+          "quota": "standard-e6-core-count",
+          "value": 12
+        },
+        {
+          "scope": "per_engineer",
+          "operation": "set",
+          "service": "compute-core",
+          "quota": "standard3-core-count",
+          "value": 12
+        },
+        {
+          "scope": "per_engineer",
+          "operation": "set",
+          "service": "compute-core",
+          "quota": "standard-a1-core-count",
+          "value": 12
+        }
+      ]
+    },
+    {
+      "area": "compute-memory",
+      "quota_name": "cloud-engineering-COMPUTE-MEMORY-quota",
+      "description": "Engineer quota (Compute Memory)",
+      "statements": [
+        {
+          "scope": "root",
+          "operation": "zero",
+          "service": "compute-memory"
+        },
+        {
+          "scope": "root",
+          "operation": "set",
+          "service": "compute-memory",
+          "quota": "standard-a1-memory-regional-count",
+          "value": 10000000
+        },
+        {
+          "scope": "per_engineer",
+          "operation": "set",
+          "service": "compute-memory",
+          "quota": "standard-e4-memory-count",
+          "value": 200
+        },
+        {
+          "scope": "per_engineer",
+          "operation": "set",
+          "service": "compute-memory",
+          "quota": "standard-e5-memory-count",
+          "value": 200
+        },
+        {
+          "scope": "per_engineer",
+          "operation": "set",
+          "service": "compute-memory",
+          "quota": "standard-e6-memory-count",
+          "value": 200
+        },
+        {
+          "scope": "per_engineer",
+          "operation": "set",
+          "service": "compute-memory",
+          "quota": "standard3-memory-count",
+          "value": 200
+        },
+        {
+          "scope": "per_engineer",
+          "operation": "set",
+          "service": "compute-memory",
+          "quota": "standard-a1-memory-count",
+          "value": 200
+        }
+      ]
+    },
+    {
+      "area": "oke",
+      "quota_name": "cloud-engineering-OKE-quota",
+      "description": "Engineer quota (OKE)",
+      "statements": [
+        {
+          "scope": "per_engineer",
+          "operation": "set",
+          "service": "container-engine",
+          "quota": "virtual-node-count",
+          "value": 3
+        }
+      ]
+    }
+  ]
+}
