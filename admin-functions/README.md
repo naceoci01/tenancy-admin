@@ -12,7 +12,7 @@ configuration, payload contract, IAM guidance, and deployment instructions.
 | [`engineer_compartment_lifecycle`](functions/engineer_compartment_lifecycle/README.md) | OCI Events | Creates an active user's engineer compartment or marks an inactive/deleted user's compartment for delayed staging. |
 | [`engineer_compartment_delete_staging`](functions/engineer_compartment_delete_staging/README.md) | Resource Scheduler | Moves engineer compartments whose deletion deadline has passed into a staging compartment; it never deletes the compartment or its contents. |
 | [`engineer_quota_updater`](functions/engineer_quota_updater/README.md) | Resource Scheduler | Reconciles tenancy quota policies for direct-child engineer compartments. |
-| [`autonomous_database_maintenance`](functions/autonomous_database_maintenance/README.md) | Resource Scheduler | Performs selected Autonomous Database maintenance actions across the configured workload types. |
+| [`autonomous_database_maintenance`](functions/autonomous_database_maintenance/README.md) | Resource Scheduler | Reconciles selected Autonomous Database cost and capacity settings across configured regions and workloads; it supports dry runs, per-database results, and an optional OCI Notifications summary. |
 
 The engineer-compartment functions form a workflow: lifecycle marks a
 compartment with `Oracle-Tags.DeleteCompartmentAfter`, delete staging moves it
@@ -27,6 +27,8 @@ after the deadline, and the quota updater can exclude marked compartments.
   the chosen function. See that function's README for its IAM scope.
 - An OCI Events rule for `engineer_compartment_lifecycle`, or an OCI Resource
   Scheduler schedule for the scheduled functions.
+- An OCI Notifications topic and publish permission only when
+  `autonomous_database_maintenance` is configured with `NOTIFICATION_TOPIC_ID`.
 
 OCI user credentials, key files, fingerprints, and tenancy OCIDs are not used
 by function code at runtime; the functions use OCI resource principals.
@@ -64,4 +66,3 @@ python3 -m unittest discover -s tests
 
 See each function README for focused test commands and function-specific
 configuration, payloads, policy statements, and verification steps.
-

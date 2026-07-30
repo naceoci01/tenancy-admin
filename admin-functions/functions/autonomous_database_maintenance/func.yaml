@@ -1,6 +1,6 @@
 schema_version: 20180708
 name: autonomous-database-maintenance
-version: 0.1.3
+version: 0.1.15
 runtime: python3.11
 build_image: fnproject/python:3.11-dev
 run_image: fnproject/python:3.11
@@ -8,8 +8,8 @@ entrypoint: /python/bin/fdk /function/func.py handler
 memory: 1024
 timeout: 300
 config:
-  DEPENDENCY_LOG_LEVEL: WARNING
   BACKUP_RETENTION_DAYS: "14"
+  DEPENDENCY_LOG_LEVEL: WARNING
   DRY_RUN: "true"
   ENABLE_BACKUP_RETENTION: "true"
   ENABLE_COMPUTE_SCALE_DOWN: "true"
@@ -19,7 +19,9 @@ config:
   LOG_LEVEL: INFO
   MINIMUM_ECPUS: "2"
   MINIMUM_STORAGE_GB: "20"
+  NOTIFICATION_TOPIC_ID: ""
+  REGIONS: ""
   STORAGE_MULTIPLIER: "2"
   THREADS: "5"
   WAIT_TIMEOUT_SECONDS: "300"
-  WORKLOAD_TYPES: OLTP,JSON,DW,AJD,APEX
+  WORKLOAD_TYPES: ATP,ADW,JSON,APEX,LH
