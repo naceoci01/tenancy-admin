@@ -1,0 +1,18 @@
+schema_version: 20180708
+name: policy-cleanup-report
+version: 0.1.6
+runtime: python3.12
+build_image: fnproject/python:3.12-dev
+run_image: fnproject/python:3.12
+entrypoint: /python/bin/fdk /function/func.py handler
+memory: 1024
+timeout: 300
+config:
+  DEPENDENCY_LOG_LEVEL: WARNING
+  ENABLE_GENAI_ENRICHMENT: "false"
+  GENAI_COMPARTMENT_ID: ""
+  GENAI_MODEL_ID: ""
+  LOG_LEVEL: INFO
+  PUBLISH_NOTIFICATION: "false"
+  REPORT_BUCKET_NAME: policy-health-reports
+  REPORT_NAMESPACE: ""

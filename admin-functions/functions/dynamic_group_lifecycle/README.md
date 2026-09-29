@@ -3,8 +3,11 @@
 This weekly OCI Resource Scheduler function finds dynamic groups not referenced
 by any loaded IAM policy, marks them for deletion after two weeks, and removes
 the mark if a group becomes referenced again. It uses
-`oci-policy-analysis==6.5.1` to inventory policies and Identity Domains and to
-query the resulting dynamic-group data with `{"in_use": false}`.
+`oci-policy-analysis==6.5.1` through its supported `AppContext` and
+`LoadService` interfaces, then queries the minimally enriched dynamic-group
+data with `{"in_use": false}`. This follows the same package-loading and
+resource-principal pattern as `policy_cleanup_report` while avoiding the full
+recommendations overlay that this mutation job does not need.
 
 OCI Functions run under a resource principal (not a compute instance
 principal); the package is initialized with that resource principal so the

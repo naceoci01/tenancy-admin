@@ -12,6 +12,7 @@ configuration, payload contract, IAM guidance, and deployment instructions.
 | [`engineer_compartment_lifecycle`](functions/engineer_compartment_lifecycle/README.md) | OCI Events | Creates an active user's engineer compartment or marks an inactive/deleted user's compartment for delayed staging. |
 | [`engineer_compartment_delete_staging`](functions/engineer_compartment_delete_staging/README.md) | Resource Scheduler | Moves engineer compartments whose deletion deadline has passed into a staging compartment; it never deletes the compartment or its contents. |
 | [`engineer_quota_updater`](functions/engineer_quota_updater/README.md) | Resource Scheduler | Reconciles tenancy quota policies for direct-child engineer compartments. |
+| [`dynamic_group_lifecycle`](functions/dynamic_group_lifecycle/README.md) | Resource Scheduler | Tags unused Identity Domain dynamic groups for a two-week grace period, removes marks from groups returned to use, and can optionally delete expired groups. |
 | [`autonomous_database_maintenance`](functions/autonomous_database_maintenance/README.md) | Resource Scheduler | Reconciles selected Autonomous Database cost and capacity settings across configured regions and workloads; it supports dry runs, per-database results, and an optional OCI Notifications summary. |
 
 The engineer-compartment functions form a workflow: lifecycle marks a

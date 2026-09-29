@@ -181,20 +181,29 @@ class OciDynamicGroupGateway:
     """Adapt policy analysis inventory and OCI Identity Domains mutations."""
 
     def inventory(self) -> list[dict[str, Any]]:
-        """Load IAM and policy data, then return unused dynamic groups by query."""
-        from oci_policy_analysis.application.core.engine import PolicyIntelligenceEngine
-        from oci_policy_analysis.application.core.repo import PolicyAnalysisRepository
+        """Load tenancy inventory through the package's supported service boundary."""
+        from oci_policy_analysis.application.context import AppContext
+        from oci_policy_analysis.application.core.support.config import load_settings
+        from oci_policy_analysis.application.services.load_service import LoadService
 
-        repo = PolicyAnalysisRepository()
-        # OCI Functions use a resource principal.  The policy-analysis package
-        # initializes its OCI clients and tenancy inventory from that principal.
-        if not repo.initialize_client(use_instance_principal=False, use_resource_principal=True, recursive=True):
-            raise RuntimeError("oci-policy-analysis could not initialize its resource-principal client")
-        if not repo.load_policies_and_compartments():
-            raise RuntimeError("oci-policy-analysis could not load policies and compartments")
-        if not repo.load_complete_identity_domains(load_all_users=False):
-            raise RuntimeError("oci-policy-analysis could not load Identity Domains")
-        PolicyIntelligenceEngine(repo).run_dg_in_use_analysis()
+        # AppContext/LoadService is the same supported initialization path used
+        # by the policy-analysis UI and the policy-cleanup-report function.
+        # The minimal profile performs the dynamic-group usage analysis without
+        # paying for the full recommendations/risk overlay on this mutation job.
+        context = AppContext.from_settings(load_settings())
+        result = LoadService(context).load_from_tenancy(
+            use_instance_principal=False,
+            use_resource_principal=True,
+            recursive=True,
+            load_all_users=False,
+            compartment_domain_search_depth=1,
+            post_load_profile="minimal",
+            save_cache_after_load=False,
+        )
+        if not result.success:
+            raise RuntimeError(f"oci-policy-analysis tenancy load failed: {result.message}")
+
+        repo = context.policy_repo
         self.all_dynamic_groups = list(repo.dynamic_groups)
         self._domain_clients = dict(repo.domain_clients)
 

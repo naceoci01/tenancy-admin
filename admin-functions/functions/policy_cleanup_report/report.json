@@ -1,0 +1,1085 @@
+{
+  "cleanup_counts": {
+    "groups_without_users": 8,
+    "invalid_statements": 102,
+    "unreferenced_dynamic_groups": 38
+  },
+  "genai_guidance": "**ANTLR syntax error at line 1, column 97 while parsing**\n\n- Policy contains invalid syntax (OCID used directly in condition without quotes).\n- Operator must correct the statement to: `where ALL {target.secret.id = 'ocid1.vaultsecret.oc1.phx.amaaaaaabv6267iaspnmplcirx5wtz2y777qlwjkdpaldyab3uzx74xurtcq', request.principal.type = 'dbmgmtmanageddatabase'}`\n\n**Dynamic Group AB-DG-Test-Instance-Group not found in tenancy**\n\n- Dynamic group does not exist in the current tenancy.\n- Confirm the correct fully qualified domain/name reference before changing the policy. Same-named dynamic group exists in `cloud-engineering-domain`.\n\n**Dynamic Group AB-Events-Test-Group not found in tenancy**\n\n- Dynamic group does not exist in the current tenancy (4 statements).\n- Confirm the correct fully qualified domain/name reference before changing the policy. Same-named dynamic group exists in `cloud-engineering-domain`.\n\n**Dynamic Group ADBGENAIAgent not found in tenancy**\n\n- Dynamic group does not exist in the current tenancy (2 statements).\n- Confirm the correct fully qualified domain/name reference before changing the policy. Same-named dynamic group exists in `cloud-engineering-domain`.\n\n**Dynamic Group APEX_DocGen not found in tenancy**\n\n- Dynamic group does not exist in the current tenancy.\n- Confirm the correct fully qualified domain/name reference before changing the policy. Same-named dynamic group exists in `cloud-engineering-domain`.\n\n**Dynamic Group cloud-engineering-data-integration-users not found in tenancy**\n- Policy references a dynamic group that does not exist in the tenancy.\n- Operator must confirm whether the group was deleted or renamed before removing the statements.\n\n**Dynamic Group CR_dg not found in tenancy**\n- Policy references a dynamic group that does not exist in the tenancy.\n- Same-named dynamic group exists in `cloud-engineering-domain` (policy references Default); confirm correct fully qualified domain/name reference before changing policy.\n\n**Dynamic Group CVeenstra-dg not found in tenancy**\n- Policy references a dynamic group that does not exist in the tenancy.\n- Same-named dynamic group exists in `cloud-engineering-domain` (policy references Default); confirm correct fully qualified domain/name reference before changing policy.\n\n**Dynamic Group dbmgmt_dynamic_group not found in tenancy**\n- Policy references a dynamic group that does not exist in the tenancy.\n- Operator must confirm whether the group was deleted or renamed before removing the statements.\n\n**Dynamic Group dbmp-deploy-instances-20260626 not found in tenancy**\n- Policy references a dynamic group that does not exist in the tenancy.\n- Operator must confirm whether the group was deleted or renamed before removing the statements.\n\n**Dynamic Group edq_group not found in tenancy**\n- Identity-domain evidence is only a same-name candidate in `cloud-engineering-domain`; never treat as proof of the intended principal.\n- Operator must confirm the correct fully qualified domain/name reference before changing the policy. Validate service permissions for `autonomous-databases` and `key-family`.\n\n**Dynamic Group Faaris-Events-Testing not found in tenancy**\n- Identity-domain evidence is only a same-name candidate in `cloud-engineering-domain`; never treat as proof of the intended principal.\n- Operator must confirm the correct fully qualified domain/name reference before changing the policy. Validate service permission for `object-family`.\n\n**Dynamic Group genAI-agent-oda-dynamic-group not found in tenancy**\n- Identity-domain evidence is only a same-name candidate in `cloud-engineering-domain`; never treat as proof of the intended principal.\n- Operator must confirm the correct fully qualified domain/name reference before changing the policy. Validate service permissions for `agent-family` and `object-family`.\n\n**Dynamic Group genAI-agent-oda-dynamic-groupto not found in tenancy**\n- Dynamic group does not exist in any domain.\n- Operator must confirm the correct fully qualified domain/name reference before changing the policy. Validate service permission for `genai-agent-family`.\n\n**Dynamic Group jp-drg not found in tenancy**\n- Identity-domain evidence is only a same-name candidate in `cloud-engineering-domain`; never treat as proof of the intended principal.\n- Operator must confirm the correct fully qualified domain/name reference before changing the policy. Validate service permission for `vcns`.\n\n**Dynamic Group mcp-server-dg not found in tenancy**\n- Statement references non-existent dynamic group `mcp-server-dg`.\n- Remove or correct the statement: `Allow dynamic-group mcp-server-dg to read instance-family in compartment siva.kulasekaran`.\n\n**Dynamic Group move_adobe_file_f_dg_1751401418090 not found in tenancy**\n- Dynamic group does not exist; four statements grant broad Object Storage permissions.\n- Remove or correct all four statements referencing `move_adobe_file_f_dg_1751401418090` in compartment `caiping.yue`.\n\n**Dynamic Group mtheodyngroup not found in tenancy**\n- Dynamic group not present in current domain (same-named group exists in `cloud-engineering-domain` which uses Default domain reference).\n- Operator must confirm the correct fully qualified domain/name reference before changing the policy.\n\n**Dynamic Group mtheodyngrp1 not found in tenancy**\n- Statement references non-existent dynamic group `mtheodyngrp1`.\n- Remove or correct the statement: `Allow dynamic-group mtheodyngrp1 to manage objects in compartment matt.theodoseau`.\n\n**Dynamic Group oci-generative-ai-agents-service-SG not found in tenancy**\n- Dynamic group not present in current domain (same-named group exists in `cloud-engineering-domain` which uses Default domain reference).\n- Operator must validate the service permission reference and confirm the correct fully qualified domain/name reference before changing the policy.\n\n**Dynamic Group oic-resource-principal-DG not found in tenancy**\n- Policy references non-existent dynamic group `oic-resource-principal-DG` in identity domain `cloud-engineering-domain`.\n- Operator must confirm the correct fully qualified domain/name reference before changing the policy.\n\n**Dynamic Group PAFDynDL not found in tenancy**\n- Policy references non-existent dynamic group `PAFDynDL` (Default domain) while a same-named dynamic group exists in `cloud-engineering-domain`.\n- Identity-domain evidence is only a same-name candidate; operator must validate the intended principal and confirm the correct fully qualified domain/name reference before changing the policy.\n\n**Dynamic Group SelectAI not found in tenancy**\n- Policy references non-existent dynamic group `SelectAI` (Default domain) while a same-named dynamic group exists in `cloud-engineering-domain`.\n- Identity-domain evidence is only a same-name candidate; operator must validate the intended principal and confirm the correct fully qualified domain/name reference before changing the policy.\n\n**Dynamic Group Shared-OIC-PHX-DG not found in tenancy**\n- Policy references non-existent dynamic group `Shared-OIC-PHX-DG` (Default domain) while a same-named dynamic group exists in `cloud-engineering-domain`.\n- Identity-domain evidence is only a same-name candidate; operator must validate the intended principal and confirm the correct fully qualified domain/name reference before changing the policy.\n\n**Dynamic Group tax-demo-users not found in tenancy**\n- Policies reference non-existent dynamic group `tax-demo-users`.\n- Check whether this dynamic group is still required by any other policies or resources before considering removal. Removal is not automatically safe.\n\n**Group admins not found in tenancy**\n\n- Group `admins` does not exist in the tenancy.\n- Operator must confirm whether this should reference the built-in `Administrators` group or a custom group before editing the policy.\n\n**Group cloud-engineering-data-integration-users not found in tenancy**\n\n- Group `cloud-engineering-data-integration-users` not found in Default domain.\n- Same-named group exists in `cloud-engineering-domain`. Confirm the correct fully qualified reference (`cloud-engineering-domain`/`cloud-engineering-data-integration-users`) before changing any policy.\n\n**Group cloud-engineering-datalake-users not found in tenancy**\n\n- Group `cloud-engineering-datalake-users` not found in tenancy.\n- Policy already uses fully qualified name `'cloud-engineering-domain'/'cloud-engineering-datalake-users'`. Validate that the group still exists in `cloud-engineering-domain` and that the reference is still required.\n\n**Group cloud-engineering-domain-users not found in tenancy**\n\n- Group `cloud-engineering-domain-users` not found in Default domain.\n- Same-named group exists in `cloud-engineering-domain`. Confirm the correct fully qualified reference (`cloud-engineering-domain`/`cloud-engineering-domain-users`) before changing any policy.\n\n**Group data-integration-demo not found in tenancy**\n\n- Group `data-integration-demo` not found in Default domain.\n- Same-named group exists in `cloud-engineering-domain`. Confirm the correct fully qualified reference (`cloud-engineering-domain`/`data-integration-demo`) before changing any policy.\n\n**Group DT_Object_Group not found in tenancy**\n- Statement references non-existent group `DT_Object_Group`.\n- Operator must confirm if group was deleted or moved to an identity domain before removing the statement.\n\n**Group genai-users not found in tenancy**\n- Statement references non-existent group `genai-users`.\n- Operator must confirm if group was deleted or moved to an identity domain before removing the statement.\n\n**Group GGS_Administrator not found in tenancy**\n- Statement references non-existent group `GGS_Administrator` in Default domain.\n- Same-named group exists in `cloud-engineering-domain`; confirm correct fully qualified domain/name reference before changing policy.\n\n**Tag namespace 'orcl-aidp' not found in tenancy defined tags**\n- Policies use undefined tag namespace `orcl-aidp`.\n- Operator must validate current defined tag reference before removing or updating these statements.\n\n**Tag namespace 'orcl-assurance' not found in tenancy defined tags**\n- Policies use undefined tag namespace `orcl-assurance`.\n- Operator must validate current defined tag reference before removing or updating these statements.\n\n**Groups with no user members (cleanup review)**\n\n- 8 groups found with zero user members and zero referencing policies.\n- For each group, confirm it is not referenced by any policy in un-scanned compartments or Identity Domains before considering removal.\n\n**Dynamic groups not referenced by scanned policies (cleanup review)**\n\n- 38 dynamic groups have zero referencing policies in the scanned set.\n- Operator must validate each dynamic group\u2019s matching rule and confirm it is not used by any policy outside the scanned scope before removal.",
+  "generated_at": "2026-09-25T17:02:22.404155+00:00",
+  "groups_without_users": [
+    {
+      "domain": "Default",
+      "name": "osmh-admins",
+      "ocid": "ocid1.group.oc1..aaaaaaaarg6yfeuxc5rbybnut5wehlm2rgc3arpxkwzaadltlxp4t5nwpc5q",
+      "referencing_policies": [],
+      "referencing_policy_count": 0,
+      "user_count": 0
+    },
+    {
+      "domain": "Default",
+      "name": "osmh-operators",
+      "ocid": "ocid1.group.oc1..aaaaaaaap4raecqulus7ckuvpeblcnbltzpg63rjaaoxce2ve7ua354d4rnq",
+      "referencing_policies": [],
+      "referencing_policy_count": 0,
+      "user_count": 0
+    },
+    {
+      "domain": "Default",
+      "name": "StackMonitoringAdminGrp",
+      "ocid": "ocid1.group.oc1..aaaaaaaatyxvyxgyrmzdzmyd3xskjjxuajezcbmug67wmm2ukssj7eackf5a",
+      "referencing_policies": [],
+      "referencing_policy_count": 0,
+      "user_count": 0
+    },
+    {
+      "domain": "Default",
+      "name": "StackMonitoringViewerGrp",
+      "ocid": "ocid1.group.oc1..aaaaaaaawwh5eeb3g6mpuemap5piaqu7mz37pxwykv6pww5p4oqyymwxewtq",
+      "referencing_policies": [],
+      "referencing_policy_count": 0,
+      "user_count": 0
+    },
+    {
+      "domain": "cloud-engineering-domain",
+      "name": "GGS_Security",
+      "ocid": "ocid1.group.oc1..aaaaaaaad6zpqlctmxtjslya3zsyfwak5ahsfhdr5advv7wkpz6dzjpza4ba",
+      "referencing_policies": [],
+      "referencing_policy_count": 0,
+      "user_count": 0
+    },
+    {
+      "domain": "cloud-engineering-domain",
+      "name": "NetworkAdmins",
+      "ocid": "ocid1.group.oc1..aaaaaaaavzofhf5sb3i7ivaad6evauaaifkiqjtchwhxbzsonh7gpszdlu4a",
+      "referencing_policies": [
+        "basicPermissions-NetworkAdmins"
+      ],
+      "referencing_policy_count": 1,
+      "user_count": 0
+    },
+    {
+      "domain": "cloud-engineering-domain",
+      "name": "SecurityAdmins",
+      "ocid": "ocid1.group.oc1..aaaaaaaatvwdrc3vule42n4upbp7rul6m5xya5oj6f5sg762h564kf2ziz4a",
+      "referencing_policies": [
+        "basicPermissions-SecurityAdmins"
+      ],
+      "referencing_policy_count": 1,
+      "user_count": 0
+    },
+    {
+      "domain": "cloud-engineering-domain",
+      "name": "Team2",
+      "ocid": "ocid1.group.oc1..aaaaaaaa3m6qpooch727ns2ec2mzgygdefazn7dv4s55yb7q422sghdhzwxq",
+      "referencing_policies": [
+        "basicPermissions-Team2",
+        "Team2Test1Policies"
+      ],
+      "referencing_policy_count": 2,
+      "user_count": 0
+    }
+  ],
+  "invalid_by_reason": {
+    "ANTLR syntax error at line 1, column 97 while parsing: 'Allow any-user to read secret-family in compartment jibin.panicker where ALL {target.secret.id = ocid1.vaultsecret.oc1.phx.amaaaaaabv6267iaspnmplcirx5wtz2y777qlwjkdpaldyab3uzx74xurtcq,request.principal.type = dbmgmtmanageddatabase}': mismatched input 'ocid1.vaultsecret.oc1.phx.amaaaaaabv6267iaspnmplcirx5wtz2y777qlwjkdpaldyab3uzx74xurtcq' expecting {'/', ''', '(', '/*', QUOTED_STRING, HCL_VAR, WORD}": [
+      {
+        "compartment": "ROOT/cloud-engineering/jibin.panicker",
+        "identity_domain_evidence": "-",
+        "policy": "My_Policies",
+        "statement": "Allow any-user to read secret-family in compartment jibin.panicker where ALL {target.secret.id = ocid1.vaultsecret.oc1.phx.amaaaaaabv6267iaspnmplcirx5wtz2y777qlwjkdpaldyab3uzx74xurtcq,request.principal.type = dbmgmtmanageddatabase}"
+      }
+    ],
+    "Dynamic Group AB-DG-Test-Instance-Group not found in tenancy": [
+      {
+        "compartment": "ROOT/cloud-engineering/ab.paxtor.garcia",
+        "identity_domain_evidence": "Same-named dynamic-group 'AB-DG-Test-Instance-Group' exists in other domain(s): cloud-engineering-domain (policy references Default)",
+        "policy": "Instances-DG-To-Log-Analytics",
+        "statement": "Allow dynamic-group AB-DG-Test-Instance-Group to manage logging-family in compartment ab.paxtor.garcia"
+      }
+    ],
+    "Dynamic Group AB-Events-Test-Group not found in tenancy": [
+      {
+        "compartment": "ROOT/cloud-engineering/ab.paxtor.garcia",
+        "identity_domain_evidence": "Same-named dynamic-group 'AB-Events-Test-Group' exists in other domain(s): cloud-engineering-domain (policy references Default)",
+        "policy": "Function-DG-Policies",
+        "statement": "Allow dynamic-group AB-Events-Test-Group to manage vtaps in compartment ab.paxtor.garcia"
+      },
+      {
+        "compartment": "ROOT/cloud-engineering/ab.paxtor.garcia",
+        "identity_domain_evidence": "Same-named dynamic-group 'AB-Events-Test-Group' exists in other domain(s): cloud-engineering-domain (policy references Default)",
+        "policy": "Function-DG-Policies",
+        "statement": "Allow dynamic-group AB-Events-Test-Group to read vnics in compartment ab.paxtor.garcia"
+      },
+      {
+        "compartment": "ROOT/cloud-engineering/ab.paxtor.garcia",
+        "identity_domain_evidence": "Same-named dynamic-group 'AB-Events-Test-Group' exists in other domain(s): cloud-engineering-domain (policy references Default)",
+        "policy": "Function-DG-Policies",
+        "statement": "Allow dynamic-group AB-Events-Test-Group to read instances in compartment ab.paxtor.garcia"
+      },
+      {
+        "compartment": "ROOT/cloud-engineering/ab.paxtor.garcia",
+        "identity_domain_evidence": "Same-named dynamic-group 'AB-Events-Test-Group' exists in other domain(s): cloud-engineering-domain (policy references Default)",
+        "policy": "Function-DG-Policies",
+        "statement": "Allow dynamic-group AB-Events-Test-Group to use network-load-balancers in compartment ab.paxtor.garcia"
+      }
+    ],
+    "Dynamic Group ADBGENAIAgent not found in tenancy": [
+      {
+        "compartment": "ROOT/cloud-engineering/derick.leo",
+        "identity_domain_evidence": "Same-named dynamic-group 'ADBGENAIAgent' exists in other domain(s): cloud-engineering-domain (policy references Default)",
+        "policy": "GENAIAgentPolicy",
+        "statement": "allow dynamic-group ADBGENAIAgent to read database-tools-family in compartment derick.leo"
+      },
+      {
+        "compartment": "ROOT/cloud-engineering/derick.leo",
+        "identity_domain_evidence": "Same-named dynamic-group 'ADBGENAIAgent' exists in other domain(s): cloud-engineering-domain (policy references Default)",
+        "policy": "GENAIAgentPolicy",
+        "statement": "allow dynamic-group ADBGENAIAgent to read secret-bundle in compartment derick.leo"
+      }
+    ],
+    "Dynamic Group APEX_DocGen not found in tenancy": [
+      {
+        "compartment": "ROOT/cloud-engineering/maddie.thompson",
+        "identity_domain_evidence": "Same-named dynamic-group 'APEX_DocGen' exists in other domain(s): cloud-engineering-domain (policy references Default)",
+        "policy": "APEX_DocGenPolicy",
+        "statement": "Allow dynamic-group APEX_DocGen to manage all-resources in compartment apex-demo"
+      }
+    ],
+    "Dynamic Group CR_dg not found in tenancy": [
+      {
+        "compartment": "ROOT/cloud-engineering/carla.daniels",
+        "identity_domain_evidence": "Same-named dynamic-group 'CR_dg' exists in other domain(s): cloud-engineering-domain (policy references Default)",
+        "policy": "CR_policies",
+        "statement": "Allow dynamic-group CR_dg to inspect autonomous-database-family in compartment carla.daniels"
+      },
+      {
+        "compartment": "ROOT/cloud-engineering/carla.daniels",
+        "identity_domain_evidence": "Same-named dynamic-group 'CR_dg' exists in other domain(s): cloud-engineering-domain (policy references Default)",
+        "policy": "CR_policies",
+        "statement": "Allow dynamic-group CR_dg to read autonomous-database-family in compartment carla.daniels"
+      },
+      {
+        "compartment": "ROOT/cloud-engineering/carla.daniels",
+        "identity_domain_evidence": "Same-named dynamic-group 'CR_dg' exists in other domain(s): cloud-engineering-domain (policy references Default)",
+        "policy": "CR_policies",
+        "statement": "Allow dynamic-group CR_dg to inspect compartments in compartment carla.daniels"
+      }
+    ],
+    "Dynamic Group CVeenstra-dg not found in tenancy": [
+      {
+        "compartment": "ROOT/cloud-engineering/chris.veenstra",
+        "identity_domain_evidence": "Same-named dynamic-group 'CVeenstra-dg' exists in other domain(s): cloud-engineering-domain (policy references Default)",
+        "policy": "test",
+        "statement": "Allow dynamic-group CVeenstra-dg to use log-content in compartment chris.veenstra"
+      },
+      {
+        "compartment": "ROOT/cloud-engineering/chris.veenstra",
+        "identity_domain_evidence": "Same-named dynamic-group 'CVeenstra-dg' exists in other domain(s): cloud-engineering-domain (policy references Default)",
+        "policy": "test",
+        "statement": "Allow dynamic-group CVeenstra-dg to read log-groups in compartment chris.veenstra"
+      },
+      {
+        "compartment": "ROOT/cloud-engineering/chris.veenstra",
+        "identity_domain_evidence": "Same-named dynamic-group 'CVeenstra-dg' exists in other domain(s): cloud-engineering-domain (policy references Default)",
+        "policy": "test",
+        "statement": "Allow dynamic-group CVeenstra-dg to use metrics in compartment chris.veenstra"
+      }
+    ],
+    "Dynamic Group Faaris-Events-Testing not found in tenancy": [
+      {
+        "compartment": "ROOT/cloud-engineering/faaris.chaudhry",
+        "identity_domain_evidence": "Same-named dynamic-group 'Faaris-Events-Testing' exists in other domain(s): cloud-engineering-domain (policy references Default)",
+        "policy": "Faaris-Test",
+        "statement": "Allow dynamic-group Faaris-Events-Testing to manage object-family in compartment faaris.chaudhry"
+      }
+    ],
+    "Dynamic Group PAFDynDL not found in tenancy": [
+      {
+        "compartment": "ROOT/cloud-engineering/derick.leo",
+        "identity_domain_evidence": "Same-named dynamic-group 'PAFDynDL' exists in other domain(s): cloud-engineering-domain (policy references Default)",
+        "policy": "PAFLLM",
+        "statement": "Allow dynamic-group PAFDynDL to manage generative-ai-family in compartment derick.leo"
+      }
+    ],
+    "Dynamic Group SelectAI not found in tenancy": [
+      {
+        "compartment": "ROOT/cloud-engineering/sharmada.iyer",
+        "identity_domain_evidence": "Same-named dynamic-group 'SelectAI' exists in other domain(s): cloud-engineering-domain (policy references Default)",
+        "policy": "SelectAIpolicy",
+        "statement": "allow dynamic-group SelectAI to manage generative-ai-family in compartment sharmada.iyer"
+      }
+    ],
+    "Dynamic Group Shared-OIC-PHX-DG not found in tenancy": [
+      {
+        "compartment": "ROOT/cloud-engineering/nolan.trouve",
+        "identity_domain_evidence": "Same-named dynamic-group 'Shared-OIC-PHX-DG' exists in other domain(s): cloud-engineering-domain (policy references Default)",
+        "policy": "Shared-OIC-PHX-Document-Understanding",
+        "statement": "allow dynamic-group Shared-OIC-PHX-DG to manage ai-service-document-family in compartment nolan.trouve"
+      }
+    ],
+    "Dynamic Group cloud-engineering-data-integration-users not found in tenancy": [
+      {
+        "compartment": "ROOT/cloud-engineering-specialprojects/tax-demo",
+        "identity_domain_evidence": "-",
+        "policy": "Tax-Dcat-Policies-DG",
+        "statement": "Allow dynamic-group cloud-engineering-data-integration-users to use virtual-network-family in compartment tax-demo"
+      }
+    ],
+    "Dynamic Group dbmgmt_dynamic_group not found in tenancy": [
+      {
+        "compartment": "ROOT/cloud-engineering",
+        "identity_domain_evidence": "-",
+        "policy": "OCI-Database-Management",
+        "statement": "ALLOW DYNAMIC-GROUP dbmgmt_dynamic_group TO MANAGE management-agents IN COMPARTMENT cloud-engineering"
+      },
+      {
+        "compartment": "ROOT/cloud-engineering",
+        "identity_domain_evidence": "-",
+        "policy": "OCI-Database-Management",
+        "statement": "ALLOW DYNAMIC-GROUP dbmgmt_dynamic_group TO USE METRICS IN COMPARTMENT cloud-engineering"
+      }
+    ],
+    "Dynamic Group dbmp-deploy-instances-20260626 not found in tenancy": [
+      {
+        "compartment": "ROOT/cloud-engineering/abdul.rafae.mohammed",
+        "identity_domain_evidence": "-",
+        "policy": "dbmp-deploy-bucket-read-20260626",
+        "statement": "Allow dynamic-group dbmp-deploy-instances-20260626 to read objects in compartment abdul.rafae.mohammed where target.bucket.name = 'dbmp-deploy-20260626'"
+      },
+      {
+        "compartment": "ROOT/cloud-engineering/abdul.rafae.mohammed",
+        "identity_domain_evidence": "-",
+        "policy": "dbmp-secret-bundle-read-20260629",
+        "statement": "Allow dynamic-group dbmp-deploy-instances-20260626 to read secret-bundles in compartment abdul.rafae.mohammed"
+      }
+    ],
+    "Dynamic Group edq_group not found in tenancy": [
+      {
+        "compartment": "ROOT/cloud-engineering/ravindra.lingam",
+        "identity_domain_evidence": "Same-named dynamic-group 'edq_group' exists in other domain(s): cloud-engineering-domain (policy references Default)",
+        "policy": "edq_policy",
+        "statement": "Allow dynamic-group edq_group to inspect autonomous-databases in compartment ravindra.lingam"
+      },
+      {
+        "compartment": "ROOT/cloud-engineering/ravindra.lingam",
+        "identity_domain_evidence": "Same-named dynamic-group 'edq_group' exists in other domain(s): cloud-engineering-domain (policy references Default)",
+        "policy": "edq_policy",
+        "statement": "Allow dynamic-group edq_group to manage autonomous-databases in compartment ravindra.lingam"
+      },
+      {
+        "compartment": "ROOT/cloud-engineering/ravindra.lingam",
+        "identity_domain_evidence": "Same-named dynamic-group 'edq_group' exists in other domain(s): cloud-engineering-domain (policy references Default)",
+        "policy": "edq_policy",
+        "statement": "Allow dynamic-group edq_group to use key-family in compartment ravindra.lingam"
+      }
+    ],
+    "Dynamic Group genAI-agent-oda-dynamic-group not found in tenancy": [
+      {
+        "compartment": "ROOT/cloud-engineering",
+        "identity_domain_evidence": "Same-named dynamic-group 'genAI-agent-oda-dynamic-group' exists in other domain(s): cloud-engineering-domain (policy references Default)",
+        "policy": "OCI-Database-Management",
+        "statement": "allow dynamic-group genAI-agent-oda-dynamic-group to manage agent-family in COMPARTMENT cloud-engineering"
+      },
+      {
+        "compartment": "ROOT/cloud-engineering",
+        "identity_domain_evidence": "Same-named dynamic-group 'genAI-agent-oda-dynamic-group' exists in other domain(s): cloud-engineering-domain (policy references Default)",
+        "policy": "OCI-Database-Management",
+        "statement": "allow dynamic-group genAI-agent-oda-dynamic-group to manage object-family in COMPARTMENT cloud-engineering"
+      }
+    ],
+    "Dynamic Group genAI-agent-oda-dynamic-groupto not found in tenancy": [
+      {
+        "compartment": "ROOT/cloud-engineering",
+        "identity_domain_evidence": "-",
+        "policy": "OCI-Database-Management",
+        "statement": "allow dynamic-group genAI-agent-oda-dynamic-groupto manage genai-agent-family in COMPARTMENT cloud-engineering"
+      }
+    ],
+    "Dynamic Group jp-drg not found in tenancy": [
+      {
+        "compartment": "ROOT/cloud-engineering",
+        "identity_domain_evidence": "Same-named dynamic-group 'jp-drg' exists in other domain(s): cloud-engineering-domain (policy references Default)",
+        "policy": "jp-policy",
+        "statement": "allow dynamic-group jp-drg to inspect vcns in compartment joshua.pasaribu"
+      }
+    ],
+    "Dynamic Group mcp-server-dg not found in tenancy": [
+      {
+        "compartment": "ROOT/cloud-engineering/siva.kulasekaran",
+        "identity_domain_evidence": "-",
+        "policy": "MCP",
+        "statement": "Allow dynamic-group mcp-server-dg to read instance-family in compartment siva.kulasekaran"
+      }
+    ],
+    "Dynamic Group move_adobe_file_f_dg_1751401418090 not found in tenancy": [
+      {
+        "compartment": "ROOT/cloud-engineering/caiping.yue",
+        "identity_domain_evidence": "-",
+        "policy": "Policy_for_function",
+        "statement": "Allow dynamic-group move_adobe_file_f_dg_1751401418090 to read objectstorage-namespaces in compartment caiping.yue"
+      },
+      {
+        "compartment": "ROOT/cloud-engineering/caiping.yue",
+        "identity_domain_evidence": "-",
+        "policy": "Policy_for_function",
+        "statement": "Allow dynamic-group move_adobe_file_f_dg_1751401418090 to manage objects in compartment caiping.yue"
+      },
+      {
+        "compartment": "ROOT/cloud-engineering/caiping.yue",
+        "identity_domain_evidence": "-",
+        "policy": "Policy_for_function",
+        "statement": "Allow dynamic-group move_adobe_file_f_dg_1751401418090 to manage buckets in compartment caiping.yue"
+      },
+      {
+        "compartment": "ROOT/cloud-engineering/caiping.yue",
+        "identity_domain_evidence": "-",
+        "policy": "Policy_for_function",
+        "statement": "Allow dynamic-group move_adobe_file_f_dg_1751401418090 to read compartments in compartment caiping.yue"
+      }
+    ],
+    "Dynamic Group mtheodyngroup not found in tenancy": [
+      {
+        "compartment": "ROOT/cloud-engineering/matt.theodoseau",
+        "identity_domain_evidence": "Same-named dynamic-group 'mtheodyngroup' exists in other domain(s): cloud-engineering-domain (policy references Default)",
+        "policy": "mtheodynpolicy1",
+        "statement": "Allow dynamic-group mtheodyngroup to manage buckets in compartment matt.theodoseau"
+      }
+    ],
+    "Dynamic Group mtheodyngrp1 not found in tenancy": [
+      {
+        "compartment": "ROOT/cloud-engineering/matt.theodoseau",
+        "identity_domain_evidence": "-",
+        "policy": "mtheodynpolicy1",
+        "statement": "Allow dynamic-group mtheodyngrp1 to manage objects in compartment matt.theodoseau"
+      }
+    ],
+    "Dynamic Group oci-generative-ai-agents-service-SG not found in tenancy": [
+      {
+        "compartment": "ROOT/cloud-engineering/sravya.ganugapati",
+        "identity_domain_evidence": "Same-named dynamic-group 'oci-generative-ai-agents-service-SG' exists in other domain(s): cloud-engineering-domain (policy references Default)",
+        "policy": "agent-db-rules-policy-SG",
+        "statement": "Allow dynamic-group oci-generative-ai-agents-service-SG to read database-tools-family in compartment id ocid1.compartment.oc1..aaaaaaaa2ofdpciyrgqkakkg5wh4pcbnpmu5mb24o4pjdcgaukeldany4mja"
+      },
+      {
+        "compartment": "ROOT/cloud-engineering/sravya.ganugapati",
+        "identity_domain_evidence": "Same-named dynamic-group 'oci-generative-ai-agents-service-SG' exists in other domain(s): cloud-engineering-domain (policy references Default)",
+        "policy": "agent-db-rules-policy-SG",
+        "statement": "Allow dynamic-group oci-generative-ai-agents-service-SG to read secret-bundle in compartment id ocid1.compartment.oc1..aaaaaaaa2ofdpciyrgqkakkg5wh4pcbnpmu5mb24o4pjdcgaukeldany4mja"
+      }
+    ],
+    "Dynamic Group oic-resource-principal-DG not found in tenancy": [
+      {
+        "compartment": "ROOT",
+        "identity_domain_evidence": "-",
+        "policy": "CharterKAGenAI-Policy",
+        "statement": "allow dynamic-group 'cloud-engineering-domain'/'oic-resource-principal-DG' to manage object-family in compartment cloud-engineering-specialprojects:charter-ka-genai-demo"
+      }
+    ],
+    "Dynamic Group tax-demo-users not found in tenancy": [
+      {
+        "compartment": "ROOT/cloud-engineering-specialprojects/tax-demo",
+        "identity_domain_evidence": "-",
+        "policy": "Tax-Dcat-Policies-DG",
+        "statement": "Allow dynamic-group tax-demo-users to inspect instance-family in compartment tax-demo"
+      },
+      {
+        "compartment": "ROOT/cloud-engineering-specialprojects/tax-demo",
+        "identity_domain_evidence": "-",
+        "policy": "Tax-Dcat-Policies-DG",
+        "statement": "Allow dynamic-group tax-demo-users to manage data-catalog-family in compartment tax-demo"
+      }
+    ],
+    "Group DT_Object_Group not found in tenancy": [
+      {
+        "compartment": "ROOT/cloud-engineering/dana.izadpanah",
+        "identity_domain_evidence": "-",
+        "policy": "DT_Object_Policy",
+        "statement": "allow group DT_Object_Group to manage object-family in compartment dana.izadpanah"
+      }
+    ],
+    "Group GGS_Administrator not found in tenancy": [
+      {
+        "compartment": "ROOT/cloud-engineering/avi.argov",
+        "identity_domain_evidence": "Same-named group 'GGS_Administrator' exists in other domain(s): cloud-engineering-domain (policy references Default)",
+        "policy": "GG-Icebeng-Policy",
+        "statement": "Allow group GGS_Administrator to manage object-family in compartment avi.argov"
+      }
+    ],
+    "Group admins not found in tenancy": [
+      {
+        "compartment": "ROOT/cloud-engineering/jan.boonen",
+        "identity_domain_evidence": "-",
+        "policy": "Bastion",
+        "statement": "Allow group admins to manage bastion-family in compartment jan.boonen"
+      },
+      {
+        "compartment": "ROOT/cloud-engineering/jan.boonen",
+        "identity_domain_evidence": "-",
+        "policy": "BastionVCN",
+        "statement": "Allow group admins to manage virtual-network-family in compartment jan.boonen"
+      }
+    ],
+    "Group cloud-engineering-data-integration-users not found in tenancy": [
+      {
+        "compartment": "ROOT/cloud-engineering/ravindra.lingam",
+        "identity_domain_evidence": "Same-named group 'cloud-engineering-data-integration-users' exists in other domain(s): cloud-engineering-domain (policy references Default)",
+        "policy": "dis-create-workspace-policies",
+        "statement": "Allow group cloud-engineering-data-integration-users to manage dis-workspaces in compartment ravindra.lingam"
+      },
+      {
+        "compartment": "ROOT/cloud-engineering/ravindra.lingam",
+        "identity_domain_evidence": "Same-named group 'cloud-engineering-data-integration-users' exists in other domain(s): cloud-engineering-domain (policy references Default)",
+        "policy": "dis-create-workspace-policies",
+        "statement": "Allow group cloud-engineering-data-integration-users to manage dis-work-requests in compartment ravindra.lingam"
+      },
+      {
+        "compartment": "ROOT/cloud-engineering/ravindra.lingam",
+        "identity_domain_evidence": "Same-named group 'cloud-engineering-data-integration-users' exists in other domain(s): cloud-engineering-domain (policy references Default)",
+        "policy": "dis-create-workspace-policies",
+        "statement": "Allow group cloud-engineering-data-integration-users to manage tag-namespaces in compartment ravindra.lingam"
+      },
+      {
+        "compartment": "ROOT/cloud-engineering/ravindra.lingam",
+        "identity_domain_evidence": "Same-named group 'cloud-engineering-data-integration-users' exists in other domain(s): cloud-engineering-domain (policy references Default)",
+        "policy": "dis-create-workspace-policies",
+        "statement": "Allow group cloud-engineering-data-integration-users to use virtual-network-family in compartment ravindra.lingam"
+      },
+      {
+        "compartment": "ROOT/cloud-engineering/ravindra.lingam",
+        "identity_domain_evidence": "Same-named group 'cloud-engineering-data-integration-users' exists in other domain(s): cloud-engineering-domain (policy references Default)",
+        "policy": "dis-create-workspace-policies",
+        "statement": "Allow group cloud-engineering-data-integration-users to inspect instance-family in compartment ravindra.lingam"
+      },
+      {
+        "compartment": "ROOT/cloud-engineering/ravindra.lingam",
+        "identity_domain_evidence": "Same-named group 'cloud-engineering-data-integration-users' exists in other domain(s): cloud-engineering-domain (policy references Default)",
+        "policy": "edq_policy",
+        "statement": "Allow group cloud-engineering-data-integration-users to manage all-resources in compartment ravindra.lingam"
+      },
+      {
+        "compartment": "ROOT/cloud-engineering/ravindra.lingam",
+        "identity_domain_evidence": "Same-named group 'cloud-engineering-data-integration-users' exists in other domain(s): cloud-engineering-domain (policy references Default)",
+        "policy": "edq_policy",
+        "statement": "Allow group cloud-engineering-data-integration-users to manage dis-workspaces in compartment ravindra.lingam"
+      },
+      {
+        "compartment": "ROOT/cloud-engineering/ravindra.lingam",
+        "identity_domain_evidence": "Same-named group 'cloud-engineering-data-integration-users' exists in other domain(s): cloud-engineering-domain (policy references Default)",
+        "policy": "edq_policy",
+        "statement": "Allow group cloud-engineering-data-integration-users to manage dis-work-requests in compartment ravindra.lingam"
+      },
+      {
+        "compartment": "ROOT/cloud-engineering/ravindra.lingam",
+        "identity_domain_evidence": "Same-named group 'cloud-engineering-data-integration-users' exists in other domain(s): cloud-engineering-domain (policy references Default)",
+        "policy": "edq_policy",
+        "statement": "Allow group cloud-engineering-data-integration-users to manage tag-namespaces in compartment ravindra.lingam"
+      },
+      {
+        "compartment": "ROOT/cloud-engineering/ravindra.lingam",
+        "identity_domain_evidence": "Same-named group 'cloud-engineering-data-integration-users' exists in other domain(s): cloud-engineering-domain (policy references Default)",
+        "policy": "edq_policy",
+        "statement": "Allow group cloud-engineering-data-integration-users to use virtual-network-family in compartment ravindra.lingam"
+      },
+      {
+        "compartment": "ROOT/cloud-engineering/ravindra.lingam",
+        "identity_domain_evidence": "Same-named group 'cloud-engineering-data-integration-users' exists in other domain(s): cloud-engineering-domain (policy references Default)",
+        "policy": "edq_policy",
+        "statement": "Allow group cloud-engineering-data-integration-users to inspect instance-family in compartment ravindra.lingam"
+      }
+    ],
+    "Group cloud-engineering-datalake-users not found in tenancy": [
+      {
+        "compartment": "ROOT",
+        "identity_domain_evidence": "-",
+        "policy": "PROPROD_GENERIC_TESTING_POLICIES",
+        "statement": "allow group 'cloud-engineering-domain'/'cloud-engineering-datalake-users' to manage ai-data-platforms in compartment cloud-engineering-shared:IntelligentDataLake"
+      }
+    ],
+    "Group cloud-engineering-domain-users not found in tenancy": [
+      {
+        "compartment": "ROOT/cloud-engineering/jay.przygoda/outage-impact-demo",
+        "identity_domain_evidence": "Same-named group 'cloud-engineering-domain-users' exists in other domain(s): cloud-engineering-domain (policy references Default)",
+        "policy": "outage-demo-objectstorage-read",
+        "statement": "Allow group cloud-engineering-domain-users to read buckets in compartment outage-impact-demo"
+      },
+      {
+        "compartment": "ROOT/cloud-engineering/jay.przygoda/outage-impact-demo",
+        "identity_domain_evidence": "Same-named group 'cloud-engineering-domain-users' exists in other domain(s): cloud-engineering-domain (policy references Default)",
+        "policy": "outage-demo-objectstorage-read",
+        "statement": "Allow group cloud-engineering-domain-users to read objects in compartment outage-impact-demo"
+      },
+      {
+        "compartment": "ROOT/cloud-engineering/jay.przygoda/outage-impact-demo",
+        "identity_domain_evidence": "Same-named group 'cloud-engineering-domain-users' exists in other domain(s): cloud-engineering-domain (policy references Default)",
+        "policy": "outage-demo-admin-policy",
+        "statement": "Allow group cloud-engineering-domain-users to manage all-resources in compartment outage-impact-demo"
+      },
+      {
+        "compartment": "ROOT/cloud-engineering",
+        "identity_domain_evidence": "Same-named group 'cloud-engineering-domain-users' exists in other domain(s): cloud-engineering-domain (policy references Default)",
+        "policy": "Rams_AIDP_Policy",
+        "statement": "Allow group cloud-engineering-domain-users to manage ai-data-platforms in compartment id ocid1.compartment.oc1..aaaaaaaagdy56pfi4ec6u7onh2avt7g5n2bhlgmeife5vkn7oovn5tmqrj3q"
+      },
+      {
+        "compartment": "ROOT/cloud-engineering",
+        "identity_domain_evidence": "Same-named group 'cloud-engineering-domain-users' exists in other domain(s): cloud-engineering-domain (policy references Default)",
+        "policy": "SupportPolicy",
+        "statement": "Allow group cloud-engineering-domain-users to manage tickets in compartment maddie.thompson"
+      },
+      {
+        "compartment": "ROOT/cloud-engineering/samir.kakli",
+        "identity_domain_evidence": "Same-named group 'cloud-engineering-domain-users' exists in other domain(s): cloud-engineering-domain (policy references Default)",
+        "policy": "AIDP",
+        "statement": "Allow group cloud-engineering-domain-users to manage datalake in compartment samir.kakli"
+      },
+      {
+        "compartment": "ROOT/cloud-engineering/ian.tudor/MCP-Demo",
+        "identity_domain_evidence": "Same-named group 'cloud-engineering-domain-users' exists in other domain(s): cloud-engineering-domain (policy references Default)",
+        "policy": "MCP-Demo-Policies",
+        "statement": "Allow group cloud-engineering-domain-users to use autonomous-database-family in compartment MCP-Demo where target.id = 'ocid1.autonomousdatabase.oc1.phx.anyhqljtbv6267iawjhrd5h53qnhkcyqyncu3p4szluaw633icg22xgfdjvq'"
+      },
+      {
+        "compartment": "ROOT/cloud-engineering/ian.tudor/MCP-Demo",
+        "identity_domain_evidence": "Same-named group 'cloud-engineering-domain-users' exists in other domain(s): cloud-engineering-domain (policy references Default)",
+        "policy": "MCP-Demo-Policies",
+        "statement": "Allow group cloud-engineering-domain-users to manage generative-ai-family in compartment MCP-Demo"
+      },
+      {
+        "compartment": "ROOT/cloud-engineering/maddie.thompson/apex-demo",
+        "identity_domain_evidence": "Same-named group 'cloud-engineering-domain-users' exists in other domain(s): cloud-engineering-domain (policy references Default)",
+        "policy": "network-access",
+        "statement": "Allow group cloud-engineering-domain-users to manage virtual-network-family in compartment apex-demo"
+      },
+      {
+        "compartment": "ROOT/cloud-engineering",
+        "identity_domain_evidence": "Same-named group 'cloud-engineering-domain-users' exists in other domain(s): cloud-engineering-domain (policy references Default)",
+        "policy": "PublicGenAI",
+        "statement": "allow group cloud-engineering-domain-users to manage generative-ai-family in compartment mia.nunes-baker"
+      },
+      {
+        "compartment": "ROOT/cloud-engineering",
+        "identity_domain_evidence": "Same-named group 'cloud-engineering-domain-users' exists in other domain(s): cloud-engineering-domain (policy references Default)",
+        "policy": "PublicGenAI",
+        "statement": "allow group cloud-engineering-domain-users to manage generative-ai-family in compartment jad.sidiyekhlef"
+      },
+      {
+        "compartment": "ROOT/cloud-engineering",
+        "identity_domain_evidence": "Same-named group 'cloud-engineering-domain-users' exists in other domain(s): cloud-engineering-domain (policy references Default)",
+        "policy": "PublicGenAI",
+        "statement": "allow group cloud-engineering-domain-users to manage generative-ai-family in compartment bala.jambunathan"
+      },
+      {
+        "compartment": "ROOT/cloud-engineering",
+        "identity_domain_evidence": "Same-named group 'cloud-engineering-domain-users' exists in other domain(s): cloud-engineering-domain (policy references Default)",
+        "policy": "OCI-Database-Management",
+        "statement": "ALLOW GROUP cloud-engineering-domain-users TO MANAGE management-agents IN COMPARTMENT cloud-engineering"
+      },
+      {
+        "compartment": "ROOT/cloud-engineering",
+        "identity_domain_evidence": "Same-named group 'cloud-engineering-domain-users' exists in other domain(s): cloud-engineering-domain (policy references Default)",
+        "policy": "OCI-Database-Management",
+        "statement": "ALLOW GROUP cloud-engineering-domain-users TO MANAGE management-agent-install-keys IN COMPARTMENT cloud-engineering"
+      },
+      {
+        "compartment": "ROOT/cloud-engineering",
+        "identity_domain_evidence": "Same-named group 'cloud-engineering-domain-users' exists in other domain(s): cloud-engineering-domain (policy references Default)",
+        "policy": "OCI-Database-Management",
+        "statement": "ALLOW GROUP cloud-engineering-domain-users TO READ METRICS IN COMPARTMENT cloud-engineering"
+      },
+      {
+        "compartment": "ROOT/cloud-engineering",
+        "identity_domain_evidence": "Same-named group 'cloud-engineering-domain-users' exists in other domain(s): cloud-engineering-domain (policy references Default)",
+        "policy": "OCI-Database-Management",
+        "statement": "ALLOW GROUP cloud-engineering-domain-users TO READ USERS IN COMPARTMENT cloud-engineering"
+      },
+      {
+        "compartment": "ROOT/cloud-engineering",
+        "identity_domain_evidence": "Same-named group 'cloud-engineering-domain-users' exists in other domain(s): cloud-engineering-domain (policy references Default)",
+        "policy": "OCI-Database-Management",
+        "statement": "ALLOW GROUP cloud-engineering-domain-users TO MANAGE external-database-family in COMPARTMENT cloud-engineering"
+      },
+      {
+        "compartment": "ROOT/cloud-engineering",
+        "identity_domain_evidence": "Same-named group 'cloud-engineering-domain-users' exists in other domain(s): cloud-engineering-domain (policy references Default)",
+        "policy": "OCI-Database-Management",
+        "statement": "ALLOW GROUP cloud-engineering-domain-users TO MANAGE dbmgmt-family in COMPARTMENT cloud-engineering"
+      },
+      {
+        "compartment": "ROOT/cloud-engineering",
+        "identity_domain_evidence": "Same-named group 'cloud-engineering-domain-users' exists in other domain(s): cloud-engineering-domain (policy references Default)",
+        "policy": "OCI-Database-Management",
+        "statement": "ALLOW GROUP cloud-engineering-domain-users TO MANAGE postgres-db-systems in compartment cloud-engineering"
+      },
+      {
+        "compartment": "ROOT/cloud-engineering",
+        "identity_domain_evidence": "Same-named group 'cloud-engineering-domain-users' exists in other domain(s): cloud-engineering-domain (policy references Default)",
+        "policy": "OCI-Database-Management",
+        "statement": "ALLOW GROUP cloud-engineering-domain-users TO MANAGE postgres-configurations in compartment cloud-engineering"
+      },
+      {
+        "compartment": "ROOT/cloud-engineering/sugandha.kher",
+        "identity_domain_evidence": "Same-named group 'cloud-engineering-domain-users' exists in other domain(s): cloud-engineering-domain (policy references Default)",
+        "policy": "dis-create-workspace-policies",
+        "statement": "Allow group cloud-engineering-domain-users to manage dis-workspaces in compartment sugandha.kher"
+      },
+      {
+        "compartment": "ROOT/cloud-engineering/sugandha.kher",
+        "identity_domain_evidence": "Same-named group 'cloud-engineering-domain-users' exists in other domain(s): cloud-engineering-domain (policy references Default)",
+        "policy": "dis-create-workspace-policies",
+        "statement": "Allow group cloud-engineering-domain-users to manage dis-work-requests in compartment sugandha.kher"
+      },
+      {
+        "compartment": "ROOT/cloud-engineering/sugandha.kher",
+        "identity_domain_evidence": "Same-named group 'cloud-engineering-domain-users' exists in other domain(s): cloud-engineering-domain (policy references Default)",
+        "policy": "dis-create-workspace-policies",
+        "statement": "Allow group cloud-engineering-domain-users to manage tag-namespaces in compartment sugandha.kher"
+      },
+      {
+        "compartment": "ROOT/cloud-engineering/sugandha.kher",
+        "identity_domain_evidence": "Same-named group 'cloud-engineering-domain-users' exists in other domain(s): cloud-engineering-domain (policy references Default)",
+        "policy": "dis-create-workspace-policies",
+        "statement": "Allow group cloud-engineering-domain-users to use virtual-network-family in compartment sugandha.kher"
+      },
+      {
+        "compartment": "ROOT/cloud-engineering/sugandha.kher",
+        "identity_domain_evidence": "Same-named group 'cloud-engineering-domain-users' exists in other domain(s): cloud-engineering-domain (policy references Default)",
+        "policy": "dis-create-workspace-policies",
+        "statement": "Allow group cloud-engineering-domain-users to inspect instance-family in compartment sugandha.kher"
+      },
+      {
+        "compartment": "ROOT/cloud-engineering/carla.daniels",
+        "identity_domain_evidence": "Same-named group 'cloud-engineering-domain-users' exists in other domain(s): cloud-engineering-domain (policy references Default)",
+        "policy": "CR_policies",
+        "statement": "allow group cloud-engineering-domain-users to use object-family in compartment carla.daniels"
+      },
+      {
+        "compartment": "ROOT/cloud-engineering/carla.daniels",
+        "identity_domain_evidence": "Same-named group 'cloud-engineering-domain-users' exists in other domain(s): cloud-engineering-domain (policy references Default)",
+        "policy": "CR_policies",
+        "statement": "Allow group cloud-engineering-domain-users to manage dis-workspaces in compartment carla.daniels"
+      },
+      {
+        "compartment": "ROOT/cloud-engineering/carla.daniels",
+        "identity_domain_evidence": "Same-named group 'cloud-engineering-domain-users' exists in other domain(s): cloud-engineering-domain (policy references Default)",
+        "policy": "CR_policies",
+        "statement": "Allow group cloud-engineering-domain-users to manage dis-work-requests in compartment carla.daniels"
+      },
+      {
+        "compartment": "ROOT/cloud-engineering/carla.daniels",
+        "identity_domain_evidence": "Same-named group 'cloud-engineering-domain-users' exists in other domain(s): cloud-engineering-domain (policy references Default)",
+        "policy": "CR_policies",
+        "statement": "Allow group cloud-engineering-domain-users to manage tag-namespaces in compartment carla.daniels"
+      },
+      {
+        "compartment": "ROOT/cloud-engineering/carla.daniels",
+        "identity_domain_evidence": "Same-named group 'cloud-engineering-domain-users' exists in other domain(s): cloud-engineering-domain (policy references Default)",
+        "policy": "CR_policies",
+        "statement": "Allow group cloud-engineering-domain-users to use virtual-network-family in compartment carla.daniels"
+      },
+      {
+        "compartment": "ROOT/cloud-engineering/carla.daniels",
+        "identity_domain_evidence": "Same-named group 'cloud-engineering-domain-users' exists in other domain(s): cloud-engineering-domain (policy references Default)",
+        "policy": "CR_policies",
+        "statement": "Allow group cloud-engineering-domain-users to inspect instance-family in compartment carla.daniels"
+      },
+      {
+        "compartment": "ROOT/cloud-engineering/ravindra.lingam",
+        "identity_domain_evidence": "Same-named group 'cloud-engineering-domain-users' exists in other domain(s): cloud-engineering-domain (policy references Default)",
+        "policy": "edq_policy",
+        "statement": "allow group cloud-engineering-domain-users to manage all-resources in compartment ravindra.lingam"
+      }
+    ],
+    "Group data-integration-demo not found in tenancy": [
+      {
+        "compartment": "ROOT/cloud-engineering/carla.daniels",
+        "identity_domain_evidence": "Same-named group 'data-integration-demo' exists in other domain(s): cloud-engineering-domain (policy references Default)",
+        "policy": "CR_policies",
+        "statement": "Allow group data-integration-demo to manage dis-workspaces in compartment carla.daniels"
+      },
+      {
+        "compartment": "ROOT/cloud-engineering/carla.daniels",
+        "identity_domain_evidence": "Same-named group 'data-integration-demo' exists in other domain(s): cloud-engineering-domain (policy references Default)",
+        "policy": "CR_policies",
+        "statement": "Allow group data-integration-demo to manage dis-work-requests in compartment carla.daniels"
+      },
+      {
+        "compartment": "ROOT/cloud-engineering/carla.daniels",
+        "identity_domain_evidence": "Same-named group 'data-integration-demo' exists in other domain(s): cloud-engineering-domain (policy references Default)",
+        "policy": "CR_policies",
+        "statement": "Allow group data-integration-demo to manage tag-namespaces in compartment carla.daniels"
+      },
+      {
+        "compartment": "ROOT/cloud-engineering/carla.daniels",
+        "identity_domain_evidence": "Same-named group 'data-integration-demo' exists in other domain(s): cloud-engineering-domain (policy references Default)",
+        "policy": "CR_policies",
+        "statement": "allow group data-integration-demo to use virtual-network-family in compartment carla.daniels"
+      },
+      {
+        "compartment": "ROOT/cloud-engineering/carla.daniels",
+        "identity_domain_evidence": "Same-named group 'data-integration-demo' exists in other domain(s): cloud-engineering-domain (policy references Default)",
+        "policy": "CR_policies",
+        "statement": "allow group data-integration-demo to inspect instance-family in compartment carla.daniels"
+      },
+      {
+        "compartment": "ROOT/cloud-engineering/carla.daniels",
+        "identity_domain_evidence": "Same-named group 'data-integration-demo' exists in other domain(s): cloud-engineering-domain (policy references Default)",
+        "policy": "CR_policies",
+        "statement": "allow group data-integration-demo to use object-family in compartment carla.daniels"
+      }
+    ],
+    "Group genai-users not found in tenancy": [
+      {
+        "compartment": "ROOT/cloud-engineering/arief.mohammed",
+        "identity_domain_evidence": "-",
+        "policy": "genai-users",
+        "statement": "allow group genai-users to manage generative-ai-family in compartment arief.mohammed"
+      }
+    ],
+    "Tag namespace 'orcl-aidp' not found in tenancy defined tags": [
+      {
+        "compartment": "ROOT/cloud-engineering/trevor.mcgill",
+        "identity_domain_evidence": "-",
+        "policy": "aidp5",
+        "statement": "allow any-user to manage buckets in compartment trevor.mcgill where all { request.principal.id=target.resource.tag.orcl-aidp.governingAidpId, any {request.permission = 'BUCKET_DELETE', request.permission = 'PAR_MANAGE', request.permission = 'RETENTION_RULE_LOCK', request.permission = 'RETENTION_RULE_MANAGE'} }"
+      },
+      {
+        "compartment": "ROOT",
+        "identity_domain_evidence": "-",
+        "policy": "cloud-engineering-DATAPLATFORM-policy",
+        "statement": "allow any-user to manage buckets in tenancy where all { request.principal.id=target.resource.tag.orcl-aidp.governingAidpId, any {request.permission = 'BUCKET_DELETE', request.permission = 'PAR_MANAGE', request.permission = 'RETENTION_RULE_LOCK', request.permission = 'RETENTION_RULE_MANAGE'} } //AIDP OSS Permissions"
+      }
+    ],
+    "Tag namespace 'orcl-assurance' not found in tenancy defined tags": [
+      {
+        "compartment": "ROOT",
+        "identity_domain_evidence": "-",
+        "policy": "AssuranceManagedIamDenyPolicy",
+        "statement": "deny any-user to { POLICY_UPDATE, POLICY_DELETE } in tenancy where all { target.policy.type = 'deny', target.resource.tag.orcl-assurance.managed-resource = 'true', any { !request.principal.type, request.principal.type != 'assurance-governance', !request.principal.serviceType, request.principal.serviceType != 'Assurance', !request.principal.governingTenancyId, request.principal.governingTenancyId != 'ocid1.tenancy.oc1..aaaaaaaajketmxu5zrtdjthkz7fl2qipem3tzyxf6x6sduxswttzbacsmjhq' } }"
+      },
+      {
+        "compartment": "ROOT",
+        "identity_domain_evidence": "-",
+        "policy": "AssuranceManagedIamDenyPolicy",
+        "statement": "deny any-user to { SECURITY_ZONE_UPDATE, SECURITY_ZONE_DELETE, SECURITY_RECIPE_UPDATE, SECURITY_RECIPE_DELETE } in tenancy where all { target.resource.tag.orcl-assurance.managed-resource = 'true', any { target.security-zone.manageType = 'ASSURANCE', target.security-recipe.manageType = 'ASSURANCE' }, any { !request.principal.type, request.principal.type != 'assurance-governance', !request.principal.serviceType, request.principal.serviceType != 'Assurance', !request.principal.governingTenancyId, request.principal.governingTenancyId != 'ocid1.tenancy.oc1..aaaaaaaajketmxu5zrtdjthkz7fl2qipem3tzyxf6x6sduxswttzbacsmjhq' } }"
+      }
+    ]
+  },
+  "invalid_statement_count": 102,
+  "load_summary": {
+    "compartments": 607,
+    "groups": 41,
+    "policies": 243,
+    "statements": 1130,
+    "users": 378
+  },
+  "report_object": null,
+  "tenancy": {
+    "data_as_of": "2026-09-25 17:02:20.136850+00:00",
+    "tenancy_name": "naceoci01"
+  },
+  "unreferenced_dynamic_groups": [
+    {
+      "domain": "Default",
+      "matching_rule": "Any {ALL{instance.compartment.id='ocid1.compartment.oc1..aaaaaaaarblzzyj6fbfrem3kmd2wyasnggke24q4wv7s2im3dphv3di4pthq'},ALL{instance.compartment.id='ocid1.compartment.oc1..aaaaaaaazgn5vtlrndakdili7vvsvstsr5p3t7nsm56wummhuk4tb5rgrfda'},ALL {instance.compartment.id='ocid1.tenancy.oc1..aaaaaaaaym4bdw2ixry2j5njloudpbmer3hu3epvthxzk4aqzcymk5vfku6q'},resource.compartment.id='ocid1.compartment.oc1..aaaaaaaaf4sp74mtvunrfxj3v74jwa6y2ie6qlariwbz4fhunjcxyqyovioq'}",
+      "name": "StackMonitoringMonitoredInstancesEasyOnboarding",
+      "ocid": "ocid1.dynamicgroup.oc1..aaaaaaaa2bmuzfb5yl6d67lw5yrfayz6x3iu6u2jgbfc3cp22lzru64eqklq",
+      "referencing_policies": [],
+      "referencing_policy_count": 0
+    },
+    {
+      "domain": "Default",
+      "matching_rule": "Any {ALL{resource.type='managementagent', resource.compartment.id='ocid1.compartment.oc1..aaaaaaaarblzzyj6fbfrem3kmd2wyasnggke24q4wv7s2im3dphv3di4pthq'},ALL{resource.type='managementagent', resource.compartment.id='ocid1.compartment.oc1..aaaaaaaazgn5vtlrndakdili7vvsvstsr5p3t7nsm56wummhuk4tb5rgrfda'},ALL {resource.type='managementagent', resource.compartment.id='ocid1.tenancy.oc1..aaaaaaaaym4bdw2ixry2j5njloudpbmer3hu3epvthxzk4aqzcymk5vfku6q'},ALL {resource.type='managementagent', resource.compartment.id='ocid1.compartment.oc1..aaaaaaaaf4sp74mtvunrfxj3v74jwa6y2ie6qlariwbz4fhunjcxyqyovioq'}}",
+      "name": "StackMonitoringManagementAgentsEasyOnboarding",
+      "ocid": "ocid1.dynamicgroup.oc1..aaaaaaaayq5s2rmime3qld6v26vcnh455ykddg5tw3vyvdx6t23ovrafiq4a",
+      "referencing_policies": [],
+      "referencing_policy_count": 0
+    },
+    {
+      "domain": "Default",
+      "matching_rule": "Any {resource.compartment.id='ocid1.compartment.oc1..aaaaaaaau4uen2jra2oskq5peeyqnbcfijjg3mrvdzijglujumyiy3mnngbq',instance.compartment.id='ocid1.compartment.oc1..aaaaaaaau4uen2jra2oskq5peeyqnbcfijjg3mrvdzijglujumyiy3mnngbq'}",
+      "name": "all-IDL-cluster-DG",
+      "ocid": "ocid1.dynamicgroup.oc1..aaaaaaaaynp6qu2hhfvfxn6m3y2tixhnp6sv6ud5gb2psgplibt6w2ac2rrq",
+      "referencing_policies": [],
+      "referencing_policy_count": 0
+    },
+    {
+      "domain": "Default",
+      "matching_rule": "Any {resource.id='ocid1.cloudvmcluster.oc1.phx.anyhqljtbv6267ia3jmqypnajz5vcb2khr6v7ay65jpoek7nsvvjln5sokwa',resource.id='ocid1.cloudvmcluster.oc1.phx.anyhqljtbv6267iah6gm6fq7zpipbipeeusuzhtcnlqf6dsxmze2ogkdbbwa'}",
+      "name": "exacs-dynamic-scaling-RP-DG",
+      "ocid": "ocid1.dynamicgroup.oc1..aaaaaaaaixva5z42gozqmp2fk4arxkblzg64a6umjeuq7jqzvnduwum3o7va",
+      "referencing_policies": [],
+      "referencing_policy_count": 0
+    },
+    {
+      "domain": "Default",
+      "matching_rule": "resource.compartment.id='instance'",
+      "name": "gdd-instances-dg",
+      "ocid": "ocid1.dynamicgroup.oc1..aaaaaaaaqy6pzybxx2gl5jfr6yuyf242vzxshxuncewofch362lhdsxbwmia",
+      "referencing_policies": [],
+      "referencing_policy_count": 0
+    },
+    {
+      "domain": "Default",
+      "matching_rule": "request.principal.type='opsidatabaseinsight'",
+      "name": "iam_admin_dg_grp",
+      "ocid": "ocid1.dynamicgroup.oc1..aaaaaaaahzt76g3c3n4bwj6niar7xuyxf22kmmsoh66yk55roadw326tlaca",
+      "referencing_policies": [],
+      "referencing_policy_count": 0
+    },
+    {
+      "domain": "cloud-engineering-domain",
+      "matching_rule": "Any {All {instance.compartment.id = 'ocid1.compartment.oc1..aaaaaaaa2cd5cthlcbuffoq234mwkdrb4zma7k553rhzzz4mx4dzoxf5x4ba'}}",
+      "name": "APEX_DocGen",
+      "ocid": "ocid1.dynamicgroup.oc1..aaaaaaaautlhdgae5y2fqfjqcjguw67h6keglfltez3u6pvx4xvoxxfsn6sa",
+      "referencing_policies": [],
+      "referencing_policy_count": 0
+    },
+    {
+      "domain": "cloud-engineering-domain",
+      "matching_rule": "Any {ALL {instance.compartment.id = 'ocid1.compartment.oc1..aaaaaaaatojyv22r2wucclpbp3quw45vj67y6nfm4auo4xgxdcup5bo4v4tq'}}",
+      "name": "AB-DG-Test-Instance-Group",
+      "ocid": "ocid1.dynamicgroup.oc1..aaaaaaaaxbsuo2tr7tgjdzg23abmqn2ixefswbbszitgirujhzvwrs2qx4sq",
+      "referencing_policies": [],
+      "referencing_policy_count": 0
+    },
+    {
+      "domain": "cloud-engineering-domain",
+      "matching_rule": "Any {ALL {resource.type = 'fnfunc', resource.compartment.id ='ocid1.compartment.oc1..aaaaaaaatojyv22r2wucclpbp3quw45vj67y6nfm4auo4xgxdcup5bo4v4tq'}}",
+      "name": "AB-Events-Test-Group",
+      "ocid": "ocid1.dynamicgroup.oc1..aaaaaaaaq6hlc53ts5kwck2ut32w3exyvx6nzsfdeh4wpc4eibrpqpv7pwha",
+      "referencing_policies": [],
+      "referencing_policy_count": 0
+    },
+    {
+      "domain": "cloud-engineering-domain",
+      "matching_rule": "Any {Any {instance.compartment.id = 'ocid1.compartment.oc1..aaaaaaaa67d7pvdalr42xfqeh7jixx2wkuzlnttjrydpllejy2mnfmi7bk7a'}}",
+      "name": "AJ-Langflow-DG",
+      "ocid": "ocid1.dynamicgroup.oc1..aaaaaaaah4ioky54yboihatud2j6sw7kf4suppthr7bhyci27yqcl3tmz4ta",
+      "referencing_policies": [],
+      "referencing_policy_count": 0
+    },
+    {
+      "domain": "cloud-engineering-domain",
+      "matching_rule": "resource.id='b617cc1544844fcea36ef8d8774b593c'",
+      "name": "Abys_OIC_DG",
+      "ocid": "ocid1.dynamicgroup.oc1..aaaaaaaajqjlfjbviw5poo4aeombf5flzicljyw3vpzt7hxqgivss4skpznq",
+      "referencing_policies": [],
+      "referencing_policy_count": 0
+    },
+    {
+      "domain": "cloud-engineering-domain",
+      "matching_rule": "Any {ALL {resource.type='genaiagent'}}",
+      "name": "ADBGENAIAgent",
+      "ocid": "ocid1.dynamicgroup.oc1..aaaaaaaarii7fvrqygtphabg3gipxhph7aiai4xl2tgsvbb2ixu4tfmlvh6q",
+      "referencing_policies": [],
+      "referencing_policy_count": 0
+    },
+    {
+      "domain": "cloud-engineering-domain",
+      "matching_rule": "Any {ALL {instance.compartment.id = 'ocid1.compartment.oc1..aaaaaaaallxrt6kgjzy5qpa7cvruizqpkdfevjamhnkduwautuatuyjxqoxq'}}",
+      "name": "CR_dg",
+      "ocid": "ocid1.dynamicgroup.oc1..aaaaaaaarob27wicegitw6g7moifsbc4rmnmvyv73vtzdjevftameddvhorq",
+      "referencing_policies": [],
+      "referencing_policy_count": 0
+    },
+    {
+      "domain": "cloud-engineering-domain",
+      "matching_rule": "All {All {instance.compartment.id = 'ocid1.compartment.oc1..aaaaaaaazdo77kfwlr3ap45qgvoiybmkj6tb6xq2n4zhuw4kkbbeypyc5btq'}}",
+      "name": "DataScienceSugandhaDG",
+      "ocid": "ocid1.dynamicgroup.oc1..aaaaaaaakqropttb3ndqvgyptnvfnygc3v2n7pv4l23y7yiuymaapg772ldq",
+      "referencing_policies": [],
+      "referencing_policy_count": 0
+    },
+    {
+      "domain": "cloud-engineering-domain",
+      "matching_rule": "resource.id = ocid1.autonomousdatabase.oc1.iad.anuwcljtbv6267ia5x25yl2kqarc4yalubj4bnztzmfxx6jp76qrrbcwxusq",
+      "name": "CMO_ADB_SelectAI_DG",
+      "ocid": "ocid1.dynamicgroup.oc1..aaaaaaaaeos3rdjlheai6ekenfhc6lkxpvc7kvqbqmvk6amgo246diwj4ixa",
+      "referencing_policies": [],
+      "referencing_policy_count": 0
+    },
+    {
+      "domain": "cloud-engineering-domain",
+      "matching_rule": "Any {any {resource.compartment.id='ocid1.compartment.oc1..aaaaaaaaf4sp74mtvunrfxj3v74jwa6y2ie6qlariwbz4fhunjcxyqyovioq', instance.compartment.id='ocid1.compartment.oc1..aaaaaaaaf4sp74mtvunrfxj3v74jwa6y2ie6qlariwbz4fhunjcxyqyovioq'}}",
+      "name": "ExaCSDG",
+      "ocid": "ocid1.dynamicgroup.oc1..aaaaaaaakdmpc3jkzzqgepoctxqru5j7ecugg5qoclq5c276i272u2sj5hjq",
+      "referencing_policies": [],
+      "referencing_policy_count": 0
+    },
+    {
+      "domain": "cloud-engineering-domain",
+      "matching_rule": "Any {ALL {resource.type = 'fnfunc', resource.compartment.id ='ocid1.compartment.oc1..aaaaaaaazsstn2mmlkisjjszwxkn6hnosun56gr7jrgbqv5e3ft46gduapha'}}",
+      "name": "Faaris-Events-Testing",
+      "ocid": "ocid1.dynamicgroup.oc1..aaaaaaaagj3ad5cr7xtyy72c5abxs235ng6o4jwr4oqtqem2jx577donc2iq",
+      "referencing_policies": [],
+      "referencing_policy_count": 0
+    },
+    {
+      "domain": "cloud-engineering-domain",
+      "matching_rule": "Any {ALL\n      {resource.compartment.id='ocid1.compartment.oc1..aaaaaaaa6unfetzqrwizpgzwg4bz3xeunjf3v33xpth4rd2jmtqb4wnrnbzq'}}",
+      "name": "FSI_DEMO_ADB_OBJ",
+      "ocid": "ocid1.dynamicgroup.oc1..aaaaaaaatjasxvqwvjsxmnyciycaf2jkebndxpl3hpdojf5b2w7cxrdfysoq",
+      "referencing_policies": [],
+      "referencing_policy_count": 0
+    },
+    {
+      "domain": "cloud-engineering-domain",
+      "matching_rule": "resource.id = '8A01FB56E56249E0803F927566344A1E_APPID'",
+      "name": "OIC_PE_DG",
+      "ocid": "ocid1.dynamicgroup.oc1..aaaaaaaafxncuxipcoq5k6kc5yxky5xqz3yjwktgsqquzkkhp6jheuuue27q",
+      "referencing_policies": [],
+      "referencing_policy_count": 0
+    },
+    {
+      "domain": "cloud-engineering-domain",
+      "matching_rule": "Any {All {instance.compartment.id = 'ocid1.compartment.oc1..aaaaaaaaw343m5yuthld74hd4mnogyidnxlvhie7kpazuk6tz7kgqeqj5pvq'}}",
+      "name": "PAFDynDL",
+      "ocid": "ocid1.dynamicgroup.oc1..aaaaaaaa6xoy3qj275xeome73towxeu2i5xbfj2qhfwuax434joqwo62g7fa",
+      "referencing_policies": [],
+      "referencing_policy_count": 0
+    },
+    {
+      "domain": "cloud-engineering-domain",
+      "matching_rule": "Any {All {instance.compartment.id = 'ocid1.compartment.oc1..aaaaaaaaroda4z25sho46q6jhhe3k6gotc7r646sw445ochkfzpricuk2t4q'}}",
+      "name": "SelectAI",
+      "ocid": "ocid1.dynamicgroup.oc1..aaaaaaaazt4c5c2erb4odh3vq74fqn6gdtn6nuoe5qsdah4lq65keqn6afpa",
+      "referencing_policies": [],
+      "referencing_policy_count": 0
+    },
+    {
+      "domain": "cloud-engineering-domain",
+      "matching_rule": "Any {Any{resource.type='datacatalog', resource.compartment.id = 'ocid1.compartment.oc1..aaaaaaaaywodtovsb74dpj7unnhhk3dmcb64jebcnmi3727665s2xcdjy2xa'}}",
+      "name": "Tax-Demo-DG4DC",
+      "ocid": "ocid1.dynamicgroup.oc1..aaaaaaaa2vyaeorxhjyrqf6wijo7npldlmd3lif4uqthng7ugmfig6tvpf5a",
+      "referencing_policies": [],
+      "referencing_policy_count": 0
+    },
+    {
+      "domain": "cloud-engineering-domain",
+      "matching_rule": "All {Any {instance.compartment.id='ocid1.compartment.oc1..aaaaaaaa533z7mmi3e3ujvopp4nvbmyzvlfbh56uk76ne54pmmggug6wu3ca'}}",
+      "name": "UsageDownloadGrpRM",
+      "ocid": "ocid1.dynamicgroup.oc1..aaaaaaaay3vf3mcu2neczmck63k2f7v5psrnl5crhrffjvhyxanh6rmi6paq",
+      "referencing_policies": [],
+      "referencing_policy_count": 0
+    },
+    {
+      "domain": "cloud-engineering-domain",
+      "matching_rule": "Any {ALL\n        {resource.compartment.id='ocid1.compartment.oc1..aaaaaaaaixs3du3c6smqmkuofei27r7u47ydyk2iuss45uvwjztz2w5mf4mq'},ALL\n        {resource.compartment.id='ocid1.compartment.oc1..aaaaaaaalxdclvj43itvicbpdbxhfiogd5zsosm4rrsxn75wdl733cacgfpq'},ALL\n        {resource.compartment.id='ocid1.compartment.oc1..aaaaaaaafaf5ex3s5spcxgzeqg3uovyjufdoioiy2pedteclojvlzyk66jmq'}}",
+      "name": "blkr-dg",
+      "ocid": "ocid1.dynamicgroup.oc1..aaaaaaaajtiysl62r3tvvwdl4hvax3orh7rx6wfjorbfksi6l2xmdol457iq",
+      "referencing_policies": [],
+      "referencing_policy_count": 0
+    },
+    {
+      "domain": "cloud-engineering-domain",
+      "matching_rule": "All {ALL {resource.type='datasciencenotebooksession'}}",
+      "name": "datascience_preprod",
+      "ocid": "ocid1.dynamicgroup.oc1..aaaaaaaaxqazda65o2vc5bf2envdclrfay5aike44c4ftwnopwroaoxqlmpa",
+      "referencing_policies": [],
+      "referencing_policy_count": 0
+    },
+    {
+      "domain": "cloud-engineering-domain",
+      "matching_rule": "Any {ANY {instance.compartment.id = 'ocid1.compartment.oc1..aaaaaaaandp63q634mhtfpoflnpzydpdci3dina7gwbvmafk7axyh6mpe7va'}}",
+      "name": "edq_group",
+      "ocid": "ocid1.dynamicgroup.oc1..aaaaaaaaoq22dn4p3qfh5ctpgjxyoapgfw3iymybktq26evp3jewnqpwzjsa",
+      "referencing_policies": [],
+      "referencing_policy_count": 0
+    },
+    {
+      "domain": "cloud-engineering-domain",
+      "matching_rule": "All {ALL {resource.type = 'ApiGateway', resource.compartment.id = 'ocid1.compartment.oc1..aaaaaaaajbqkp3z7ing5nmk7d3segk3afmup4fxekynui6kj4to3phbzlhcq'}}",
+      "name": "ehassan-dg",
+      "ocid": "ocid1.dynamicgroup.oc1..aaaaaaaa2fxdljavtzzr4r6752gg4oqhiljslxll73nrtu5pdqlayjevedpq",
+      "referencing_policies": [],
+      "referencing_policy_count": 0
+    },
+    {
+      "domain": "cloud-engineering-domain",
+      "matching_rule": "Any {All {instance.compartment.id = 'ocid1.compartment.oc1..aaaaaaaajf4jm5mrist7dvehksjwlqhn5tb2yki2gljjdlmi2fiww2iofoya'}}",
+      "name": "data_labeling_group",
+      "ocid": "ocid1.dynamicgroup.oc1..aaaaaaaa3eddmnhk3mkldg5v7ti24h7jxvgg5a7wc6r2wtukmhk4jiu54bfq",
+      "referencing_policies": [],
+      "referencing_policy_count": 0
+    },
+    {
+      "domain": "cloud-engineering-domain",
+      "matching_rule": "Any {All {instance.compartment.id = 'ocid1.compartment.oc1..aaaaaaaapl2vwofw32q5yixtpudzwclm5lrlq4gnoa5jx32bok5v3nvsbt6q'}}",
+      "name": "jkr-compartment",
+      "ocid": "ocid1.dynamicgroup.oc1..aaaaaaaazstowowgbxcilrn2iyebihvjx5fwuuk74brhekkr3uzghez4qrxa",
+      "referencing_policies": [],
+      "referencing_policy_count": 0
+    },
+    {
+      "domain": "cloud-engineering-domain",
+      "matching_rule": "All {resource.type='odainstance',resource.compartment.id='ocid1.compartment.oc1..aaaaaaaanhg5pnsped5pfkhouozze4dk5kzs2c3vhnxkzs364q5oijm3nltq',resource.compartment.id='ocid1.compartment.oc1..aaaaaaaadzqwzge7e5gan3w77yccyrno7lzmczduuzmqwfgtebwy745zwo4a'}",
+      "name": "genAI-agent-oda-dynamic-group",
+      "ocid": "ocid1.dynamicgroup.oc1..aaaaaaaabwvcs3r3e2qwkhvvlifeebenlidvczxudzrrsl65vyzm7rs26kea",
+      "referencing_policies": [],
+      "referencing_policy_count": 0
+    },
+    {
+      "domain": "cloud-engineering-domain",
+      "matching_rule": "Any {All {instance.compartment.id = '*'}}",
+      "name": "kmarshall-DG",
+      "ocid": "ocid1.dynamicgroup.oc1..aaaaaaaaoekiqjnkngjuv243vpnuse4obi56mddz6pehql63mrrewbh6ewna",
+      "referencing_policies": [],
+      "referencing_policy_count": 0
+    },
+    {
+      "domain": "cloud-engineering-domain",
+      "matching_rule": "Any {ALL {resource.type = 'fnfunc', resource.compartment.id = 'ocid1.compartment.oc1..aaaaaaaapvyui2u3tyntt3e764vhk7572nljefwoeot6entthjkhi2e4xhqa'}}",
+      "name": "jp-drg",
+      "ocid": "ocid1.dynamicgroup.oc1..aaaaaaaap5qoce6oyxw2hs3meqcccwpvv3rt4dmxzmm4ijupimzd6yzj72za",
+      "referencing_policies": [],
+      "referencing_policy_count": 0
+    },
+    {
+      "domain": "cloud-engineering-domain",
+      "matching_rule": "Any {instance.compartment.id = 'ocid1.compartment.oc1..aaaaaaaawstfx4htwz3akukfixnamxfgjg4jlccuygrhorubzzda3dpsutpa',resource.compartment.id = 'ocid1.compartment.oc1..aaaaaaaawstfx4htwz3akukfixnamxfgjg4jlccuygrhorubzzda3dpsutpa',resource.type = 'managementagent',resource.type='fnfunc',request.principal.type='opsidatabaseinsight',instance.id = 'ocid1.odainstance.oc1.us-chicago-1.amaaaaaabv6267iaotoziay2hol5ynb2qastbbtaildjd2kkihtuc5kdc6aa'}",
+      "name": "nhorner-DG",
+      "ocid": "ocid1.dynamicgroup.oc1..aaaaaaaagboxtumwrtxbwwbl6tjhxnq2zagejznumzfoszqvpiyuixuchn4a",
+      "referencing_policies": [],
+      "referencing_policy_count": 0
+    },
+    {
+      "domain": "cloud-engineering-domain",
+      "matching_rule": "Any {All {instance.id = 'ocid1.autonomousdatabase.oc1.us-chicago-1.anxxeljsbv6267iakv2a6k3tddovdo35aprey6r6bglilunxuxvn3hf5vsla'}}",
+      "name": "mtheodyngroup",
+      "ocid": "ocid1.dynamicgroup.oc1..aaaaaaaaklvj2rkj2wxm4frhuaeaccdxmncsxgnvz6hc4ysrqdu6fmtegfia",
+      "referencing_policies": [],
+      "referencing_policy_count": 0
+    },
+    {
+      "domain": "cloud-engineering-domain",
+      "matching_rule": "Any {ALL {resource.type='genaiagent'}}",
+      "name": "nv-genaiagentdg",
+      "ocid": "ocid1.dynamicgroup.oc1..aaaaaaaazewg3hqfzhehspvozfdezqvxxpbctxqfqcw7yajpp4u47jc4x56a",
+      "referencing_policies": [],
+      "referencing_policy_count": 0
+    },
+    {
+      "domain": "cloud-engineering-domain",
+      "matching_rule": "resource.id='h7ztqpz6q2r456j5rt5cubnq4fpaqnva_APPID'",
+      "name": "oac-resource-principal-DG",
+      "ocid": "ocid1.dynamicgroup.oc1..aaaaaaaa65iwefitfq2j42liruiocenbaouazif2ihl54fabwcqcr3cdr5mq",
+      "referencing_policies": [],
+      "referencing_policy_count": 0
+    },
+    {
+      "domain": "cloud-engineering-domain",
+      "matching_rule": "Any {all {resource.type='genaiagent'}}",
+      "name": "oci-generative-ai-agents-service",
+      "ocid": "ocid1.dynamicgroup.oc1..aaaaaaaaer7pi4hzpgx2izxnykgele6ytcncpee3xtucgjwiw7wvgoopqnpq",
+      "referencing_policies": [],
+      "referencing_policy_count": 0
+    },
+    {
+      "domain": "cloud-engineering-domain",
+      "matching_rule": "All {all {resource.type='genaiagent'}}",
+      "name": "oci-generative-ai-agents-service-SG",
+      "ocid": "ocid1.dynamicgroup.oc1..aaaaaaaa2xxbphqsnks72d4dytcpslvbaaiiv2avqr6jwjfyhvxbf26dbria",
+      "referencing_policies": [],
+      "referencing_policy_count": 0
+    }
+  ]
+}
